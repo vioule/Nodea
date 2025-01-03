@@ -1,6 +1,6 @@
 const globalConf = require('@config/global');
 const appConf = require('@config/application');
-const moment = require('moment');
+const dayjs = require('dayjs');
 const uuidV4 = require('uuid').v4;
 const fs = require('fs-extra');
 const path = require('path');
@@ -29,7 +29,7 @@ function createPathAndName(baseFolder, filename) {
 		throw new Error("No filename provided to createPath");
 
 	const uuid = uuidV4();
-	const date = moment();
+	const date = dayjs();
 	const year = date.year(), month = date.month(), day = date.date();
 
 	filename = Buffer.from(filename, 'latin1').toString('utf8').replace(/\s/g, '_');

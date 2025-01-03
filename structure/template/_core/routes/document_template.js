@@ -1,4 +1,4 @@
-const moment = require('moment');
+const dayjs = require('dayjs');
 const globalConf = require('@config/global');
 const appConf = require('@config/application');
 const fs = require('fs-extra');
@@ -183,7 +183,7 @@ class CoreDocumentTemplate extends CoreEntity {
 				}
 			}
 			const [noExtOriginalFilename] = this.helpers.file.originalFilename(data.template.f_file).split('.').slice(0, -1);
-			data.filename = `${data.idEntity || '0'}_${moment().format('DDMMYYYY_HHmmss')}_${noExtOriginalFilename}.${data.format_pair.output}`;
+			data.filename = `${data.idEntity || '0'}_${dayjs().format('DDMMYYYY_HHmmss')}_${noExtOriginalFilename}.${data.format_pair.output}`;
 
 			if (await this.getHook('generate', 'beforeTemplateGeneration', data) === false)
 				return;

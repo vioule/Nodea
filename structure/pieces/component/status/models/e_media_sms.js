@@ -2,7 +2,7 @@ const CoreModel = require('@core/models/model');
 const attributes = require("./attributes/e_media_sms.json");
 const relations = require("./options/e_media_sms.json");
 const sms = require('@app/services/sms');
-const moment = require('moment');
+const dayjs = require('dayjs');
 const globalConf = require('@config/global');
 
 class E_media_sms extends CoreModel {
@@ -123,7 +123,7 @@ class E_media_sms extends CoreModel {
 					return "";
 				else if (typeof object[depths[idx]] === 'object') {
 					if (object[depths[idx]] instanceof Date)
-						return moment(object[depths[idx]]).format("DD/MM/YYYY");
+						return dayjs(object[depths[idx]]).format("DD/MM/YYYY");
 					return diveData(object[depths[idx]], depths, ++idx);
 				}
 				return object[depths[idx]];

@@ -1,5 +1,5 @@
 const fs = require('fs-extra');
-const moment = require("moment");
+const dayjs = require("dayjs");
 const exec = require('child_process');
 
 const dbConfig = require('@config/database');
@@ -166,7 +166,7 @@ class CoreImportExport extends Route {
 				});
 			}
 
-			const dumpName = 'dump_' + dbConfig.database + '_' + moment().format("YYYYMMDD-HHmmss") + '.sql';
+			const dumpName = 'dump_' + dbConfig.database + '_' + dayjs().format("YYYYMMDD-HHmmss") + '.sql';
 			const dumpPath = __dirname + '/../../' + dumpName;
 
 			fullStdoutToFile(cmd, cmdArgs, dumpPath).then(_ => {
@@ -286,7 +286,7 @@ class CoreImportExport extends Route {
 	access_export() {
 		this.router.get('/access_export', ...this.middlewares.access_export, (req, res) => {
 			const dumpPath = __configPath + '/access.json';
-			res.download(dumpPath, "access_conf_" + moment().format("YYYYMMDD-HHmmss") + ".json", err => {
+			res.download(dumpPath, "access_conf_" + dayjs().format("YYYYMMDD-HHmmss") + ".json", err => {
 				if (err) {
 					console.error(err);
 					req.session.toastr.push({
