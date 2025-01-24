@@ -10,21 +10,31 @@ const sort = (prop, arr) => {
 		let i = 0;
 		while (i < len) {
 			a = a[path[i]];
+			if (a === null) {
+				break;
+			}
+			i++;
+		}
+		i = 0;
+		while (i < len) {
 			b = b[path[i]];
+			if (b === null) {
+				break;
+			}
 			i++;
 		}
 		if (prop.direction === "asc") {
-			if (a < b) {
+			if (a < b || b === null) {
 				return -1;
 			}
-			if (a > b) {
+			if (a > b || a === null) {
 				return 1;
 			}
 		} else {
-			if (a > b) {
+			if (a > b || a === null) {
 				return -1;
 			}
-			if (a < b) {
+			if (a < b || b === null) {
 				return 1;
 			}
 		}
