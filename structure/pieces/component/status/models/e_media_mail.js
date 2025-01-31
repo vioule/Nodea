@@ -168,7 +168,7 @@ class E_media_mail extends CoreModel {
 			from: insertVariablesValue('f_from'),
 			to: insertVariablesValue('f_to'),
 			cc: insertVariablesValue('f_cc'),
-			cci: insertVariablesValue('f_cci'),
+			bcc: insertVariablesValue('f_cci'),
 			subject: insertVariablesValue('f_subject'),
 			data: dataInstance
 		};
