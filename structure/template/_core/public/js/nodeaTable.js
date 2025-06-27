@@ -118,11 +118,21 @@ let NodeaTable = (function () {
 			</div>
 		`);
 		applyBtn.on("click", function () {
-			// Set new filters to localStorage and reload
-			localStorage.setItem("nodea_hidden_columns_save_" + tableID.substring(1), JSON.stringify(columnsToHide));
-			setTimeout(function () {
-				location.reload();
-			}, 100);
+			// Get show columns
+			const restColumns = columns.filter((x) => !columnsToHide.includes(x.data));
+			// Check if there is a least one column with data
+			const isOk = restColumns.some((x) => x.data !== null);
+
+			// Prevent crash if there is no show columns with data
+			if (isOk) {
+				// Set new filters to localStorage and reload
+				localStorage.setItem("nodea_hidden_columns_save_" + tableID.substring(1), JSON.stringify(columnsToHide));
+				setTimeout(function () {
+					location.reload();
+				}, 100);
+			} else {
+				toastr.error(STR_LANGUAGE.min_one_column_data_display);
+			}
 		});
 
 		columnsSelectorDiv.append("<hr>").append(toggleBtn).append(applyBtn);
