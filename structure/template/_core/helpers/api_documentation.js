@@ -41,9 +41,11 @@ function findAll(entityName, attributes, options) {
 		description: `Find rows of entity ${entityName} from <code>offset</code> until <code>limit</code>`,
 		method: 'GET',
 		url: `/api/${entityName.substring(2)}/`,
+		header: [
+			globals.parameters.token
+		],
 		parameters: {
 			query: [
-				globals.parameters.token,
 				globals.parameters.limit,
 				globals.parameters.offset
 			]
