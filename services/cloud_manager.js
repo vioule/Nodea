@@ -301,7 +301,8 @@ async function generateStack(data) {
 					"APP_DB_USER": cloudDbConf.dbUser,
 					"APP_DB_PWD": cloudDbConf.dbPwd,
 					"APP_DB_NAME": cloudDbConf.dbName,
-					"APP_DB_DIALECT": cloudDbConf.dialect
+					"APP_DB_DIALECT": cloudDbConf.dialect,
+					"GIT_SSL_CAINFO": "/etc/ssl/certs/globalsignR6.pem"
 				},
 				"networks": {
 					[chosenNetwork.name]: {
@@ -309,7 +310,10 @@ async function generateStack(data) {
 					}
 				},
 				"volumes": [
-					"app:/app/" + data.repoName
+					"app:/app/" + data.repoName,
+					"/etc/ssl/certs:/etc/ssl/certs:ro",
+					"/usr/share/ca-certificates:/usr/share/ca-certificates:ro",
+					"/usr/local/share/ca-certificates:/usr/local/share/ca-certificates:ro"
 				],
 				"labels": [
 					"traefik.enable=true",
@@ -446,16 +450,25 @@ exports.deploy = async (data) => {
 	// Workspace database dialect
 	data.appDialect = require(workspacePath + '/config/database').dialect; // eslint-disable-line
 
-	// Create toSyncProd.lock.json file
-
-	var toSyncProdLock = {deployments: []};
+	// Create toSyncProd.lock.json file with new format if non existing
+	let toSyncProdLock = {deployments: []};
 	if (fs.existsSync(workspacePath + '/app/models/toSyncProd.lock.json'))
 		toSyncProdLock= JSON.parse(fs.readFileSync(workspacePath + '/app/models/toSyncProd.lock.json'));
 
 	const toSyncProd = JSON.parse(fs.readFileSync(workspacePath + '/app/models/toSyncProd.json'));
-	toSyncProdLock.deployments.push({version: deployVersion, queries: toSyncProd.queries});
+
+	// To avoid lost of data, copy content of previous version in new file format toSyncProd.lock
+	if ( toSyncProdLock.deployments ){
+		toSyncProdLock.deployments.push({version: deployVersion, queries: toSyncProd.queries});
+	} else {
+		toSyncProdLock.deployments = [{version : "previous", queries: toSyncProdLock}];
+		toSyncProdLock.deployments.push({version: deployVersion, queries: toSyncProd.queries});
+	}
 
 	fs.writeFileSync(workspacePath + '/app/models/toSyncProd.lock.json', JSON.stringify(toSyncProdLock, null, '\t'), 'utf8');
+
+	// generate toSyncProd.cloud file dedicated to database sync for cloud deployment
+	fs.writeFileSync(workspacePath + '/app/models/toSyncProd.cloud.json', JSON.stringify(toSyncProd, null, '\t'), 'utf8');
 
 	// Clear toSyncProd (not locked) file
 	fs.writeFileSync(workspacePath + '/app/models/toSyncProd.json', JSON.stringify({queries: []}, null, '\t'), 'utf8');
