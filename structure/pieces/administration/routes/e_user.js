@@ -15,6 +15,7 @@ const saltRounds = 10;
 const USER_ID_ADMIN = 1;
 const STATUS_ID_ENABLED = 2;
 const STATUS_ID_DISABLED = 3;
+const CONF_AUTH_MODE = globalConfig.authStrategy?.toLowerCase();
 
 class E_user extends Entity {
 	constructor() {
@@ -54,7 +55,7 @@ class E_user extends Entity {
 				e_user: e_user,
 				isLocal: false
 			};
-			if(globalConfig.authStrategy && globalConfig.authStrategy.toLowerCase() == "local")
+			if(globalConfig.authStrategy && CONF_AUTH_MODE == "local")
 				data.isLocal = true;
 
 			res.success(_ => res.render('e_user/settings', data));
@@ -166,10 +167,12 @@ class E_user extends Entity {
 				// beforeRender: async(data) => {}
 			},
 			create: {
-				// start: async (data) => {},
-				// beforeCreateQuery: async(data) => {},
+				start: (data) => {
+					if ( CONF_AUTH_MODE != "local")
+						data.req.body.f_enabled=true;
+				},
 				beforeRedirect: ({req}) => {
-					if(req.body.send_first_connection_mail == 'true' && req.body.f_email) {
+					if(CONF_AUTH_MODE === "local" && req.body.send_first_connection_mail == 'true' && req.body.f_email) {
 						// Send first connection email to new user
 						try {
 							mailer.sendTemplate('first_connection', {
