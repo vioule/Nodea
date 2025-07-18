@@ -429,6 +429,9 @@
 			"npmInstall": {
 				"success": "Tous les modules node ont bien été installés !"
 			},
+			"runbundleall": {
+				"success": "Les bundles JS/CSS Front de votre application ont été mis à jour, pensez à rafraichir votre cache."
+			},
 			"gitPush": {
 				"success": "L'application a bien été sauvegardée !"
 			},
