@@ -29,7 +29,7 @@ const metadata = require('../database/metadata')();
 const appProcessing = {};
 
 // No git commit for these instructions
-const noGitFunctions = ['restart', 'gitPush', 'gitPull', 'installNodePackage'];
+const noGitFunctions = ['restart', 'gitPush', 'gitPull', 'installNodePackage', 'runBundlAll'];
 
 router.get('/preview/:app_name', middlewares.hasAccessApplication, (req, res) => {
 

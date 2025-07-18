@@ -428,6 +428,9 @@
 			"npmInstall": {
 				"success": "All node modules have been successfully installed !"
 			},
+			"runbundleall": {
+				"success": "CSS/JS bundles have been successfully built."
+			},
 			"gitPush": {
 				"success": "The application has been saved!"
 			},

@@ -589,3 +589,27 @@ exports.installAppModules = (data) => new Promise((resolve, reject) => {
 		resolve();
 	});
 });
+
+// Handle specific node_modules installation in workspace folder
+exports.runBundleAll = (data) => new Promise((resolve, reject) => {
+
+	// Mandatory workspace folder so if not existing - go out
+	if (!fs.existsSync(global.__workspacePath))
+		return resolve();
+	// Mandatory data application name if not existing - go out
+	if (!data || typeof data === "undefined")
+		return resolve();
+
+	/* When we are in the "npm install" instruction from preview */
+	let command = "npm run bundle all";
+
+	console.log("EXECUTING " + command + " IN " + data.application.name + "...");
+
+	exec(command, {
+		cwd: __dirname + '/../workspace/' + data.application.name + '/'
+	}, err => {
+		if (err)
+			return reject(err);
+		resolve();
+	});
+});

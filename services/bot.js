@@ -31,6 +31,12 @@ exports.restart = _ => {
 	return data;
 };
 
+exports.runBundleAll = _ => {
+	const data = {};
+	data.function = "runBundleAll";
+	return data;
+};
+
 exports.installNodePackage = result => {
 	const data = {
 		specificModule: null
@@ -1160,6 +1166,10 @@ const bot_instructions = {
 		"installer les modules node",
 		"installer le module node (.*)",
 		"install node package"
+	],
+	"runBundleAll": [
+		"npm run bundle all",
+		"bundle"
 	],
 	"gitPush": [
 		"save",

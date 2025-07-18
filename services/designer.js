@@ -87,6 +87,13 @@ exports.installNodePackage = async (data) => {
 	};
 }
 
+exports.runBundleAll = async (data) => {
+	await structure_application.runBundleAll(data);
+	return {
+		message: "structure.global.runbundleall.success"
+	};
+}
+
 /* --------------------------------------------------------------- */
 /* --------------------------- Git ------------------------------- */
 /* --------------------------------------------------------------- */
