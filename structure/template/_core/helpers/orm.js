@@ -1,5 +1,5 @@
 const sequelize = require('@app/models').sequelize;
-const moment = require('moment');
+const dayjs = require('dayjs');
 const fs = require('fs-extra');
 
 // After Sequelize sync (see Sequelize doc) we have to handle manually ALTER in database depeding on instructions done on the generator.
@@ -39,7 +39,7 @@ module.exports.customAfterSync = async () => {
 						break;
 					case "ENUM":
 						if (dialect == "postgres") {
-							const postgresEnumType = attribute + "_enum_" + moment();
+							const postgresEnumType = attribute + "_enum_" + dayjs();
 							request += "CREATE TYPE " + postgresEnumType + " as ENUM (";
 							for (let i = 0; i < toSyncObject[entity].attributes[attribute].values.length; i++) {
 								request += "'" + toSyncObject[entity].attributes[attribute].values[i] + "'";

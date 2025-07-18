@@ -1,7 +1,7 @@
 const CoreModel = require('@core/models/model');
 const attributes = require("./attributes/e_media_notification.json");
 const relations = require("./options/e_media_notification.json");
-const moment = require('moment');
+const dayjs = require('dayjs');
 
 function socket() {
 	if (!this.socket)
@@ -117,7 +117,7 @@ class E_media_notification extends CoreModel {
 					return "";
 				else if (typeof object[depths[idx]] === 'object') {
 					if (object[depths[idx]] instanceof Date)
-						return moment(object[depths[idx]]).format("DD/MM/YYYY");
+						return dayjs(object[depths[idx]]).format("DD/MM/YYYY");
 					// Case where targeted field is in an array.
 					// Ex: r_projet.r_participants.f_name <- Loop through r_participants and join all f_name
 					else if (object[depths[idx]] instanceof Array && depths.length-2 == idx) {
