@@ -299,13 +299,15 @@ class E_user extends Entity {
 				middlewares.actionAccess(this.entity, "create")
 			],
 			create: [
-				middlewares.actionAccess(this.entity, "create")
+				middlewares.actionAccess(this.entity, "create"),
+				middlewares.fileInfo(this.fileFields)
 			],
 			update_form: [
 				middlewares.actionAccess(this.entity, "update")
 			],
 			update: [
-				middlewares.actionAccess(this.entity, "update")
+				middlewares.actionAccess(this.entity, "update"),
+				middlewares.fileInfo(this.fileFields)
 			],
 			loadtab: [
 				middlewares.actionAccess(this.entity, "read")
