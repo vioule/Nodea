@@ -1,4 +1,4 @@
-const moment = require('moment');
+const dayjs = require('dayjs');
 const fs = require('fs-extra');
 const dust = require('dustjs-linkedin');
 const puppeteer = require('puppeteer');
@@ -61,8 +61,8 @@ function getValue(itemPath /*array*/, data, scope /*where value is expected*/) {
 
 		// Formatting date directly in the output, usefull for 3 and more level include data
 		// TODO: FR / EN Differenciation
-		if (typeof data === "object" && moment(new Date(data)).isValid())
-			data = moment(new Date(data)).format("DD/MM/YYYY");
+		if (typeof data === "object" && dayjs(new Date(data)).isValid())
+			data = dayjs(new Date(data)).format("DD/MM/YYYY");
 
 		return data;
 	} catch (e) {
@@ -214,15 +214,15 @@ function getGlobalVariables() {
 		description: "global_component.document_template.global_variables.user_email"
 	}, {
 		ref: 'g_datetime',
-		func: _ => moment().format('DD/MM/YYYY hh:mm:ss'),
+		func: _ => dayjs().format('DD/MM/YYYY hh:mm:ss'),
 		description: "global_component.document_template.global_variables.datetime"
 	}, {
 		ref: 'g_time',
-		func: _ => moment().format('hh:mm:ss'),
+		func: _ => dayjs().format('hh:mm:ss'),
 		description: "global_component.document_template.global_variables.time"
 	}, {
 		ref: 'g_date',
-		func: _ => moment().format('DD/MM/YYYY'),
+		func: _ => dayjs().format('DD/MM/YYYY'),
 		description: "global_component.document_template.global_variables.date"
 	}];
 }

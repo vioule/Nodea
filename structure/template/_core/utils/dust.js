@@ -1,4 +1,10 @@
-const moment = require("moment");
+const dayjs = require("dayjs");
+const utc = require("dayjs/plugin/utc");
+const timezone = require("dayjs/plugin/timezone");
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
 const appConf = require('@config/application');
 const customDust = require('@app/utils/dust');
 const fileHelper = require('@core/helpers/file');
@@ -214,9 +220,9 @@ module.exports = {
 				return value;
 
 			if (lang == "fr-FR")
-				return moment.utc(value).format("DD/MM/YYYY");
+				return dayjs.utc(value).format("DD/MM/YYYY");
 
-			return moment.utc(value).format("YYYY-MM-DD");
+			return dayjs.utc(value).format("YYYY-MM-DD");
 		};
 
 		dust.filters.datetime = function(value) {
@@ -224,9 +230,9 @@ module.exports = {
 				return value;
 
 			if (lang == "fr-FR")
-				return moment.utc(value).format("DD/MM/YYYY HH:mm");
+				return dayjs.utc(value).format("DD/MM/YYYY HH:mm");
 
-			return moment.utc(value).format("YYYY-MM-DD HH:mm");
+			return dayjs.utc(value).format("YYYY-MM-DD HH:mm");
 		};
 
 		dust.filters.dateTZ = function(value) {
@@ -234,9 +240,9 @@ module.exports = {
 				return value;
 
 			if (lang == "fr-FR")
-				return moment(value).tz(appConf.timezone).format("DD/MM/YYYY");
+				return dayjs(value).tz(appConf.timezone).format("DD/MM/YYYY");
 
-			return moment(value).tz(appConf.timezone).format("YYYY-MM-DD");
+			return dayjs(value).tz(appConf.timezone).format("YYYY-MM-DD");
 		};
 
 		dust.filters.datetimeTZ = function(value) {
@@ -244,9 +250,9 @@ module.exports = {
 				return value;
 
 			if (lang == "fr-FR")
-				return moment(value).tz(appConf.timezone).format("DD/MM/YYYY HH:mm");
+				return dayjs(value).tz(appConf.timezone).format("DD/MM/YYYY HH:mm");
 
-			return moment(value).tz(appConf.timezone).format("YYYY-MM-DD HH:mm");
+			return dayjs(value).tz(appConf.timezone).format("YYYY-MM-DD HH:mm");
 		};
 
 		dust.filters.time = function(value) {

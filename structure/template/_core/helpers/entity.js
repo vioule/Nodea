@@ -1,7 +1,6 @@
 const fs = require('fs-extra');
-const moment = require("moment");
+const dayjs = require("dayjs");
 const qrcode = require("yaqrcode");
-const dayjs = require('dayjs');
 
 const language = require('./language');
 const file_helper = require('@core/helpers/file');
@@ -445,10 +444,10 @@ module.exports = {
 						if (fieldSelect == field && results.rows[i][fieldSelect] && results.rows[i][fieldSelect] != "")
 							switch (attributes[field].nodeaType) {
 								case "date":
-									results.rows[i][fieldSelect] = moment(results.rows[i][fieldSelect]).format(lang == "fr-FR" ? "DD/MM/YYYY" : "YYYY-MM-DD")
+									results.rows[i][fieldSelect] = dayjs(results.rows[i][fieldSelect]).format(lang == "fr-FR" ? "DD/MM/YYYY" : "YYYY-MM-DD")
 									break;
 								case "datetime":
-									results.rows[i][fieldSelect] = moment(results.rows[i][fieldSelect]).format(lang == "fr-FR" ? "DD/MM/YYYY HH:mm" : "YYYY-MM-DD HH:mm")
+									results.rows[i][fieldSelect] = dayjs(results.rows[i][fieldSelect]).format(lang == "fr-FR" ? "DD/MM/YYYY HH:mm" : "YYYY-MM-DD HH:mm")
 									break;
 								case "enum":
 									results.rows[i][fieldSelect] = enums_radios.translateFieldValue(entity, fieldSelect, results.rows[i][fieldSelect], lang);
