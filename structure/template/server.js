@@ -96,34 +96,44 @@ app.use(flash());
 
 // Fonction de nettoyage XSS
 function sanitizeBody(body) {
-    if (typeof body === 'string') {
-        return xss(body);
-    } else if (Array.isArray(body)) {
-        return body.map(sanitizeBody);
-    } else if (typeof body === 'object' && body !== null) {
-        const sanitizedObject = {};
-        for (const key in body) {
-            if (body.hasOwnProperty(key)) {
-                sanitizedObject[key] = sanitizeBody(body[key]);
-            }
-        }
-        return sanitizedObject;
-    }
-    return body;
+	if (typeof body === 'string') {
+		return xss(body);
+	} else if (Array.isArray(body)) {
+		return body.map(sanitizeBody);
+	} else if (typeof body === 'object' && body !== null) {
+		const sanitizedObject = {};
+		for (const key in body) {
+			if (body.hasOwnProperty(key)) {
+				sanitizedObject[key] = sanitizeBody(body[key]);
+			}
+		}
+		return sanitizedObject;
+	}
+	return body;
 }
 
-// Middleware pour nettoyer le corps de la requête
+// Middleware prevent XSS injection except for media_mail content
+// If you need to store HTML content, please add excluded_url here
 app.use((req, res, next) => {
-    if (req.body) {
-        req.body = sanitizeBody(req.body);
-    }
-    if (req.query) {
-        req.query = sanitizeBody(req.query);
-    }
-    if (req.params) {
-        req.params = sanitizeBody(req.params);
-    }
-    next();
+
+	const excluded_url = [
+		"/media_mail/update",
+		"/media_mail/create"
+	];
+
+	if(!excluded_url.includes(req.url)) {
+		if (req.body) {
+			req.body = sanitizeBody(req.body);
+		}
+		if (req.query) {
+			req.query = sanitizeBody(req.query);
+		}
+		if (req.params) {
+			req.params = sanitizeBody(req.params);
+		}
+	}
+
+	next();
 });
 
 // For Nodea use ======================================================================
