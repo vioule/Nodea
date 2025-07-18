@@ -62,7 +62,8 @@
 		"simple-git": "^3.13.0",
 		"split": "^1.0.1",
 		"through2": "^4.0.2",
-		"unzip-stream": "^0.3.1"
+		"unzip-stream": "^0.3.1",
+		"xss": "^1.0.15"
 	},
 	"devDependencies": {
 		"eslint": "^8.22.0"

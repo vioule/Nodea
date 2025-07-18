@@ -6,6 +6,7 @@ const crypto = require('@app/utils/crypto.js');
 const { KEY_TK } = require('@config/key_env.json');
 const jwt = require('jsonwebtoken');
 
+const xss = require('xss');
 const upload = require('multer');
 const multer = upload();
 
@@ -216,6 +217,38 @@ exports.statusGroupAccess = function(req, res, next) {
 		return res.redirect("/");
 	})
 }
+
+// Fonction de nettoyage
+function sanitizeBody(body) {
+    if (typeof body === 'string') {
+        return xss(body);
+    } else if (Array.isArray(body)) {
+        return body.map(sanitizeBody);
+    } else if (typeof body === 'object' && body !== null) {
+        const sanitizedObject = {};
+        for (const key in body) {
+            if (Object.prototype.hasOwnProperty.call(body, key)) {
+                sanitizedObject[key] = sanitizeBody(body[key]);
+            }
+        }
+        return sanitizedObject;
+    }
+    return body;
+};
+
+// Utiliser pour endpoint d'API, si réception de fichiers avec un multer custom
+exports.sanatizeApi = function(req, res, next) {
+	if (req.body) {
+		req.body = sanitizeBody(req.body);
+	}
+	if (req.query) {
+		req.query = sanitizeBody(req.query);
+	}
+	if (req.params) {
+		req.params = sanitizeBody(req.params);
+	}
+	next();
+};
 
 // fileFields = [{name: 'string', maxCount: int}]
 exports.fileInfo = (fileFields) => (req, res, next) => {

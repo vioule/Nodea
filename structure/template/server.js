@@ -22,7 +22,11 @@ const passport = require('passport');
 const flash = require('connect-flash');
 const socketSession = require('express-socket.io-session');
 const express = require('express');
+const xss = require('xss');
 const app = express();
+
+// Désactive cette en-tête ajouter par defaut par Express.js
+app.disable('x-powered-by');
 
 const globalConf = require('@config/global');
 const access = require('@core/helpers/access');
@@ -89,6 +93,38 @@ app.use(passport.session());
 // TODO: Remove the use of flash
 // Use connect-flash for flash messages stored in session
 app.use(flash());
+
+// Fonction de nettoyage XSS
+function sanitizeBody(body) {
+    if (typeof body === 'string') {
+        return xss(body);
+    } else if (Array.isArray(body)) {
+        return body.map(sanitizeBody);
+    } else if (typeof body === 'object' && body !== null) {
+        const sanitizedObject = {};
+        for (const key in body) {
+            if (body.hasOwnProperty(key)) {
+                sanitizedObject[key] = sanitizeBody(body[key]);
+            }
+        }
+        return sanitizedObject;
+    }
+    return body;
+}
+
+// Middleware pour nettoyer le corps de la requête
+app.use((req, res, next) => {
+    if (req.body) {
+        req.body = sanitizeBody(req.body);
+    }
+    if (req.query) {
+        req.query = sanitizeBody(req.query);
+    }
+    if (req.params) {
+        req.params = sanitizeBody(req.params);
+    }
+    next();
+});
 
 // For Nodea use ======================================================================
 // When application process is a child of generator process, log each routes for the generator
