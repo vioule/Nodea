@@ -290,7 +290,7 @@ async function generateStack(data) {
 		"services": {
 			"application": {
 				"container_name": data.stackName + '_app',
-				"image": "nodeasoftware/application:latest",
+				"image": globalConf.APPDOCKERIMAGE_CLOUD,
 				"environment": {
 					"GIT_URL": data.git_url,
 					"APP_NAME": data.repoName,
@@ -302,7 +302,7 @@ async function generateStack(data) {
 					"APP_DB_PWD": cloudDbConf.dbPwd,
 					"APP_DB_NAME": cloudDbConf.dbName,
 					"APP_DB_DIALECT": cloudDbConf.dialect,
-					"GIT_SSL_CAINFO": "/etc/ssl/certs/globalsignR6.pem"
+					"GIT_SSL_CAINFO": globalConf.ssl_cainfo
 				},
 				"networks": {
 					[chosenNetwork.name]: {
