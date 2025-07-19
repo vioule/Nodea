@@ -290,7 +290,7 @@ async function generateStack(data) {
 		"services": {
 			"application": {
 				"container_name": data.stackName + '_app',
-				"image": globalConf.APPDOCKERIMAGE_CLOUD,
+				"image": globalConf.application_dockerimage,
 				"environment": {
 					"GIT_URL": data.git_url,
 					"APP_NAME": data.repoName,
