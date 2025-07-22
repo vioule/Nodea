@@ -108,31 +108,31 @@ exports.actionAccess = actionAccess;
 // API Access
 exports.apiAuthentication = async(req, res, next) => {
 	try {
-        const { authorization } = req.headers;
+		const { authorization } = req.headers;
 		if(!authorization) {
-            throw new Error('MISSING AUTHORIZATION HEADERS');
-        }
+			throw new Error('MISSING AUTHORIZATION HEADERS');
+		}
 
-        const parts = authorization.split(' ');
+		const parts = authorization.split(' ');
 		if(parts.length != 2) {
-            throw new Error('INVALID AUTHORIZATION FORMAT');
-        }
-        if(parts[0] != 'Bearer') {
-            throw new Error('AUTHORIZATION MUST BE "Bearer"');
-        }
+			throw new Error('INVALID AUTHORIZATION FORMAT');
+		}
+		if(parts[0] != 'Bearer') {
+			throw new Error('AUTHORIZATION MUST BE "Bearer"');
+		}
 
-        const verifiedToken = jwt.verify(parts[1], KEY_TK);
+		const verifiedToken = jwt.verify(parts[1], KEY_TK);
 
-        const { clientId, secretId } = crypto.decryptObject(verifiedToken.data);
+		const { clientId, secretId } = crypto.decryptObject(verifiedToken.data);
 
 		if(!clientId || !secretId) {
-            throw new Error('WRONG TOKEN USED');
+			throw new Error('WRONG TOKEN USED');
 		}
 
 		const credentialsObj = await models.E_api_credentials.findOne({
 			where: {
 				f_client_key: clientId,
-                f_client_secret: secretId,
+				f_client_secret: secretId,
 			},
 			include: [{
 				model: models.E_group,
@@ -144,7 +144,7 @@ exports.apiAuthentication = async(req, res, next) => {
 		});
 
 		if(!credentialsObj) {
-            throw new Error('CREDENTIALS NOT FOUND');
+			throw new Error('CREDENTIALS NOT FOUND');
 		}
 
 		req.apiCredentials = credentialsObj;
@@ -155,7 +155,7 @@ exports.apiAuthentication = async(req, res, next) => {
 		next();
 	} catch (err) {
 		console.error(err);
-        res.status(401).json({msg: 'Unauthorized'});
+		res.status(401).json({msg: 'Unauthorized'});
 	}
 }
 
@@ -220,21 +220,21 @@ exports.statusGroupAccess = function(req, res, next) {
 
 // Fonction de nettoyage
 function sanitizeBody(body) {
-    if (typeof body === 'string') {
-        return xss(body);
-    } else if (Array.isArray(body)) {
-        return body.map(sanitizeBody);
-    } else if (typeof body === 'object' && body !== null) {
-        const sanitizedObject = {};
-        for (const key in body) {
-            if (Object.prototype.hasOwnProperty.call(body, key)) {
-                sanitizedObject[key] = sanitizeBody(body[key]);
-            }
-        }
-        return sanitizedObject;
-    }
-    return body;
-};
+	if (typeof body === 'string') {
+		return xss(body);
+	} else if (Array.isArray(body)) {
+		return body.map(sanitizeBody);
+	} else if (typeof body === 'object' && body !== null) {
+		const sanitizedObject = {};
+		for (const key in body) {
+			if (Object.prototype.hasOwnProperty.call(body, key)) {
+				sanitizedObject[key] = sanitizeBody(body[key]);
+			}
+		}
+		return sanitizedObject;
+	}
+	return body;
+}
 
 // Utiliser pour endpoint d'API, si réception de fichiers avec un multer custom
 exports.sanatizeApi = function(req, res, next) {

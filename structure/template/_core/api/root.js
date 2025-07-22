@@ -37,7 +37,7 @@ class CoreApiRoot extends ApiRoute {
 			} catch (err) {
 				console.log(err);
 				data.res.error((_) => data.res.status(500).json(err));
-			};
+			}
 		}));
 	}
 }

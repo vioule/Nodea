@@ -601,7 +601,7 @@ exports.runBundleAll = (data) => new Promise((resolve, reject) => {
 		return resolve();
 
 	/* When we are in the "npm install" instruction from preview */
-	let command = "npm run bundle all";
+	const command = "npm run bundle all";
 
 	console.log("EXECUTING " + command + " IN " + data.application.name + "...");
 
