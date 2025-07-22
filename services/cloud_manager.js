@@ -368,15 +368,15 @@ async function generateStack(data) {
 	});
 
 	console.log("CALL => Stack generation");
-	return await request(portainerCloudConfig.url + "/stacks?type=2&method=string&endpointId=1", {
+	return await request(portainerCloudConfig.url + "/stacks/create/standalone/string?endpointId=1", {
 		method: 'POST',
 		headers: {
-			'Content-Type': 'multipart/form-data',
+			'Content-Type': 'application/json',
 			'Authorization': token
 		},
 		body: JSON.stringify({
-			"Name": data.stackName,
-			"StackFileContent": composeContent
+			"name": data.stackName,
+			"stackFileContent": composeContent
 		})
 	});
 }
