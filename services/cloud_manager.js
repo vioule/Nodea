@@ -451,19 +451,25 @@ exports.deploy = async (data) => {
 	data.appDialect = require(workspacePath + '/config/database').dialect; // eslint-disable-line
 
 	// Create toSyncProd.lock.json file with new format if non existing
-	let toSyncProdLock = {deployments: []};
-	if (fs.existsSync(workspacePath + '/app/models/toSyncProd.lock.json'))
-		toSyncProdLock= JSON.parse(fs.readFileSync(workspacePath + '/app/models/toSyncProd.lock.json'));
+	const toSyncProdLock = { deployments: [] };
+
+	if (fs.existsSync(workspacePath + '/app/models/toSyncProd.lock.json')) {
+		const existingLockData = JSON.parse(fs.readFileSync(workspacePath + '/app/models/toSyncProd.lock.json'));
+
+		// Vérifiez si existingLockData a des deployments et les fusionnez
+		if (existingLockData.deployments) {
+			toSyncProdLock.deployments = existingLockData.deployments;
+		} else {
+			// Si existingLockData n'a pas de deployments, ajoutez-le comme un ancien déploiement
+			toSyncProdLock.deployments.push({ version: "previous", queries: existingLockData });
+		}
+	}
 
 	const toSyncProd = JSON.parse(fs.readFileSync(workspacePath + '/app/models/toSyncProd.json'));
 
-	// To avoid lost of data, copy content of previous version in new file format toSyncProd.lock
-	if ( toSyncProdLock.deployments ){
-		toSyncProdLock.deployments.push({version: deployVersion, queries: toSyncProd.queries});
-	} else {
-		toSyncProdLock.deployments = [{version : "previous", queries: toSyncProdLock}];
-		toSyncProdLock.deployments.push({version: deployVersion, queries: toSyncProd.queries});
-	}
+	// Ajoutez le nouveau déploiement
+	toSyncProdLock.deployments.push({ version: deployVersion, queries: toSyncProd.queries });
+
 
 	fs.writeFileSync(workspacePath + '/app/models/toSyncProd.lock.json', JSON.stringify(toSyncProdLock, null, '\t'), 'utf8');
 
