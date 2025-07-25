@@ -431,8 +431,11 @@
 			"runbundleall": {
 				"success": "CSS/JS bundles have been successfully built."
 			},
+			"gitCheckout": {
+				"success": "%s - Branch %s "
+			},
 			"gitBranch": {
-				"success": "Branch has been checked out!"
+				"success": "Current git branch - %s"
 			},
 			"gitPush": {
 				"success": "The application has been saved!"

@@ -80,6 +80,10 @@
 							{#__ key="application.label"/} :<b class="sessionApplicationInfo">&nbsp;{#__ key="preview.session.noApplication"/}</b>
 						{/application.name}
 						<br>
+						{?branch.name}
+							{#__ key="gitbranch.label"/} :<b class="sessionEntityInfo">&nbsp;{branch.name}</b>
+						{/branch.name}
+						<br>
 						{?module.name}
 							{#__ key="module.label"/} :<b class="sessionModuleInfo">&nbsp;{module.name}</b>
 						{:else}

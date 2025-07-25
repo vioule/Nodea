@@ -433,7 +433,7 @@
 				"success": "Les bundles JS/CSS Front de votre application ont été mis à jour, pensez à rafraichir votre cache."
 			},
 			"gitCheckout": {
-				"success": "L'application a basculé sur la branche indiquée"
+				"success": "%s - Branche %s "
 			},
 			"gitBranch": {
 				"success": "Affichage Branche courante %s"

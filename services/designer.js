@@ -121,9 +121,10 @@ exports.gitPull = async (data) => {
 exports.gitBranch = async (data) => {
 	if(!gitHelper.isGitActivated())
 		throw new Error('structure.global.error.notDoGit');
-	await gitHelper.gitBranch(data);
+	const branchname = await gitHelper.gitBranch(data);
 	return {
 		message: "structure.global.gitBranch.success",
+		messageParams: branchname,
 		restartServer: false
 	}
 }
@@ -131,9 +132,10 @@ exports.gitBranch = async (data) => {
 exports.gitCheckout = async (data) => {
 	if(!gitHelper.isGitActivated())
 		throw new Error('structure.global.error.notDoGit');
-	await gitHelper.gitCheckout(data);
+	const answer = await gitHelper.gitCheckout(data);
 	return {
-		message: "structure.global.gitBranch.success",
+		message: "structure.global.gitCheckout.success",
+		messageParams: [answer.message, answer.branch],
 		restartServer: false
 	}
 }

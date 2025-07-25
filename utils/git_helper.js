@@ -344,14 +344,7 @@ module.exports = {
 		try {
 			const allBranches = await gitProcesses[repoInfo.origin][data.currentUser.id].simpleGit.branch();
 			// get current branch name to return to nodea robot
-			let answer;
-			for (const branch in allBranches.branches){
-				const item = allBranches.branches(branch);
-				if(item.current){
-					answer = item.name.replace(/\*/g, "");
-					break;
-				}
-			}
+			const answer = allBranches.current;
 			gitProcesses[repoInfo.origin].isProcessing = false;
 			return answer;
 		} catch(err) {
