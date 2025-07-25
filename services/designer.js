@@ -118,6 +118,26 @@ exports.gitPull = async (data) => {
 	}
 }
 
+exports.gitBranch = async (data) => {
+	if(!gitHelper.isGitActivated())
+		throw new Error('structure.global.error.notDoGit');
+	await gitHelper.gitBranch(data);
+	return {
+		message: "structure.global.gitBranch.success",
+		restartServer: false
+	}
+}
+
+exports.gitCheckout = async (data) => {
+	if(!gitHelper.isGitActivated())
+		throw new Error('structure.global.error.notDoGit');
+	await gitHelper.gitCheckout(data);
+	return {
+		message: "structure.global.gitBranch.success",
+		restartServer: false
+	}
+}
+
 exports.gitCommit = async (data) => {
 	if(!gitHelper.isGitActivated())
 		throw new Error('structure.global.error.notDoGit');
@@ -1603,7 +1623,7 @@ exports.createNewComponentStatus = async (data) => {
 	const self = this;
 	const entity = data.application.findEntity(data.entity_name, true);
 	const appPath = global.__workspacePath + '/' + data.application.name + '/app';
-	
+
 	data.np_module = entity.np_module;
 	data.entity = entity.entity;
 

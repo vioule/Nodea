@@ -324,7 +324,6 @@ module.exports = {
 		}
 	},
 	gitBranch: async (data) => {
-
 		if(!checkRequirements(data))
 			return;
 
@@ -343,14 +342,53 @@ module.exports = {
 		// Set gitProcesses to prevent any other git command during this process
 		gitProcesses[repoInfo.origin].isProcessing = true;
 		try {
-			await gitProcesses[repoInfo.origin][data.currentUser.id].simpleGit.fetch('-a');
-			await gitProcesses[repoInfo.origin][data.currentUser.id].simpleGit.pull();
-			const branch = await gitProcesses[repoInfo.origin][data.currentUser.id].simpleGit.branch(['-a']);
+			const allBranches = await gitProcesses[repoInfo.origin][data.currentUser.id].simpleGit.branch();
+			// get current branch name to return to nodea robot
+			let answer;
+			for (const branch in allBranches.branches){
+				const item = allBranches.branches(branch);
+				if(item.current){
+					answer = item.name.replace(/\*/g, "");
+					break;
+				}
+			}
 			gitProcesses[repoInfo.origin].isProcessing = false;
-			return branch;
+			return answer;
 		} catch(err) {
 			gitProcesses[repoInfo.origin].isProcessing = false;
 			throw err;
 		}
+	},
+	gitCheckout: async (data) => {
+		// Checkout d'une branche : le nom de la branche est requis
+		if(!checkRequirements(data) || !data.specificBranch)
+			return;
+
+		const appName = data.application.name
+		const repoInfo = await getRepoInfo(appName);
+
+		// Workspace path
+		const workspacePath = __dirname + '/../workspace/' + appName;
+		initRepoGitProcess(repoInfo, data, workspacePath);
+
+		if (gitProcesses[repoInfo.origin].isProcessing)
+			throw new Error('structure.global.error.alreadyInProcessGit');
+
+		console.log("GIT => CHECKOUT " + repoInfo.origin + data.specificBranch);
+		// Set gitProcesses to prevent any other git command during this process
+		gitProcesses[repoInfo.origin].isProcessing = true;
+		try {
+			await gitProcesses[repoInfo.origin][data.currentUser.id].simpleGit.fetch('-a');
+			const result = await gitProcesses[repoInfo.origin][data.currentUser.id].simpleGit.checkout(data.specificBranch);
+			gitProcesses[repoInfo.origin].isProcessing = false;
+			return {
+				message: result,
+				branch: data.specificBranch
+			};
+		} catch(err) {
+			gitProcesses[repoInfo.origin].isProcessing = false;
+			throw err;
+		}
+
 	}
 }

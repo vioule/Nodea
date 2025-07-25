@@ -62,6 +62,25 @@ exports.gitPull = _ => {
 	return data;
 };
 
+exports.gitBranch = _ => {
+	const data = {};
+	data.function = "gitBranch";
+	return data;
+};
+
+exports.gitCheckout = result => {
+	const data = {
+		specificBranch: null
+	};
+
+	// Specific module
+	if(typeof result[1] !== "undefined")
+		data.specificBranch = result[1].trim();
+
+	data.function = "gitBranch";
+	return data;
+};
+
 exports.gitCommit = _ => {
 	const data = {};
 	data.function = "gitCommit";
@@ -1170,6 +1189,12 @@ const bot_instructions = {
 	"runBundleAll": [
 		"npm run bundle all",
 		"bundle"
+	],
+	"gitBranch": [
+		"git branch"
+	],
+	"gitCheckout": [
+		"git checkout (.*)"
 	],
 	"gitPush": [
 		"save",
