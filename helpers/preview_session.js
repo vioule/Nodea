@@ -29,9 +29,6 @@ exports.setSession = (npFunction, req, info, data) => {
 
 	let iframeUrl;
 	switch(npFunction){
-		case "gitBranch":
-			req.session.branch_name = info.branch.name;
-			break;
 		case "selectApplication":
 		case "createNewApplication":
 			req.session.app_name = info.application.name;
@@ -105,9 +102,6 @@ exports.setSession = (npFunction, req, info, data) => {
 exports.setSessionObj = (data, info) => {
 
 	switch(data.function){
-		case "gitBranch":
-			data.branch_name = info.branch.name;
-			break;
 		case "selectApplication":
 		case "createNewApplication":
 			data.app_name = info.application.name;

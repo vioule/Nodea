@@ -118,17 +118,6 @@ exports.gitPull = async (data) => {
 	}
 }
 
-exports.gitBranch = async (data) => {
-	if(!gitHelper.isGitActivated())
-		throw new Error('structure.global.error.notDoGit');
-	const branchname = await gitHelper.gitBranch(data);
-	return {
-		message: "structure.global.gitBranch.success",
-		messageParams: [branchname],
-		restartServer: false
-	}
-}
-
 exports.gitCheckout = async (data) => {
 	if(!gitHelper.isGitActivated())
 		throw new Error('structure.global.error.notDoGit');

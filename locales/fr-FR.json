@@ -435,9 +435,6 @@
 			"gitCheckout": {
 				"success": "%s - Branche %s "
 			},
-			"gitBranch": {
-				"success": "Affichage Branche courante %s"
-			},
 			"gitPush": {
 				"success": "L'application a bien été sauvegardée !"
 			},

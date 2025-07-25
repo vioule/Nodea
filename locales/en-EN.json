@@ -432,10 +432,7 @@
 				"success": "CSS/JS bundles have been successfully built."
 			},
 			"gitCheckout": {
-				"success": "%s - Branch %s "
-			},
-			"gitBranch": {
-				"success": "Current git branch - %s"
+				"success": "%s - Current Branch : %s "
 			},
 			"gitPush": {
 				"success": "The application has been saved!"

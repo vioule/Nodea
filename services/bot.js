@@ -62,12 +62,6 @@ exports.gitPull = _ => {
 	return data;
 };
 
-exports.gitBranch = _ => {
-	const data = {};
-	data.function = "gitBranch";
-	return data;
-};
-
 exports.gitCheckout = result => {
 	const data = {
 		specificBranch: null
@@ -1189,9 +1183,6 @@ const bot_instructions = {
 	"runBundleAll": [
 		"npm run bundle all",
 		"bundle"
-	],
-	"gitBranch": [
-		"git branch"
 	],
 	"gitCheckout": [
 		"git checkout (.*)"
