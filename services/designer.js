@@ -124,7 +124,7 @@ exports.gitBranch = async (data) => {
 	const branchname = await gitHelper.gitBranch(data);
 	return {
 		message: "structure.global.gitBranch.success",
-		messageParams: branchname,
+		messageParams: [branchname],
 		restartServer: false
 	}
 }

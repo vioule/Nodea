@@ -77,7 +77,7 @@ exports.gitCheckout = result => {
 	if(typeof result[1] !== "undefined")
 		data.specificBranch = result[1].trim();
 
-	data.function = "gitBranch";
+	data.function = "gitCheckout";
 	return data;
 };
 
