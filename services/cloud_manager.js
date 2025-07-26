@@ -434,6 +434,18 @@ exports.deploy = async (data) => {
 
 	console.log("STARTING DEPLOY");
 
+	console.log("CHECK BRANCH BEFORE DEPLOY");
+
+	const branch = await gitHelper.gitBranch(data);
+
+	if (!data.branch || branch != data.branch){
+		console.log(branch);
+		return {
+			message: "Mauvaise branche %s",
+			messageParams: [branch]
+		};
+	}
+
 	const appName = data.application.name;
 	const workspacePath = __dirname + '/../workspace/' + appName;
 
@@ -443,7 +455,7 @@ exports.deploy = async (data) => {
 	fs.writeFileSync(workspacePath +'/config/application.json', JSON.stringify(applicationConf, null, '\t'), 'utf8');
 
 	// public/version.txt generation
-	const deployVersion = applicationConf.version + "b" + applicationConf.build;
+	const deployVersion = applicationConf.version + data.branch + "b" + applicationConf.build;
 	const versionTxtContent = moment().format('YYYY-MM-DD HH:mm') + " - " + deployVersion;
 	fs.writeFileSync(workspacePath + '/app/public/version.txt', versionTxtContent, 'utf8');
 
@@ -469,7 +481,6 @@ exports.deploy = async (data) => {
 
 	// Ajoutez le nouveau déploiement
 	toSyncProdLock.deployments.push({ version: deployVersion, queries: toSyncProd.queries });
-
 
 	fs.writeFileSync(workspacePath + '/app/models/toSyncProd.lock.json', JSON.stringify(toSyncProdLock, null, '\t'), 'utf8');
 

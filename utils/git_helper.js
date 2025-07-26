@@ -274,6 +274,7 @@ module.exports = {
 
 		const appName = data.application.name
 		const repoInfo = await getRepoInfo(appName);
+		const branchName = !data.branch ? 'master' : data.branch;
 
 		// Workspace path
 		const workspacePath = __dirname + '/../workspace/' + appName;
@@ -282,13 +283,13 @@ module.exports = {
 		if (gitProcesses[repoInfo.origin].isProcessing)
 			throw new Error('structure.global.error.alreadyInProcessGit');
 
-		console.log("GIT => TAG " + repoInfo.origin + ' VERSION => ' + tagName);
+		console.log("GIT => TAG " + repoInfo.origin + 'BRANCH => ' + branchName + ' VERSION => ' + tagName);
 
 		// Set gitProcesses to prevent any other git command during this process
 		gitProcesses[repoInfo.origin].isProcessing = true;
 		try {
-			await gitProcesses[repoInfo.origin][data.currentUser.id].simpleGit.addAnnotatedTag(tagName, 'Tagging ' + tagName);
-			await gitProcesses[repoInfo.origin][data.currentUser.id].simpleGit.pushTags(['-u', repoInfo.origin, 'master']);
+			await gitProcesses[repoInfo.origin][data.currentUser.id].simpleGit.addAnnotatedTag(tagName, 'Tagging ' + branchName + " " + tagName);
+			await gitProcesses[repoInfo.origin][data.currentUser.id].simpleGit.pushTags(['-u', repoInfo.origin, branchName]);
 		} catch(err) {
 			gitProcesses[repoInfo.origin].isProcessing = false;
 			throw err;
