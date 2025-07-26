@@ -440,10 +440,9 @@ exports.deploy = async (data) => {
 
 	if (!data.branch || branch != data.branch){
 		console.log(branch);
-		return {
-			message: "Mauvaise branche %s",
-			messageParams: [branch]
-		};
+		const err = new Error('structure.global.deploy.error');
+		err.messageParams = [ branch, data.branch ? data.branch : 'master'];
+		throw err;
 	}
 
 	const appName = data.application.name;

@@ -434,6 +434,9 @@
 			"gitCheckout": {
 				"success": "%s - Current Branch : %s "
 			},
+			"deploy": {
+				"error": "Studio current branch is %s - You have to checkout your branch before deploying - git checkout %s"
+			},
 			"gitPush": {
 				"success": "The application has been saved!"
 			},

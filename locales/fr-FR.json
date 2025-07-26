@@ -435,6 +435,9 @@
 			"gitCheckout": {
 				"success": "%s - Branche %s "
 			},
+			"deploy": {
+				"error": "Le studio se trouve sur la branche %s - Vous devez modifier votre branche avant de déployer - git checkout %s"
+			},
 			"gitPush": {
 				"success": "L'application a bien été sauvegardée !"
 			},
