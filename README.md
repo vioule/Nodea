@@ -85,7 +85,7 @@ Create (and adapt if necessary) "docker-compose.yml" file:
       restart: "always"
       networks: 
         nodea_network_1: 
-          ipv4_address: "172.23.0.23"
+          ipv4_address: "185.23.0.23"
       volumes: 
         - "workspace:/nodea/workspace"
         - "/usr/local/share/ca-certificates:/usr/local/share/ca-certificates:ro"
