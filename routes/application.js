@@ -30,6 +30,7 @@ const appProcessing = {};
 
 // No git commit for these instructions
 const noGitFunctions = ['restart', 'gitPush', 'gitPull', 'gitCheckout', 'installNodePackage', 'runBundlAll'];
+const noHistoryScriptFunctions = ['restart', 'gitPush', 'gitPull', 'gitCheckout', 'installNodePackage', 'runBundlAll', 'deleteApplication'];
 
 router.get('/preview/:app_name', middlewares.hasAccessApplication, (req, res) => {
 
@@ -154,7 +155,7 @@ router.post('/preview', middlewares.hasAccessApplication, (req, res) => {
 		}
 
 		/* Save an instruction history in the history script in workspace folder */
-		if (data.function != 'restart' && data.function != 'deleteApplication') {
+		if ( !noHistoryScriptFunctions.includes(data.function) ) {
 			const historyScriptPath = __dirname + '/../workspace/' + appName + '/history_script.nps';
 			let historyScript = fs.readFileSync(historyScriptPath, 'utf8');
 			historyScript += "\n" + instruction;
@@ -239,7 +240,7 @@ router.post('/preview', middlewares.hasAccessApplication, (req, res) => {
 			app_helper.setChat(req, appName, currentUserID, "Nodea", err.message ? err.message : err, err.messageParams, true);
 
 		/* Save ERROR an instruction history in the history script in workspace folder */
-		if (data.function != 'restart') {
+		if ( !noHistoryScriptFunctions.includes(data.function) ) {
 			const historyScriptPath = __dirname + '/../workspace/' + appName + '/history_script.nps';
 			let historyScript = fs.readFileSync(historyScriptPath, 'utf8');
 			historyScript += "\n//ERROR: " + instruction + " (" + err.message + ")";
