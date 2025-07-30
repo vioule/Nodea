@@ -149,7 +149,6 @@ module.exports = {
 
 		const appName = data.application.name
 		const repoInfo = await getRepoInfo(appName);
-		const branchName = !data.branch ? 'master' : data.branch;
 
 		// Workspace path
 		const workspacePath = __dirname + '/../workspace/' + appName;
@@ -166,6 +165,10 @@ module.exports = {
 			console.log("GIT => PUSH " + repoInfo.origin + " BRANCH " + branchName);
 			gitProcesses[repoInfo.origin].isProcessing = true;
 			try {
+				const allBranches = await gitProcesses[repoInfo.origin][data.currentUser.id].simpleGit.branch();
+				// get current branch name to return to nodea robot
+				const answer = allBranches.current;
+				const branchName = !answer ? 'master' : answer;
 				await gitProcesses[repoInfo.origin][data.currentUser.id].simpleGit.push(['-u', repoInfo.origin, branchName]);
 				gitProcesses[repoInfo.origin].isProcessing = false;
 			} catch(err) {
@@ -181,7 +184,6 @@ module.exports = {
 
 		const appName = data.application.name
 		const repoInfo = await getRepoInfo(appName);
-		const branchName = !data.branch ? 'master' : data.branch;
 
 		// Workspace path
 		const workspacePath = __dirname + '/../workspace/' + appName;
@@ -195,6 +197,10 @@ module.exports = {
 		// Set gitProcesses to prevent any other git command during this process
 		gitProcesses[repoInfo.origin].isProcessing = true;
 		try {
+			const allBranches = await gitProcesses[repoInfo.origin][data.currentUser.id].simpleGit.branch();
+			// get current branch name to return to nodea robot
+			const answer = allBranches.current;
+			const branchName = !answer ? 'master' : answer;
 			const pullSummary = await gitProcesses[repoInfo.origin][data.currentUser.id].simpleGit.pull(repoInfo.origin, branchName)
 			console.log(pullSummary);
 			gitProcesses[repoInfo.origin].isProcessing = false;
