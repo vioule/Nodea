@@ -162,7 +162,7 @@ module.exports = {
 			await initializeGit(repoInfo, data.currentUser); // Do first commit and push
 		else if(typeof data.function !== "undefined"){
 			// We are just after a new instruction
-			console.log("GIT => PUSH " + repoInfo.origin + " BRANCH " + branchName);
+			console.log("GIT => PUSH " + repoInfo.origin );
 			gitProcesses[repoInfo.origin].isProcessing = true;
 			try {
 				const allBranches = await gitProcesses[repoInfo.origin][data.currentUser.id].simpleGit.branch();
@@ -192,7 +192,7 @@ module.exports = {
 		if (gitProcesses[repoInfo.origin].isProcessing)
 			throw new Error('structure.global.error.alreadyInProcessGit');
 
-		console.log("GIT => PULL " + repoInfo.origin + " BRANCH " + branchName);
+		console.log("GIT => PULL " + repoInfo.origin ;
 
 		// Set gitProcesses to prevent any other git command during this process
 		gitProcesses[repoInfo.origin].isProcessing = true;
