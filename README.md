@@ -77,46 +77,73 @@ Docker and Docker compose installed
 Create (and adapt if necessary) "docker-compose.yml" file:
 
 <pre>
-version: '3.3'
-
-services:
-  nodea:
-    container_name: nodea_app
-    image: nodeasoftware/nodea:latest
-    ports:
-      - "1337:1337"
-      - "9001-9025:9001-9025" # 25 applications max, you can increase to 9100 for 100 applications if necessary
-    networks:
-      - nodea_network
-    volumes:
-      - workspace:/nodea/workspace
-    environment:
-      NODEA_ENV: "develop"
-      HOSTNAME: "127.0.0.1"
-      SERVER_IP: "127.0.0.1"
-      DATABASE_IP: "database"
-      DATABASE_USER: "nodea"
-      DATABASE_PWD: "nodea"
-      DATABASE_NAME: "nodea"
-  database:
-    container_name: nodea_database
-    image: nodeasoftware/nodea-database-mariadb:latest # nodea-database-mysql || nodea-database-mariadb || nodea-database-postgres
-    networks:
-      - nodea_network
-    volumes:
-      - db_data:/var/lib/mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: nodea
-      MYSQL_DATABASE: nodea
-      MYSQL_USER: nodea
-      MYSQL_PASSWORD: nodea
-
-networks:
-  nodea_network:
-
-volumes:
-  db_data:
-  workspace:
+  version: "3.3"
+  services: 
+    nodea: 
+      container_name: "test32_app"
+      image: "nodeasoftware/nodea:3.2.2"
+      restart: "always"
+      networks: 
+        nodea_network_1: 
+          ipv4_address: "172.23.0.23"
+      volumes: 
+        - "workspace:/nodea/workspace"
+        - "/usr/local/share/ca-certificates:/usr/local/share/ca-certificates:ro"
+        - "/usr/share/ca-certificates:/usr/share/ca-certificates:ro"
+        - "/etc/ssl/certs:/etc/ssl/certs:ro"
+      environment: 
+        NODEA_ENV: "studio"
+        HOSTNAME: "test32-nodea-studio"
+        PROTOCOL: "http"
+        PORT: "1337"
+        AUTH: "local"
+        OPEN_SIGNUP: false
+        DEMO_MODE: false
+        SUB_DOMAIN: "test32"
+        SERVER_IP: "185.23.0.23"
+        DATABASE_IP: "185.23.0.24"
+        DATABASE_USER: "nodea"
+        DATABASE_PWD: "password"
+        DATABASE_NAME: "nodea"
+        MAIL_HOST: "smtpserver"
+        MAIL_PORT: "465"
+        MAIL_USER: "user"
+        MAIL_PWD: "password"
+        MAIL_FROM: "mailfrom"
+        MAIL_ENV_HOST: "https://url_appli.com"
+        ADMIN_EMAIL: null
+        NODE_EXTRA_CA_CERTS: "/etc/ssl/certs/globalsignR6.pem"
+      labels: 
+        - "nodea=true"
+    database: 
+      container_name: "test32_database"
+      image: "nodeasoftware/nodea-database-mariadb:latest"
+      restart: "always"
+      networks: 
+        nodea_network_1: 
+          ipv4_address: "185.23.0.24"
+      volumes: 
+        - "db_data:/var/lib/mysql"
+      environment: 
+        MYSQL_DATABASE: "nodea"
+        MYSQL_USER: "nodea"
+        MYSQL_PASSWORD: "password"
+        MYSQL_ROOT_PASSWORD: "yourpassword"
+        MYSQL_AIO: 0
+        PG_DATA: "/var/lib/postgresql/data/pgdata"
+        POSTGRES_DB: "nodea"
+        POSTGRES_USER: "nodea"
+        POSTGRES_PASSWORD: "password"
+        POSTGRES_ROOT_PASSWORD: "yourpassword"
+      labels: 
+        - "nodea=true"
+  networks: 
+    nodea_network_1: 
+      name: "nodea_network_1"
+      external: true
+  volumes: 
+    workspace: {}
+    db_data: {}
 </pre>
 
 Execute Docker compose command:
