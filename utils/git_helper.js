@@ -149,6 +149,7 @@ module.exports = {
 
 		const appName = data.application.name
 		const repoInfo = await getRepoInfo(appName);
+		const branchName = !data.branch ? 'master' : data.branch;
 
 		// Workspace path
 		const workspacePath = __dirname + '/../workspace/' + appName;
@@ -162,10 +163,10 @@ module.exports = {
 			await initializeGit(repoInfo, data.currentUser); // Do first commit and push
 		else if(typeof data.function !== "undefined"){
 			// We are just after a new instruction
-			console.log("GIT => PUSH " + repoInfo.origin);
+			console.log("GIT => PUSH " + repoInfo.origin + " BRANCH " + branchName);
 			gitProcesses[repoInfo.origin].isProcessing = true;
 			try {
-				await gitProcesses[repoInfo.origin][data.currentUser.id].simpleGit.push(['-u', repoInfo.origin, 'master']);
+				await gitProcesses[repoInfo.origin][data.currentUser.id].simpleGit.push(['-u', repoInfo.origin, branchName]);
 				gitProcesses[repoInfo.origin].isProcessing = false;
 			} catch(err) {
 				gitProcesses[repoInfo.origin].isProcessing = false;
@@ -180,6 +181,7 @@ module.exports = {
 
 		const appName = data.application.name
 		const repoInfo = await getRepoInfo(appName);
+		const branchName = !data.branch ? 'master' : data.branch;
 
 		// Workspace path
 		const workspacePath = __dirname + '/../workspace/' + appName;
@@ -188,12 +190,12 @@ module.exports = {
 		if (gitProcesses[repoInfo.origin].isProcessing)
 			throw new Error('structure.global.error.alreadyInProcessGit');
 
-		console.log("GIT => PULL " + repoInfo.origin);
+		console.log("GIT => PULL " + repoInfo.origin + " BRANCH " + branchName);
 
 		// Set gitProcesses to prevent any other git command during this process
 		gitProcesses[repoInfo.origin].isProcessing = true;
 		try {
-			const pullSummary = await gitProcesses[repoInfo.origin][data.currentUser.id].simpleGit.pull(repoInfo.origin, "master")
+			const pullSummary = await gitProcesses[repoInfo.origin][data.currentUser.id].simpleGit.pull(repoInfo.origin, branchName)
 			console.log(pullSummary);
 			gitProcesses[repoInfo.origin].isProcessing = false;
 		} catch(err) {
