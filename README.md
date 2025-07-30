@@ -75,7 +75,7 @@ Docker and Docker compose installed
 ### Instructions
 
 Create (and adapt if necessary) "docker-compose.yml" file:
-
+(We assume that nodea network exists)
 <pre>
   version: "3.3"
   services: 
