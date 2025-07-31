@@ -834,7 +834,7 @@ let NodeaForms = (_ => {
 					const input = element.parents('.form-group').find('input[type=file]');
 					const form = input.parents('form');
 					const isImage = dropzone.hasClass('image');
-					const acceptedFormats = isImage ? ['image/gif','image/png','image/jpeg'] : null; // null is all
+					const acceptedFormats = isImage ? ['image/gif','image/png','image/jpeg', 'image/webp'] : null; // null is all
 
 					// Ensure form enctype accepts files
 					if (form.attr('enctype') !== 'multipart/form-data')
