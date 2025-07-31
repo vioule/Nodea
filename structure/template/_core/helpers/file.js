@@ -4,7 +4,8 @@ const dayjs = require('dayjs');
 const uuidV4 = require('uuid').v4;
 const fs = require('fs-extra');
 const path = require('path');
-const Jimp = require("jimp");
+const sharp = require('sharp');
+
 
 function securePath(...paths) {
 	const securedPaths = [];
@@ -69,51 +70,58 @@ function write(filePath, buffer, encoding = 'utf8') {
 	});
 }
 
-function writePicture(filePath, buffer, encoding = 'utf8') {
-	return new Promise((resolve, reject) => {
-		Jimp.read(buffer, (err, imgThumb) => {
-			if (err)
-				return reject(err);
+// Fonction qui sert pour la fonction writePicture
+async function writeFileWithDirs(filePath, buffer, encoding) {
+	const securedPath = securePath(globalConf.localstorage, filePath);
+	const folderPath = path.parse(securedPath).dir;
+	await fs.ensureDir(folderPath);
+	return fs.writeFile(securedPath, buffer, encoding === 'utf8' ? undefined : encoding);
+}
 
-			const promises = [];
 
-			// Default image resize if needed
-			if(appConf.resizePicture && appConf.resizePicture.enabled) {
-				promises.push(new Promise((resolve, reject) => {
-					const pictureWidth = appConf.resizePicture.width;
-					const pictureHeight = appConf.resizePicture.height;
-					const pictureQuality = appConf.resizePicture.quality;
-					imgThumb.resize(pictureWidth, pictureHeight).quality(pictureQuality).getBuffer(Jimp.AUTO, (err, buffer) => {
-						if (err)
-							return reject(err);
-						// If the picture is a .gif or other complicated extension then JIMP return buffer as a Promise
-						Promise.resolve(buffer).then(bufferReady => {
-							resolve(write(filePath, bufferReady, encoding));
-						}).catch(err => reject(err));
-					});
-				}));
-			} else {
-				promises.push(write(filePath, buffer, encoding));
-			}
+async function writePicture(filePath, buffer) {
+	try {
+		const ext = path.extname(filePath).toLowerCase();
+		const supportedFormats = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
 
-			// Picture thumbnail generation
-			promises.push(new Promise((resolve, reject) => {
-				const thumbnailWidth = appConf.thumbnail.width;
-				const thumbnailHeight = appConf.thumbnail.height;
-				const thumbnailQuality = appConf.thumbnail.quality;
-				imgThumb.resize(thumbnailWidth, thumbnailHeight).quality(thumbnailQuality).getBuffer(Jimp.AUTO, (err, buffer) => {
-					if (err)
-						return reject(err);
-					// If the picture is a .gif or other complicated extension then JIMP return buffer as a Promise
-					Promise.resolve(buffer).then(bufferReady => {
-						resolve(write(appConf.thumbnail.folder + filePath, bufferReady, encoding));
-					}).catch(err => reject(err));
-				});
-			}));
+		if (!supportedFormats.includes(ext)) {
+			throw new Error(`Format non supporté: ${ext}`);
+		}
 
-			Promise.all(promises).then(resolve()).catch(err => reject(err));
-		});
-	});
+		const format = ext.slice(1); // Remove the leading dot from the extension
+
+		const promises = [];
+
+		// Resize the main picture if enabled
+		if (appConf.resizePicture && appConf.resizePicture.enabled) {
+			const { width, height, quality } = appConf.resizePicture;
+			const resizedBuffer = await sharp(buffer)
+				.resize(width, height)
+				.toFormat(format, { quality })
+				.toBuffer();
+			promises.push(writeFileWithDirs(filePath, resizedBuffer));
+		} else {
+			// Write the original buffer without resizing
+			promises.push(writeFileWithDirs(filePath, buffer));
+		}
+
+		// Create thumbnail
+		const { width: tWidth, height: tHeight, quality: tQuality, folder: thumbFolder } = appConf.thumbnail;
+		const thumbBuffer = await sharp(buffer)
+			.resize(tWidth, tHeight)
+			.toFormat(format, { quality: tQuality })
+			.toBuffer();
+
+		// Ensure the thumbnail path is constructed correctly
+		const thumbFileName = path.basename(filePath);
+		const thumbPath = path.join(thumbFolder, thumbFileName);
+		promises.push(writeFileWithDirs(thumbPath, thumbBuffer));
+
+		await Promise.all(promises);
+	} catch (err) {
+		console.error('Error in writePicture:', err);
+		throw err; // Re-throw the error to handle it in the calling function
+	}
 }
 
 function read(filePath, options = {}) {
