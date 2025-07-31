@@ -2,8 +2,8 @@ const router = require('express').Router();
 const fs = require('fs-extra');
 const models = require('../models/');
 const multer = require('multer');
-const Jimp = require('jimp');
 const dayjs = require('dayjs');
+const Jimp = require('jimp');
 
 // Config
 const globalConf = require('../config/global.js');
