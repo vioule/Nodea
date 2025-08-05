@@ -72,56 +72,58 @@ function write(filePath, buffer, encoding = 'utf8') {
 
 // Fonction qui sert pour la fonction writePicture
 async function writeFileWithDirs(filePath, buffer, encoding) {
-	const securedPath = securePath(globalConf.localstorage, filePath);
-	const folderPath = path.parse(securedPath).dir;
+	let securedPath, folderPath;
+	securedPath = securePath(globalConf.localstorage, filePath);
+	folderPath = path.parse(securedPath).dir;
 	await fs.ensureDir(folderPath);
 	return fs.writeFile(securedPath, buffer, encoding === 'utf8' ? undefined : encoding);
 }
 
+function writePicture(filePath, buffer, encoding = 'utf8') {
+	return new Promise(async (resolve, reject) => {
+		try {
+			const ext = path.extname(filePath).toLowerCase();
+			const supportedFormats = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
 
-async function writePicture(filePath, buffer) {
-	try {
-		const ext = path.extname(filePath).toLowerCase();
-		const supportedFormats = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
+			if (!supportedFormats.includes(ext)) {
+				return reject(new Error(`Format non supporté: ${ext}`));
+			}
 
-		if (!supportedFormats.includes(ext)) {
-			throw new Error(`Format non supporté: ${ext}`);
-		}
+			const format = ext.slice(1); // exemple: '.jpg' → 'jpg'
+			const promises = [];
 
-		const format = ext.slice(1); // Remove the leading dot from the extension
+			// Resize principale (optionnel)
+			if (appConf.resizePicture && appConf.resizePicture.enabled) {
+				const { width, height, quality } = appConf.resizePicture;
 
-		const promises = [];
+				const resizedBuffer = await sharp(buffer)
+					.resize(width, height)
+					.toFormat(format, { quality })
+					.toBuffer();
 
-		// Resize the main picture if enabled
-		if (appConf.resizePicture && appConf.resizePicture.enabled) {
-			const { width, height, quality } = appConf.resizePicture;
-			const resizedBuffer = await sharp(buffer)
-				.resize(width, height)
-				.toFormat(format, { quality })
+				promises.push(writeFileWithDirs(filePath, resizedBuffer, encoding));
+			} else {
+				// Écrit le buffer original sans resize
+				promises.push(writeFileWithDirs(filePath, buffer, encoding));
+			}
+
+			// Thumbnail
+			const { width: tWidth, height: tHeight, quality: tQuality, folder } = appConf.thumbnail;
+
+			const thumbBuffer = await sharp(buffer)
+				.resize(tWidth, tHeight)
+				.toFormat(format, { quality: tQuality })
 				.toBuffer();
-			promises.push(writeFileWithDirs(filePath, resizedBuffer));
-		} else {
-			// Write the original buffer without resizing
-			promises.push(writeFileWithDirs(filePath, buffer));
+
+			const thumbPath = path.join(folder, filePath);
+			promises.push(writeFileWithDirs(thumbPath, thumbBuffer, encoding));
+
+			await Promise.all(promises);
+			resolve();
+		} catch (err) {
+			reject(err);
 		}
-
-		// Create thumbnail
-		const { width: tWidth, height: tHeight, quality: tQuality, folder: thumbFolder } = appConf.thumbnail;
-		const thumbBuffer = await sharp(buffer)
-			.resize(tWidth, tHeight)
-			.toFormat(format, { quality: tQuality })
-			.toBuffer();
-
-		// Ensure the thumbnail path is constructed correctly
-		const thumbFileName = path.basename(filePath);
-		const thumbPath = path.join(thumbFolder, thumbFileName);
-		promises.push(writeFileWithDirs(thumbPath, thumbBuffer));
-
-		await Promise.all(promises);
-	} catch (err) {
-		console.error('Error in writePicture:', err);
-		throw err; // Re-throw the error to handle it in the calling function
-	}
+	});
 }
 
 function read(filePath, options = {}) {
