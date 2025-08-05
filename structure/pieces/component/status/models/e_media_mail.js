@@ -109,9 +109,7 @@ class E_media_mail extends CoreModel {
 		}
 
 		function getFilePath(filename){
-			const entity = dataInstance.entity_name;
-			const folderName = filename.split("-")[0];
-			const filePath = globalConf.localstorage + entity + '/' + folderName + '/' + filename;
+			const filePath = globalConf.localstorage + filename;
 			return filePath;
 		}
 
@@ -176,7 +174,7 @@ class E_media_mail extends CoreModel {
 		const attachmentsFile = insertVariablesValue('f_attachments');
 
 		// Send mail
-		await mailer.sendHtml(insertVariablesValue('f_content'), options, attachmentsFile)
+		return await mailer.sendHtml(insertVariablesValue('f_content'), options, attachmentsFile)
 	}
 
 }
