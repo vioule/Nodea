@@ -9,6 +9,8 @@ const config = {
 		server_ip: process.env.SERVER_IP || '127.0.0.1',
 		dns: process.env.DOMAIN_STUDIO || 'nodea-software.studio',
 		dns_cloud: process.env.DOMAIN_CLOUD || 'nodea-software.cloud',
+		application_dockerimage: process.env.APPDOCKERIMAGE_CLOUD || "application:latest",
+		ssl_cainfo: process.env.NODE_EXTRA_CA_CERTS || "/etc/ssl/certs/globalsignR6.pem",
 		sub_domain: process.env.SUB_DOMAIN || 'localhost',
 		authStrategy: process.env.AUTH || 'local',
 		open_signup: process.env.OPEN_SIGNUP || false,
@@ -22,6 +24,8 @@ const config = {
 		server_ip: process.env.SERVER_IP || '127.0.0.1',
 		dns: process.env.DOMAIN_STUDIO || 'nodea-software.studio',
 		dns_cloud: process.env.DOMAIN_CLOUD || 'nodea-software.cloud',
+		application_dockerimage: process.env.APPDOCKERIMAGE_CLOUD || "application:latest",
+		ssl_cainfo: process.env.NODE_EXTRA_CA_CERTS || "/etc/ssl/certs/globalsignR6.pem",
 		sub_domain: process.env.SUB_DOMAIN || 'localhost',
 		authStrategy: process.env.AUTH || 'local',
 		open_signup: process.env.OPEN_SIGNUP || false,
@@ -30,7 +34,7 @@ const config = {
 }
 
 const env_config = config[env];
-env_config.version = "3.2.0";
+env_config.version = "3.2.2";
 
 // Handle typeof string if config is from PROCESS ENV
 env_config.demo_mode = typeof env_config.demo_mode === 'string' ? env_config.demo_mode === 'true' : env_config.demo_mode;

@@ -399,6 +399,7 @@
 			"unchecked": "Unchecked",
 			"all": "Both"
 		},
-		"min_one_column_display": "You must leave at least one column displayed."
+		"min_one_column_display": "You must leave at least one column displayed.",
+		"min_one_column_data_display": "You must leave at least one column with data displayed."
 	}
 }

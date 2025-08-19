@@ -428,6 +428,15 @@
 			"npmInstall": {
 				"success": "All node modules have been successfully installed !"
 			},
+			"runbundleall": {
+				"success": "CSS/JS bundles have been successfully built."
+			},
+			"gitCheckout": {
+				"success": "%s - Current Branch : %s "
+			},
+			"deploy": {
+				"error": "Studio current branch is %s - You have to checkout your branch before deploying - git checkout %s"
+			},
 			"gitPush": {
 				"success": "The application has been saved!"
 			},
@@ -543,8 +552,8 @@
 	},
 	"botresponse": {
 		"help" : "You need help. Please subscribe to our <a href='https://www.youtube.com/channel/UCOF9iI9Wwe8iucSd7ayHlMQ' target=_blank>YouTube channel</a> or have a look to the online documentation here <a href='https://docs.nodea-software.com/' target='_blank'>https://docs.nodea-software.com/</a>",
-		"applicationavailable": "The application is available here : <br> <a href='%s' target='_blank'>%s</a>",
-		"deployment": "We are currently deploying your application...<br> As it may take a while, I invite you to click on the following link :<br> <a href='%s' target='_blank'>%s</a>"
+		"applicationavailable": "The application is available here : <br> <a href=\"%s\" target='_blank'>%s</a>",
+		"deployment": "We are currently deploying your application...<br> As it may take a while, I invite you to click on the following link :<br> <a href=\"%s\" target='_blank'>%s</a>"
 	},
 	"users":{
 		"connected_as": "Connected as",

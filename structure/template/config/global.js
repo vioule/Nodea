@@ -12,7 +12,10 @@ const config = {
 		localstorage: __dirname + "/../upload/",
 		authStrategy: process.env.AUTH || 'local',
 		smsProvider: process.env.SMS || 'ovh',
-		logConnexionFolder: __dirname + "/../logs/"
+		logConnexionFolder: __dirname + "/../logs/",
+		jwt_options: {
+			nodea_temp: '1h'
+		}
 	},
 	test: {
 		env: 'test',
@@ -22,7 +25,10 @@ const config = {
 		localstorage: __dirname + "/../upload_test/",
 		authStrategy: process.env.AUTH || 'local',
 		smsProvider: process.env.SMS || 'ovh',
-		logConnexionFolder: __dirname + "/../logs/"
+		logConnexionFolder: __dirname + "/../logs/",
+		jwt_options: {
+			nodea_temp: '1h'
+		}
 	},
 	production: {
 		env: 'production',
@@ -33,6 +39,9 @@ const config = {
 		authStrategy: process.env.AUTH || 'local',
 		smsProvider: process.env.SMS || 'ovh',
 		logConnexionFolder: __dirname + "/../logs/",
+		jwt_options: {
+			nodea_temp: '1h'
+		},
 		ssl: {
 			key: /*fs.readFileSync('./cacerts/private.key')*/ "fakeKey",
 			cert: /*fs.readFileSync('./cacerts/wildcard_newmips.crt')*/ "fakeCert",
@@ -49,6 +58,9 @@ const config = {
 		authStrategy: process.env.AUTH || 'local',
 		smsProvider: process.env.SMS || 'ovh',
 		logConnexionFolder: __dirname + "/../logs/",
+		jwt_options: {
+			nodea_temp: '1h'
+		},
 		ssl: {
 			key: /*fs.readFileSync('./cacerts/private.key')*/ "fakeKey",
 			cert: /*fs.readFileSync('./cacerts/wildcard_newmips.crt')*/ "fakeCert",
@@ -65,6 +77,9 @@ const config = {
 		authStrategy: process.env.AUTH || 'local',
 		smsProvider: process.env.SMS || 'ovh',
 		logConnexionFolder: __dirname + "/../logs/",
+		jwt_options: {
+			nodea_temp: '1h'
+		},
 		ssl: {
 			key: /*fs.readFileSync('./cacerts/private.key')*/ "fakeKey",
 			cert: /*fs.readFileSync('./cacerts/wildcard_newmips.crt')*/ "fakeCert",

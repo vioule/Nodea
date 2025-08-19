@@ -31,6 +31,12 @@ exports.restart = _ => {
 	return data;
 };
 
+exports.runBundleAll = _ => {
+	const data = {};
+	data.function = "runBundleAll";
+	return data;
+};
+
 exports.installNodePackage = result => {
 	const data = {
 		specificModule: null
@@ -53,6 +59,19 @@ exports.gitPush = _ => {
 exports.gitPull = _ => {
 	const data = {};
 	data.function = "gitPull";
+	return data;
+};
+
+exports.gitCheckout = result => {
+	const data = {
+		specificBranch: null
+	};
+
+	// Specific module
+	if(typeof result[1] !== "undefined")
+		data.specificBranch = result[1].trim();
+
+	data.function = "gitCheckout";
 	return data;
 };
 
@@ -1160,6 +1179,13 @@ const bot_instructions = {
 		"installer les modules node",
 		"installer le module node (.*)",
 		"install node package"
+	],
+	"runBundleAll": [
+		"npm run bundle all",
+		"bundle"
+	],
+	"gitCheckout": [
+		"git checkout (.*)"
 	],
 	"gitPush": [
 		"save",

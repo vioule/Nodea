@@ -1,14 +1,6 @@
 const CoreModel = require('@core/models/model');
 const attributes = require("./attributes/e_task.json");
 const relations = require("./options/e_task.json");
-
-function models() {
-	if (!this.models)
-		// eslint-disable-next-line global-require
-		this.models = require('./');
-	return this.models;
-}
-
 class E_task extends CoreModel {
 	constructor() {
 		super('E_task', 'e_task', attributes, relations);
@@ -19,7 +11,7 @@ class E_task extends CoreModel {
 	addRobotHook() {
 		this.hooks.attachToRobot = {
 			type: 'beforeCreate',
-			func: async (model) => {
+			func: async () => {
 				// const [result] = await models().sequelize.query("\
 				// 	SELECT\
 				// 		`E_robot`.`id` as `robot`,\

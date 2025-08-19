@@ -2,8 +2,9 @@ const router = require('express').Router();
 const fs = require('fs-extra');
 const models = require('../models/');
 const multer = require('multer');
-const Jimp = require('jimp');
 const dayjs = require('dayjs');
+const path = require('path');
+const sharp = require('sharp');
 
 // Config
 const globalConf = require('../config/global.js');
@@ -29,7 +30,8 @@ const metadata = require('../database/metadata')();
 const appProcessing = {};
 
 // No git commit for these instructions
-const noGitFunctions = ['restart', 'gitPush', 'gitPull', 'installNodePackage'];
+const noGitFunctions = ['restart', 'gitPush', 'help', 'gitPull', 'gitStatus', 'gitCheckout', 'installNodePackage', 'runBundlAll'];
+const noHistoryScriptFunctions = ['help', 'gitStatus', 'deploy', 'restart', 'gitPush', 'gitStatus', 'gitPull', 'gitCheckout', 'installNodePackage', 'runBundlAll', 'deleteApplication'];
 
 router.get('/preview/:app_name', middlewares.hasAccessApplication, (req, res) => {
 
@@ -154,7 +156,7 @@ router.post('/preview', middlewares.hasAccessApplication, (req, res) => {
 		}
 
 		/* Save an instruction history in the history script in workspace folder */
-		if (data.function != 'restart' && data.function != 'deleteApplication') {
+		if ( !noHistoryScriptFunctions.includes(data.function) ) {
 			const historyScriptPath = __dirname + '/../workspace/' + appName + '/history_script.nps';
 			let historyScript = fs.readFileSync(historyScriptPath, 'utf8');
 			historyScript += "\n" + instruction;
@@ -239,7 +241,7 @@ router.post('/preview', middlewares.hasAccessApplication, (req, res) => {
 			app_helper.setChat(req, appName, currentUserID, "Nodea", err.message ? err.message : err, err.messageParams, true);
 
 		/* Save ERROR an instruction history in the history script in workspace folder */
-		if (data.function != 'restart') {
+		if ( !noHistoryScriptFunctions.includes(data.function) ) {
 			const historyScriptPath = __dirname + '/../workspace/' + appName + '/history_script.nps';
 			let historyScript = fs.readFileSync(historyScriptPath, 'utf8');
 			historyScript += "\n//ERROR: " + instruction + " (" + err.message + ")";
@@ -260,7 +262,7 @@ router.post('/preview', middlewares.hasAccessApplication, (req, res) => {
 });
 
 router.post('/set_logo', middlewares.hasAccessApplication, (req, res) => {
-	multer().single('file')(req, res, err => {
+	multer().single('file')(req, res, async (err) => {
 		if (err) {
 			console.error(err);
 			return res.status(500).send(err);
@@ -278,39 +280,37 @@ router.post('/set_logo', middlewares.hasAccessApplication, (req, res) => {
 			}
 		};
 
-		const basePath = global.__workspacePath + "/" + req.body.appName + "/app/public/img/logo/";
-		fs.mkdirs(basePath, err => {
-			if (err) {
-				console.error(err);
-				return res.status(500).send(err);
-			}
+		try {
+			const basePath = path.join(global.__workspacePath, req.body.appName, 'app/public/img/logo');
+			const thumbnailFolder = path.join(basePath, 'thumbnail');
+			const filename = req.file.originalname;
+			const inputBuffer = req.file.buffer;
+			const ext = path.extname(filename).slice(1).toLowerCase();
 
-			const uploadPath = basePath + req.file.originalname;
-			fs.writeFileSync(uploadPath, req.file.buffer);
+			// Assure les dossiers
+			await fs.ensureDir(basePath);
+			await fs.ensureDir(thumbnailFolder);
 
-			// Thumbnail creation
-			const thumbnailFolder = basePath + "/thumbnail/";
-			fs.mkdirs(basePath, err => {
-				if (err) {
-					console.error(err);
-					return res.status(500).send(err);
-				}
+			// Sauvegarde l'image redimensionnée (originale)
+			const originalPath = path.join(basePath, filename);
+			await sharp(inputBuffer)
+				.resize({ width: configLogo.original.width })
+				.toFormat(ext, { quality: configLogo.original.quality })
+				.toFile(originalPath);
 
-				Jimp.read(uploadPath, (err, imgThumb) => {
-					if (err) {
-						console.error(err);
-						return res.status(500).send(err);
-					}
-					// Resize default image
-					imgThumb.resize(configLogo.original.width, Jimp.AUTO).quality(configLogo.original.quality).write(basePath + req.file.originalname);
-					// Resize thumbnail image
-					imgThumb.resize(configLogo.thumbnail.width, configLogo.thumbnail.height).quality(configLogo.thumbnail.quality).write(thumbnailFolder + req.file.originalname);
-					res.json({
-						success: true
-					});
-				});
-			});
-		});
+			// Génère et sauvegarde la miniature
+			const thumbnailPath = path.join(thumbnailFolder, filename);
+			await sharp(inputBuffer)
+				.resize(configLogo.thumbnail.width, configLogo.thumbnail.height)
+				.toFormat(ext, { quality: configLogo.thumbnail.quality })
+				.toFile(thumbnailPath);
+
+			// Réponse succès
+			res.json({ success: true });
+		} catch (error) {
+			console.error(error);
+			res.status(500).send(error.message || 'Erreur lors du traitement du logo.');
+		}
 	});
 });
 

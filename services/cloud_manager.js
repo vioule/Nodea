@@ -75,7 +75,7 @@ async function generateCloneUrl(data) {
 	// 1 - Generate temporary personnal access token to clone repository on cloud env
 	const today = moment().format('YYYY-MM-DD');
 	// Expire today
-	const expireAt = moment().format('YYYY-MM-DD');
+	const expireAt = moment().add(1, 'days').format('YYYY-MM-DD');
 	const tokenName = 'deploy_token_' + today;
 	const accessToken = await gitlab.generateAccessToken(data.code_platform.user, tokenName, ['read_repository', 'write_repository'], expireAt);
 
@@ -290,7 +290,7 @@ async function generateStack(data) {
 		"services": {
 			"application": {
 				"container_name": data.stackName + '_app',
-				"image": "nodeasoftware/application:latest",
+				"image": globalConf.application_dockerimage,
 				"environment": {
 					"GIT_URL": data.git_url,
 					"APP_NAME": data.repoName,
@@ -301,7 +301,8 @@ async function generateStack(data) {
 					"APP_DB_USER": cloudDbConf.dbUser,
 					"APP_DB_PWD": cloudDbConf.dbPwd,
 					"APP_DB_NAME": cloudDbConf.dbName,
-					"APP_DB_DIALECT": cloudDbConf.dialect
+					"APP_DB_DIALECT": cloudDbConf.dialect,
+					"GIT_SSL_CAINFO": globalConf.ssl_cainfo
 				},
 				"networks": {
 					[chosenNetwork.name]: {
@@ -309,7 +310,10 @@ async function generateStack(data) {
 					}
 				},
 				"volumes": [
-					"app:/app/" + data.repoName
+					"app:/app/" + data.repoName,
+					"/etc/ssl/certs:/etc/ssl/certs:ro",
+					"/usr/share/ca-certificates:/usr/share/ca-certificates:ro",
+					"/usr/local/share/ca-certificates:/usr/local/share/ca-certificates:ro"
 				],
 				"labels": [
 					"traefik.enable=true",
@@ -364,15 +368,15 @@ async function generateStack(data) {
 	});
 
 	console.log("CALL => Stack generation");
-	return await request(portainerCloudConfig.url + "/stacks?type=2&method=string&endpointId=1", {
+	return await request(portainerCloudConfig.url + "/stacks/create/standalone/string?endpointId=1", {
 		method: 'POST',
 		headers: {
-			'Content-Type': 'multipart/form-data',
+			'Content-Type': 'application/json',
 			'Authorization': token
 		},
 		body: JSON.stringify({
-			"Name": data.stackName,
-			"StackFileContent": composeContent
+			"name": data.stackName,
+			"stackFileContent": composeContent
 		})
 	});
 }
@@ -430,6 +434,17 @@ exports.deploy = async (data) => {
 
 	console.log("STARTING DEPLOY");
 
+	console.log("CHECK BRANCH BEFORE DEPLOY");
+
+	const branch = await gitHelper.gitBranch(data);
+
+	if (!data.branch || branch != data.branch){
+		console.log(branch);
+		const err = new Error('structure.global.deploy.error');
+		err.messageParams = [ branch, data.branch ? data.branch : 'master'];
+		throw err;
+	}
+
 	const appName = data.application.name;
 	const workspacePath = __dirname + '/../workspace/' + appName;
 
@@ -439,23 +454,37 @@ exports.deploy = async (data) => {
 	fs.writeFileSync(workspacePath +'/config/application.json', JSON.stringify(applicationConf, null, '\t'), 'utf8');
 
 	// public/version.txt generation
-	const deployVersion = applicationConf.version + "b" + applicationConf.build;
+	const deployVersion = applicationConf.version + data.branch + "b" + applicationConf.build;
 	const versionTxtContent = moment().format('YYYY-MM-DD HH:mm') + " - " + deployVersion;
 	fs.writeFileSync(workspacePath + '/app/public/version.txt', versionTxtContent, 'utf8');
 
 	// Workspace database dialect
 	data.appDialect = require(workspacePath + '/config/database').dialect; // eslint-disable-line
 
-	// Create toSyncProd.lock.json file
+	// Create toSyncProd.lock.json file with new format if non existing
+	const toSyncProdLock = { deployments: [] };
 
-	var toSyncProdLock = {deployments: []};
-	if (fs.existsSync(workspacePath + '/app/models/toSyncProd.lock.json'))
-		toSyncProdLock= JSON.parse(fs.readFileSync(workspacePath + '/app/models/toSyncProd.lock.json'));
+	if (fs.existsSync(workspacePath + '/app/models/toSyncProd.lock.json')) {
+		const existingLockData = JSON.parse(fs.readFileSync(workspacePath + '/app/models/toSyncProd.lock.json'));
+
+		// Vérifiez si existingLockData a des deployments et les fusionnez
+		if (existingLockData.deployments) {
+			toSyncProdLock.deployments = existingLockData.deployments;
+		} else {
+			// Si existingLockData n'a pas de deployments, ajoutez-le comme un ancien déploiement
+			toSyncProdLock.deployments.push({ version: "previous", queries: existingLockData });
+		}
+	}
 
 	const toSyncProd = JSON.parse(fs.readFileSync(workspacePath + '/app/models/toSyncProd.json'));
-	toSyncProdLock.deployments.push({version: deployVersion, queries: toSyncProd.queries});
+
+	// Ajoutez le nouveau déploiement
+	toSyncProdLock.deployments.push({ version: deployVersion, queries: toSyncProd.queries });
 
 	fs.writeFileSync(workspacePath + '/app/models/toSyncProd.lock.json', JSON.stringify(toSyncProdLock, null, '\t'), 'utf8');
+
+	// generate toSyncProd.cloud file dedicated to database sync for cloud deployment
+	fs.writeFileSync(workspacePath + '/app/models/toSyncProd.cloud.json', JSON.stringify(toSyncProd, null, '\t'), 'utf8');
 
 	// Clear toSyncProd (not locked) file
 	fs.writeFileSync(workspacePath + '/app/models/toSyncProd.json', JSON.stringify({queries: []}, null, '\t'), 'utf8');
