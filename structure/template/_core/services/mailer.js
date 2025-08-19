@@ -69,7 +69,7 @@ module.exports = (_ => {
 		sendHtml: (html, options, attachments) => new Promise((resolve, reject) => {
 
 			// Possibility to add {host} in media
-			options.data.host = mailConfig.host;
+			options.data.url = mailConfig.url;
 
 			// Generate mail model, then render mail to html
 			dust.renderSource(html, options.data, (err, rendered) => {
