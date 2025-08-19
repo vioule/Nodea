@@ -2,7 +2,7 @@ const CoreModel = require('@core/models/model');
 const attributes = require("./attributes/e_media_mail.json");
 const relations = require("./options/e_media_mail.json");
 const mailer = require('@core/services/mailer.js');
-const moment = require('moment');
+const dayjs = require('dayjs');
 const globalConf = require('@config/global');
 
 const INSERT_USER_GROUP_FIELDS = ['f_from', 'f_to', 'f_cc', 'f_cci', 'f_attachments'];
@@ -109,9 +109,7 @@ class E_media_mail extends CoreModel {
 		}
 
 		function getFilePath(filename){
-			const entity = dataInstance.entity_name;
-			const folderName = filename.split("-")[0];
-			const filePath = globalConf.localstorage + entity + '/' + folderName + '/' + filename;
+			const filePath = globalConf.localstorage + filename;
 			return filePath;
 		}
 
@@ -122,7 +120,7 @@ class E_media_mail extends CoreModel {
 					return "";
 				else if (typeof object[depths[idx]] === 'object') {
 					if (object[depths[idx]] instanceof Date)
-						return moment(object[depths[idx]]).format("DD/MM/YYYY");
+						return dayjs(object[depths[idx]]).format("DD/MM/YYYY");
 
 					// Case where targeted field is in an array.
 					// Ex: r_projet.r_participants.f_email <- Loop through r_participants and join all f_email
@@ -168,7 +166,7 @@ class E_media_mail extends CoreModel {
 			from: insertVariablesValue('f_from'),
 			to: insertVariablesValue('f_to'),
 			cc: insertVariablesValue('f_cc'),
-			cci: insertVariablesValue('f_cci'),
+			bcc: insertVariablesValue('f_cci'),
 			subject: insertVariablesValue('f_subject'),
 			data: dataInstance
 		};
@@ -176,7 +174,7 @@ class E_media_mail extends CoreModel {
 		const attachmentsFile = insertVariablesValue('f_attachments');
 
 		// Send mail
-		await mailer.sendHtml(insertVariablesValue('f_content'), options, attachmentsFile)
+		return await mailer.sendHtml(insertVariablesValue('f_content'), options, attachmentsFile)
 	}
 
 }

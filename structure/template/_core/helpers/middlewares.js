@@ -2,6 +2,11 @@ const models = require('@app/models');
 const access = require('@core/helpers/access');
 const { writeConnectionLog } = require('@core/helpers/connection_log');
 
+const crypto = require('@app/utils/crypto.js');
+const { KEY_TK } = require('@config/key_env.json');
+const jwt = require('jsonwebtoken');
+
+const xss = require('xss');
 const upload = require('multer');
 const multer = upload();
 
@@ -101,34 +106,57 @@ function actionAccess(entityName, action) {
 exports.actionAccess = actionAccess;
 
 // API Access
-exports.apiAuthentication = function (req, res, next) {
-	const token = req.query.token;
+exports.apiAuthentication = async(req, res, next) => {
+	try {
+		const { authorization } = req.headers;
+		if(!authorization) {
+			throw new Error('MISSING AUTHORIZATION HEADERS');
+		}
 
-	models.E_api_credentials.findOne({
-		where: {
-			f_token: token
-		},
-		include: [{
-			model: models.E_group,
-			as: 'r_group'
-		}, {
-			model: models.E_role,
-			as: 'r_role'
-		}]
-	}).then(credentialsObj => {
-		if (!credentialsObj)
-			return res.status(401).end('Bad Bearer Token');
+		const parts = authorization.split(' ');
+		if(parts.length != 2) {
+			throw new Error('INVALID AUTHORIZATION FORMAT');
+		}
+		if(parts[0] != 'Bearer') {
+			throw new Error('AUTHORIZATION MUST BE "Bearer"');
+		}
 
-		const currentTmsp = new Date().getTime();
-		if (parseInt(credentialsObj.f_token_timeout_tmsp) < currentTmsp)
-			return res.status(403).json('Bearer Token expired');
+		const verifiedToken = jwt.verify(parts[1], KEY_TK);
+
+		const { clientId, secretId } = crypto.decryptObject(verifiedToken.data);
+
+		if(!clientId || !secretId) {
+			throw new Error('WRONG TOKEN USED');
+		}
+
+		const credentialsObj = await models.E_api_credentials.findOne({
+			where: {
+				f_client_key: clientId,
+				f_client_secret: secretId,
+			},
+			include: [{
+				model: models.E_group,
+				as: 'r_group'
+			}, {
+				model: models.E_role,
+				as: 'r_role'
+			}]
+		});
+
+		if(!credentialsObj) {
+			throw new Error('CREDENTIALS NOT FOUND');
+		}
 
 		req.apiCredentials = credentialsObj;
 		req.user = {
 			f_login: credentialsObj.f_client_name
 		};
+
 		next();
-	});
+	} catch (err) {
+		console.error(err);
+		res.status(401).json({msg: 'Unauthorized'});
+	}
 }
 
 exports.apiEntityAccess = function (entityName) {
@@ -189,6 +217,38 @@ exports.statusGroupAccess = function(req, res, next) {
 		return res.redirect("/");
 	})
 }
+
+// Fonction de nettoyage
+function sanitizeBody(body) {
+	if (typeof body === 'string') {
+		return xss(body);
+	} else if (Array.isArray(body)) {
+		return body.map(sanitizeBody);
+	} else if (typeof body === 'object' && body !== null) {
+		const sanitizedObject = {};
+		for (const key in body) {
+			if (Object.prototype.hasOwnProperty.call(body, key)) {
+				sanitizedObject[key] = sanitizeBody(body[key]);
+			}
+		}
+		return sanitizedObject;
+	}
+	return body;
+}
+
+// Utiliser pour endpoint d'API, si réception de fichiers avec un multer custom
+exports.sanatizeApi = function(req, res, next) {
+	if (req.body) {
+		req.body = sanitizeBody(req.body);
+	}
+	if (req.query) {
+		req.query = sanitizeBody(req.query);
+	}
+	if (req.params) {
+		req.params = sanitizeBody(req.params);
+	}
+	next();
+};
 
 // fileFields = [{name: 'string', maxCount: int}]
 exports.fileInfo = (fileFields) => (req, res, next) => {

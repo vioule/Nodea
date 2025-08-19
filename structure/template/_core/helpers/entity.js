@@ -1,6 +1,6 @@
 const fs = require('fs-extra');
+const dayjs = require("dayjs");
 const qrcode = require("yaqrcode");
-const dayjs = require('dayjs');
 
 const language = require('./language');
 const file_helper = require('@core/helpers/file');

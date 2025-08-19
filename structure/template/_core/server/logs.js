@@ -1,5 +1,12 @@
 const morgan = require('morgan');
-const momentTZ = require('moment-timezone');
+
+const dayjs = require("dayjs");
+const utc = require("dayjs/plugin/utc");
+const timezone = require("dayjs/plugin/timezone");
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
 const split = require('split');
 const consoleStamp = require('console-stamp');
 
@@ -33,13 +40,13 @@ if (!global.auto_login) { // Mean not started from a generator
 
 	// Add timestamp to standard logs
 	morganConf.stream = split().on('data', line => {
-		process.stdout.write(momentTZ().tz(appConf.timezone).format("YYYY-MM-DD HH:mm:ss-SSS") + " " + line + "\n")
+		process.stdout.write(dayjs().tz(appConf.timezone).format("YYYY-MM-DD HH:mm:ss-SSS") + " " + line + "\n")
 	});
 
 	// Add timestamp to console
 	consoleStamp(console, {
 		formatter: function() {
-			return momentTZ().tz(appConf.timezone).format('YYYY-MM-DD HH:mm:ss-SSS');
+			return dayjs().tz(appConf.timezone).format('YYYY-MM-DD HH:mm:ss-SSS');
 		},
 		label: false,
 		datePrefix: "",
