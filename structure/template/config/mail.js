@@ -12,7 +12,9 @@ const mailConf = {
 			}
 		},
 		from: 'Nodea App <no-reply@nodea-software.com>',
-		host: 'http://127.0.0.1:' + globalConf.port
+		url : {
+			host: 'http://127.0.0.1:' + globalConf.port
+		}
 	},
 	test: {
 		transport: {
@@ -25,7 +27,9 @@ const mailConf = {
 			}
 		},
 		from: 'Nodea App <no-reply@nodea-software.com>',
-		host: 'host'
+		url : {
+			host: 'http://127.0.0.1:' + globalConf.port
+		}
 	},
 	production: {
 		transport: {
@@ -38,7 +42,9 @@ const mailConf = {
 			}
 		},
 		from: 'Nodea App <no-reply@nodea-software.com>',
-		host: 'host'
+		url : {
+			host: 'http://127.0.0.1:' + globalConf.port
+		}
 	},
 	studio: {
 		transport: {
@@ -51,7 +57,9 @@ const mailConf = {
 			}
 		},
 		from: 'Nodea App <no-reply@nodea-software.com>',
-		host: 'host'
+		url : {
+			host: 'http://127.0.0.1:' + globalConf.port
+		}
 	},
 	cloud: {
 		transport: {
@@ -64,7 +72,9 @@ const mailConf = {
 			}
 		},
 		from: 'Nodea App <no-reply@nodea-software.com>',
-		host: 'host'
+		url : {
+			host: 'http://127.0.0.1:' + globalConf.port
+		}
 	}
 }
 

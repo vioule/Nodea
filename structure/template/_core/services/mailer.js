@@ -45,8 +45,7 @@ module.exports = (_ => {
 					return reject(err);
 
 				// Possibility to add {host} in media
-				options.data.host = mailConfig.host;
-				options.data.front_host = mailConfig.front_host;
+				options.data.url = mailConfig.url;
 
 				// Generate mail model, then render mail to html
 				dust.renderSource(template, options.data, (err, rendered) => {
