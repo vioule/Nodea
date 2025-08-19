@@ -1,14 +1,14 @@
 const models = require('@app/models');
 const fs = require('fs-extra');
 const globalConfig = require('@config/global');
-const moment = require('moment');
+const dayjs = require('dayjs');
 const file_helper = require('@core/helpers/file');
 
 async function duplicateFile(entityName, entitySource, fileAttribute) {
 	const source_file_name = entitySource[fileAttribute];
 	const source_file_path = `${globalConfig.localstorage}${source_file_name}`;
 
-	const date_str = moment().format("YYYYMMDD-HHmmss");
+	const date_str = dayjs().format("YYYYMMDD-HHmmss");
 	const format_file_name = `${date_str}_DUPLICATE_${file_helper.originalFilename(source_file_name)}`;
 	const [new_file_path, new_file_name] = file_helper.createPathAndName(entityName, format_file_name);
 

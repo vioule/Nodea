@@ -1,10 +1,11 @@
 const globalConf = require('@config/global');
 const appConf = require('@config/application');
-const moment = require('moment');
+const dayjs = require('dayjs');
 const uuidV4 = require('uuid').v4;
 const fs = require('fs-extra');
 const path = require('path');
-const Jimp = require("jimp");
+const sharp = require('sharp');
+
 
 function securePath(...paths) {
 	const securedPaths = [];
@@ -29,7 +30,7 @@ function createPathAndName(baseFolder, filename) {
 		throw new Error("No filename provided to createPath");
 
 	const uuid = uuidV4();
-	const date = moment();
+	const date = dayjs();
 	const year = date.year(), month = date.month(), day = date.date();
 
 	filename = Buffer.from(filename, 'latin1').toString('utf8').replace(/\s/g, '_');
@@ -69,50 +70,59 @@ function write(filePath, buffer, encoding = 'utf8') {
 	});
 }
 
+// Fonction qui sert pour la fonction writePicture
+async function writeFileWithDirs(filePath, buffer, encoding) {
+	let securedPath, folderPath;
+	securedPath = securePath(globalConf.localstorage, filePath);
+	folderPath = path.parse(securedPath).dir;
+	await fs.ensureDir(folderPath);
+	return fs.writeFile(securedPath, buffer, encoding === 'utf8' ? undefined : encoding);
+}
+
 function writePicture(filePath, buffer, encoding = 'utf8') {
-	return new Promise((resolve, reject) => {
-		Jimp.read(buffer, (err, imgThumb) => {
-			if (err)
-				return reject(err);
+	return new Promise(async (resolve, reject) => {
+		try {
+			const ext = path.extname(filePath).toLowerCase();
+			const supportedFormats = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
 
-			const promises = [];
-
-			// Default image resize if needed
-			if(appConf.resizePicture && appConf.resizePicture.enabled) {
-				promises.push(new Promise((resolve, reject) => {
-					const pictureWidth = appConf.resizePicture.width;
-					const pictureHeight = appConf.resizePicture.height;
-					const pictureQuality = appConf.resizePicture.quality;
-					imgThumb.resize(pictureWidth, pictureHeight).quality(pictureQuality).getBuffer(Jimp.AUTO, (err, buffer) => {
-						if (err)
-							return reject(err);
-						// If the picture is a .gif or other complicated extension then JIMP return buffer as a Promise
-						Promise.resolve(buffer).then(bufferReady => {
-							resolve(write(filePath, bufferReady, encoding));
-						}).catch(err => reject(err));
-					});
-				}));
-			} else {
-				promises.push(write(filePath, buffer, encoding));
+			if (!supportedFormats.includes(ext)) {
+				return reject(new Error(`Format non supporté: ${ext}`));
 			}
 
-			// Picture thumbnail generation
-			promises.push(new Promise((resolve, reject) => {
-				const thumbnailWidth = appConf.thumbnail.width;
-				const thumbnailHeight = appConf.thumbnail.height;
-				const thumbnailQuality = appConf.thumbnail.quality;
-				imgThumb.resize(thumbnailWidth, thumbnailHeight).quality(thumbnailQuality).getBuffer(Jimp.AUTO, (err, buffer) => {
-					if (err)
-						return reject(err);
-					// If the picture is a .gif or other complicated extension then JIMP return buffer as a Promise
-					Promise.resolve(buffer).then(bufferReady => {
-						resolve(write(appConf.thumbnail.folder + filePath, bufferReady, encoding));
-					}).catch(err => reject(err));
-				});
-			}));
+			const format = ext.slice(1); // exemple: '.jpg' → 'jpg'
+			const promises = [];
 
-			Promise.all(promises).then(resolve()).catch(err => reject(err));
-		});
+			// Resize principale (optionnel)
+			if (appConf.resizePicture && appConf.resizePicture.enabled) {
+				const { width, height, quality } = appConf.resizePicture;
+
+				const resizedBuffer = await sharp(buffer)
+					.resize(width, height)
+					.toFormat(format, { quality })
+					.toBuffer();
+
+				promises.push(writeFileWithDirs(filePath, resizedBuffer, encoding));
+			} else {
+				// Écrit le buffer original sans resize
+				promises.push(writeFileWithDirs(filePath, buffer, encoding));
+			}
+
+			// Thumbnail
+			const { width: tWidth, height: tHeight, quality: tQuality, folder } = appConf.thumbnail;
+
+			const thumbBuffer = await sharp(buffer)
+				.resize(tWidth, tHeight)
+				.toFormat(format, { quality: tQuality })
+				.toBuffer();
+
+			const thumbPath = path.join(folder, filePath);
+			promises.push(writeFileWithDirs(thumbPath, thumbBuffer, encoding));
+
+			await Promise.all(promises);
+			resolve();
+		} catch (err) {
+			reject(err);
+		}
 	});
 }
 

@@ -5,7 +5,7 @@ const options = require('@app/models/options/e_task');
 
 const multer = require('multer');
 const upload = multer().single('file');
-const moment = require('moment');
+const dayjs = require('dayjs');
 const fs = require('fs-extra');
 
 const ApiEntity = require('@core/abstract_routes/api_entity');
@@ -52,8 +52,8 @@ class ApiE_inline_help extends ApiEntity {
 				}
 
 				const id_task = req.params.id;
-				const folderName = moment().format('YYYYMMDD');
-				const fileName = `${folderName}-${moment().format('hhmmss')}_${req.file.originalname}`;
+				const folderName = dayjs().format('YYYYMMDD');
+				const fileName = `${folderName}-${dayjs().format('hhmmss')}_${req.file.originalname}`;
 				const basePath = `${globalConf.localstorage}/e_documents_task/${folderName}/`;
 				fs.mkdirs(basePath, err => {
 					if (err) {

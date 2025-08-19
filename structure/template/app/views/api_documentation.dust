@@ -182,9 +182,8 @@
 									<h2>Get token</h2>
 
 									<p>To be able to interact with the API, you need to generate a Bearer Token using the <code>/api/getToken/</code> route</p>
-									<p>Store this token and provide it as query parameter to every route that requires an authentication : <code>/api/user/?token=TOKEN</code></p>
-									<p>Set your HTTP header like so with basic64 encoding : <code>Authorization clientID:clientSecret</code></p>
-
+									<p>Store this token if necessary and provide it as a header parameter to every route that requires an authentication and use Bearer Token authentication </p>
+									
 									<span class="method GET">
 										GET
 									</span>

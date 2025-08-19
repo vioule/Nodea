@@ -108,9 +108,8 @@ class Reason extends Entity {
 			search: {
 				// start: async (data) => {},
 				// beforeResponse: async (data) => {}
-				beforeQuery: async (data) => {
+				beforeQuery: (data) => {
 					data.query.where.f_enabled = true;
-			
 					if (data.req.body.attrData.statusid) {
 						data.query.where.fk_id_status_reasons = data.req.body.attrData.statusid;
 						data.query.order = [["f_order", "ASC"]];

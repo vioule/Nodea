@@ -402,6 +402,7 @@
 			"unchecked": "Décoché",
 			"all": "Tout"
 		},
-		"min_one_column_display": "Vous devez laisser au moins une colonne affichée."
+		"min_one_column_display": "Vous devez laisser au moins une colonne affichée.",
+		"min_one_column_data_display": "Vous devez laisser au moins une colonne avec du contenu affichée."
 	}
 }

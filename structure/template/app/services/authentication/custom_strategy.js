@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt');
 const models = require('@app/models');
 // Handle writing log in file connection.log
 const { writeConnectionLog } = require('@core/helpers/connection_log');
+const dayjs = require('dayjs');
 
 // Default authentication strategy : passport.authenticate('local')
 passport.use(new LocalStrategy({

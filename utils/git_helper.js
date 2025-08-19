@@ -162,10 +162,14 @@ module.exports = {
 			await initializeGit(repoInfo, data.currentUser); // Do first commit and push
 		else if(typeof data.function !== "undefined"){
 			// We are just after a new instruction
-			console.log("GIT => PUSH " + repoInfo.origin);
+			console.log("GIT => PUSH " + repoInfo.origin );
 			gitProcesses[repoInfo.origin].isProcessing = true;
 			try {
-				await gitProcesses[repoInfo.origin][data.currentUser.id].simpleGit.push(['-u', repoInfo.origin, 'master']);
+				const allBranches = await gitProcesses[repoInfo.origin][data.currentUser.id].simpleGit.branch();
+				// get current branch name to return to nodea robot
+				const answer = allBranches.current;
+				const branchName = !answer ? 'master' : answer;
+				await gitProcesses[repoInfo.origin][data.currentUser.id].simpleGit.push(['-u', repoInfo.origin, branchName]);
 				gitProcesses[repoInfo.origin].isProcessing = false;
 			} catch(err) {
 				gitProcesses[repoInfo.origin].isProcessing = false;
@@ -188,12 +192,16 @@ module.exports = {
 		if (gitProcesses[repoInfo.origin].isProcessing)
 			throw new Error('structure.global.error.alreadyInProcessGit');
 
-		console.log("GIT => PULL " + repoInfo.origin);
+		console.log("GIT => PULL " + repoInfo.origin );
 
 		// Set gitProcesses to prevent any other git command during this process
 		gitProcesses[repoInfo.origin].isProcessing = true;
 		try {
-			const pullSummary = await gitProcesses[repoInfo.origin][data.currentUser.id].simpleGit.pull(repoInfo.origin, "master")
+			const allBranches = await gitProcesses[repoInfo.origin][data.currentUser.id].simpleGit.branch();
+			// get current branch name to return to nodea robot
+			const answer = allBranches.current;
+			const branchName = !answer ? 'master' : answer;
+			const pullSummary = await gitProcesses[repoInfo.origin][data.currentUser.id].simpleGit.pull(repoInfo.origin, branchName)
 			console.log(pullSummary);
 			gitProcesses[repoInfo.origin].isProcessing = false;
 		} catch(err) {
@@ -274,6 +282,7 @@ module.exports = {
 
 		const appName = data.application.name
 		const repoInfo = await getRepoInfo(appName);
+		const branchName = !data.branch ? 'master' : data.branch;
 
 		// Workspace path
 		const workspacePath = __dirname + '/../workspace/' + appName;
@@ -282,13 +291,13 @@ module.exports = {
 		if (gitProcesses[repoInfo.origin].isProcessing)
 			throw new Error('structure.global.error.alreadyInProcessGit');
 
-		console.log("GIT => TAG " + repoInfo.origin + ' VERSION => ' + tagName);
+		console.log("GIT => TAG " + repoInfo.origin + 'BRANCH => ' + branchName + ' VERSION => ' + tagName);
 
 		// Set gitProcesses to prevent any other git command during this process
 		gitProcesses[repoInfo.origin].isProcessing = true;
 		try {
-			await gitProcesses[repoInfo.origin][data.currentUser.id].simpleGit.addAnnotatedTag(tagName, 'Tagging ' + tagName);
-			await gitProcesses[repoInfo.origin][data.currentUser.id].simpleGit.pushTags(['-u', repoInfo.origin, 'master']);
+			await gitProcesses[repoInfo.origin][data.currentUser.id].simpleGit.addAnnotatedTag(tagName, 'Tagging ' + branchName + " " + tagName);
+			await gitProcesses[repoInfo.origin][data.currentUser.id].simpleGit.pushTags(['-u', repoInfo.origin, branchName]);
 		} catch(err) {
 			gitProcesses[repoInfo.origin].isProcessing = false;
 			throw err;
@@ -324,7 +333,6 @@ module.exports = {
 		}
 	},
 	gitBranch: async (data) => {
-
 		if(!checkRequirements(data))
 			return;
 
@@ -343,14 +351,46 @@ module.exports = {
 		// Set gitProcesses to prevent any other git command during this process
 		gitProcesses[repoInfo.origin].isProcessing = true;
 		try {
-			await gitProcesses[repoInfo.origin][data.currentUser.id].simpleGit.fetch('-a');
-			await gitProcesses[repoInfo.origin][data.currentUser.id].simpleGit.pull();
-			const branch = await gitProcesses[repoInfo.origin][data.currentUser.id].simpleGit.branch(['-a']);
+			const allBranches = await gitProcesses[repoInfo.origin][data.currentUser.id].simpleGit.branch();
+			// get current branch name to return to nodea robot
+			const answer = allBranches.current;
 			gitProcesses[repoInfo.origin].isProcessing = false;
-			return branch;
+			return answer;
 		} catch(err) {
 			gitProcesses[repoInfo.origin].isProcessing = false;
 			throw err;
 		}
+	},
+	gitCheckout: async (data) => {
+		// Checkout d'une branche : le nom de la branche est requis
+		if(!checkRequirements(data) || !data.specificBranch)
+			return;
+
+		const appName = data.application.name
+		const repoInfo = await getRepoInfo(appName);
+
+		// Workspace path
+		const workspacePath = __dirname + '/../workspace/' + appName;
+		initRepoGitProcess(repoInfo, data, workspacePath);
+
+		if (gitProcesses[repoInfo.origin].isProcessing)
+			throw new Error('structure.global.error.alreadyInProcessGit');
+
+		console.log("GIT => CHECKOUT " + repoInfo.origin + data.specificBranch);
+		// Set gitProcesses to prevent any other git command during this process
+		gitProcesses[repoInfo.origin].isProcessing = true;
+		try {
+			await gitProcesses[repoInfo.origin][data.currentUser.id].simpleGit.fetch('-a');
+			const result = await gitProcesses[repoInfo.origin][data.currentUser.id].simpleGit.checkout(data.specificBranch);
+			gitProcesses[repoInfo.origin].isProcessing = false;
+			return {
+				message: result,
+				branch: data.specificBranch
+			};
+		} catch(err) {
+			gitProcesses[repoInfo.origin].isProcessing = false;
+			throw err;
+		}
+
 	}
 }
