@@ -1,12 +1,11 @@
 const fs = require('fs-extra');
+const moment = require("moment");
 const qrcode = require("yaqrcode");
 const dayjs = require('dayjs');
 
 const language = require('./language');
 const file_helper = require('@core/helpers/file');
 const enums_radios = require('@core/utils/enum_radio');
-
-const globalConfig = require('@config/global');
 
 const models = require('@app/models');
 
@@ -365,21 +364,12 @@ module.exports = {
 				promises.push((async (key) => {
 					const value = entity.dataValues[key];
 					const path = isThumbnail ? 'thumbnail/' + value : value;
+					const buffer = await file_helper.readBuffer(path);
 
-					if(value.slice(-4).toUpperCase() == '.SVG') {
-						const buffer = await file_helper.readBuffer(path);
-						entity.dataValues[key] = {
-							value: value,
-							svg: fs.readFileSync(globalConfig.localstorage + path, 'utf8'),
-							buffer: buffer
-						};
-					} else {
-						const buffer = await file_helper.readBuffer(path);
-						entity.dataValues[key] = {
-							value: value,
-							buffer: buffer
-						};
-					}
+					entity.dataValues[key] = {
+						value,
+						buffer
+					};
 				})(key));
 			}
 
@@ -434,12 +424,8 @@ module.exports = {
 			if (search == '%%')
 				return where;
 
-			if (searchField.length == 1) {
-				if (searchField[0] == "id") {
-					return { "id": search.replace('%', '').replace('%', '') }; // Valeur exacte de l'identifiant
-				}
+			if (searchField.length == 1)
 				return where[search[0]] = {[models.$like]: search};
-			}
 
 			const $or = [];
 			for (let i = 0; i < searchField.length; i++) {
@@ -459,10 +445,10 @@ module.exports = {
 						if (fieldSelect == field && results.rows[i][fieldSelect] && results.rows[i][fieldSelect] != "")
 							switch (attributes[field].nodeaType) {
 								case "date":
-									results.rows[i][fieldSelect] = dayjs(results.rows[i][fieldSelect]).format(lang == "fr-FR" ? "DD/MM/YYYY" : "YYYY-MM-DD")
+									results.rows[i][fieldSelect] = moment(results.rows[i][fieldSelect]).format(lang == "fr-FR" ? "DD/MM/YYYY" : "YYYY-MM-DD")
 									break;
 								case "datetime":
-									results.rows[i][fieldSelect] = dayjs(results.rows[i][fieldSelect]).format(lang == "fr-FR" ? "DD/MM/YYYY HH:mm" : "YYYY-MM-DD HH:mm")
+									results.rows[i][fieldSelect] = moment(results.rows[i][fieldSelect]).format(lang == "fr-FR" ? "DD/MM/YYYY HH:mm" : "YYYY-MM-DD HH:mm")
 									break;
 								case "enum":
 									results.rows[i][fieldSelect] = enums_radios.translateFieldValue(entity, fieldSelect, results.rows[i][fieldSelect], lang);

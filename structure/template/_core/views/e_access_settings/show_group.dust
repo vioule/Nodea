@@ -51,7 +51,7 @@
 							{#__ key="administration.menu.access_settings_group" /}
 						</h3>
 						<div class="card-tools">
-							<button type="button" class="btn btn-tool" data-card-widget="collapse" title="collapse">
+							<button type="button" class="btn btn-tool" data-card-widget="collapse">
 							<i class="fas fa-minus"></i>
 							</button>
 						</div>
@@ -62,71 +62,69 @@
 								<i class="fas fa-save">&nbsp;&nbsp;</i>
 								{#__ key="button.save" /}
 						   	</button><br><br>
-							<div id="table_group_wrapper" class="dataTables_wrapper dt-bootstrap4 no-footer">
-								<table class="table table-striped">
-									<thead>
+							<table class="table table-striped">
+								<thead>
+									<tr>
+										<th>
+											{#__ key="administration.access_settings.moduleList"/}
+										</th>
+										<th>
+											{#__ key="administration.access_settings.entityList"/}
+										</th>
+										{#allGroups}
+											<th>
+												{f_label}
+											</th>
+										{/allGroups}
+									</tr>
+								</thead>
+								<tbody>
+									{#modules}
 										<tr>
-											<th>
-												{#__ key="administration.access_settings.moduleList"/}
-											</th>
-											<th>
-												{#__ key="administration.access_settings.entityList"/}
-											</th>
-											{#allGroups}
-												<th>
-													{f_label}
-												</th>
+											<td class="click-tr" style="cursor: pointer;">
+												{#__ key=tradKeyModule /}
+											</td>
+											<td></td>
+											{#allGroups currentModule=.}
+												<td>
+													{@isGroupChecked source=currentModule target=f_label}
+														<input name="module.{name}.{f_label}" class="no-icheck" checked type="checkbox">
+													{:else}
+														<input name="module.{name}.{f_label}" class="no-icheck" type="checkbox">
+													{/isGroupChecked}
+												</td>
 											{/allGroups}
 										</tr>
-									</thead>
-									<tbody>
-										{#modules}
+										{#entities}
 											<tr>
-												<td class="click-tr" style="cursor: pointer;">
-													{#__ key=tradKeyModule /}
-												</td>
 												<td></td>
-												{#allGroups currentModule=.}
-													<td>
-														{@isGroupChecked source=currentModule target=f_label}
-															<input name="module.{name}.{f_label}" class="no-icheck" checked type="checkbox">
-														{:else}
-															<input name="module.{name}.{f_label}" class="no-icheck" type="checkbox">
-														{/isGroupChecked}
-													</td>
+												<td class="click-tr" style="cursor: pointer;">
+													{#__ key=tradKeyEntity /}
+												</td>
+												{#allGroups currentEntity=.}
+													{@select}
+														{! Handle to not display access settings of traceability, except for admin role !}
+														{@ne key=currentEntity.name value="traceability" /}
+														{@eq key=id value=1 /}
+														{@any}
+															<td>
+																{@isGroupChecked source=currentEntity target=f_label}
+																	<input name="entity.{name}.{f_label}" class="no-icheck" checked type="checkbox">
+																{:else}
+																	<input name="entity.{name}.{f_label}" class="no-icheck" type="checkbox">
+																{/isGroupChecked}
+															</td>
+														{/any}
+														{@none}
+															<td></td>
+														{/none}
+													{/select}
 												{/allGroups}
 											</tr>
-											{#entities}
-												<tr>
-													<td></td>
-													<td class="click-tr" style="cursor: pointer;">
-														{#__ key=tradKeyEntity /}
-													</td>
-													{#allGroups currentEntity=.}
-														{@select}
-															{! Handle to not display access settings of traceability, except for admin role !}
-															{@ne key=currentEntity.name value="traceability" /}
-															{@eq key=id value=1 /}
-															{@any}
-																<td>
-																	{@isGroupChecked source=currentEntity target=f_label}
-																		<input name="entity.{name}.{f_label}" class="no-icheck" checked type="checkbox">
-																	{:else}
-																		<input name="entity.{name}.{f_label}" class="no-icheck" type="checkbox">
-																	{/isGroupChecked}
-																</td>
-															{/any}
-															{@none}
-																<td></td>
-															{/none}
-														{/select}
-													{/allGroups}
-												</tr>
-											{/entities}
-										{/modules}
-									</tbody>
-								</table>
-							</div>
+										{/entities}
+									{/modules}
+								</tbody>
+							</table>
 							<button type="submit" class="btn btn-primary">
 								<i class="fas fa-save">&nbsp;&nbsp;</i>
 								{#__ key="button.save" /}
@@ -147,39 +145,6 @@
 				$(this).parent('tr').find('input[type="checkbox"]').each(function() {
 					$(this).trigger('click');
 				});
-			});
-
-			const tableID = '#table_group_wrapper';
-			const context = document;
-			let down = false;
-			let additionalData = {};
-			$(tableID + ' tbody', context).on('mousedown', function (e) {
-				if (!e.ctrlKey) {
-					e.preventDefault();
-					down = true;
-					x = e.pageX;
-					left = $(".dataTables_wrapper", context).scrollLeft();
-					console.log(left);
-				}
-			});
-			$(tableID + ' tbody', context).on('mousemove', function (e) {
-				if (down) {
-					additionalData.scrolling = true;
-					var newX = e.pageX;
-					$(".dataTables_wrapper", context).scrollLeft(left - newX + x);
-				}
-			});
-			$(tableID + ' tbody', context).on('mouseup', function (e) {
-				down = false;
-				setTimeout(function () {
-					additionalData.scrolling = false;
-				}, 500);
-			});
-			$(tableID + ' tbody', context).on('mouseleave', function (e) {
-				down = false;
-				setTimeout(function () {
-					additionalData.scrolling = false;
-				}, 500);
 			});
 		});
 	</script>

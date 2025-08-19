@@ -240,25 +240,7 @@ class CoreApp extends Route {
 			if (!access.entityAccess(data.req.session.passport.user.r_group, entity.substring(2)))
 				return data.res.error(_ => data.res.status(403).end());
 
-			// const row = await models[entity.capitalizeFirstLetter()].findOne({where: {id}});
-			const options = await models[entity.capitalizeFirstLetter()].getRelations();
-
-			const array_field = field.split('.');
-			const custom_include = [];
-
-			if (array_field[0].slice(0, 2) == 'r_') {
-				for (let i=0;i<options.length;i++) {
-					if (options[i].as == array_field[0]) {
-						custom_include.push({
-							model: models[options[i].target.capitalizeFirstLetter()],
-							as: options[i].as
-						});
-					}
-				}
-			}
-
-			const row = await models[entity.capitalizeFirstLetter()].findOne({where: {id}, include: custom_include, raw: true});
-
+			const row = await models[entity.capitalizeFirstLetter()].findOne({where: {id}});
 			if (!row)
 				return data.res.error(_ => data.res.status(404).end());
 
@@ -279,28 +261,10 @@ class CoreApp extends Route {
 			if (!access.entityAccess(data.req.session.passport.user.r_group, entity.substring(2)))
 				return data.res.error(_ => data.res.status(403).end());
 
-			// const row = await models[entity.capitalizeFirstLetter()].findOne({where: {id}});
-			const options = await models[entity.capitalizeFirstLetter()].getRelations();
-
-			const array_field = field.split('.');
-			const custom_include = [];
-
-			if (array_field[0].slice(0, 2) == 'r_') {
-				for (let i=0;i<options.length;i++) {
-					if (options[i].as == array_field[0]) {
-						custom_include.push({
-							model: models[options[i].target.capitalizeFirstLetter()],
-							as: options[i].as
-						});
-					}
-				}
-			}
-
-			const row = await models[entity.capitalizeFirstLetter()].findOne({where: {id}, include: custom_include, raw: true});
-
+			const row = await models[entity.capitalizeFirstLetter()].findOne({where: {id}});
 			if (!row)
 				return data.res.error(_ => data.res.status(404).end());
-			
+
 			const path = file_helper.fullPath(row[field]);
 			const filename = file_helper.originalFilename(row[field]);
 			data.res.success(_ => data.res.download(path, filename, function (err) {

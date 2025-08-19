@@ -76,10 +76,6 @@ label.required:after {
 	display:inline;
 }
 
-.select2-container--default.select2-container--disabled .select2-selection--single {
-	background-color: #e9ecef !important;
-	opacity: 1;
-}
 .show-textarea {
 	border: 1px solid #d2d6de;
 	padding: 5px;
@@ -175,10 +171,6 @@ label.required:after {
 	margin-bottom: 15px;
 }
 
-.parent-address-component-map {
-	overflow: hidden;
-}
-
 .address_component_map {
 	height: 300px;
 }
@@ -199,6 +191,7 @@ label.required:after {
 	border-radius: 8px;
 	padding-top: 6px;
 }
+
 .status {
 	margin-top: 5px;
 }

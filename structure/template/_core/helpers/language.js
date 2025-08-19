@@ -1,16 +1,5 @@
 const languages = [];
 
-function deepFindObject(obj, key) {
-	if(typeof obj === 'undefined') {
-		return undefined;
-	}
-	const parts = key.split(".");
-	if (parts.length == 1){
-		return obj[parts[0]];
-	}
-	return deepFindObject(obj[parts[0]], parts.slice(1).join("."));
-}
-
 function fetchText(key, params, lang) {
 	if (!key)
 		return "";
@@ -31,14 +20,9 @@ function fetchText(key, params, lang) {
 		}
 	}
 
-	// eslint-disable-next-line global-require
-	const overloadDepth = require('@app/locales/overload/' + lang);
-
 	let depth = languages[lang];
 	for (let i = 0; i < keys.length; i++) {
-
-		depth = deepFindObject(overloadDepth, key) || depth[keys[i]];
-
+		depth = depth[keys[i]];
 		if (typeof depth === 'undefined')
 			return key;
 	}
