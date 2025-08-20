@@ -82,7 +82,7 @@ Create (and adapt if necessary) "docker-compose.yml" file:
   services: 
     nodea: 
       container_name: "test32_app"
-      image: "nodeasoftware/nodea:3.2.2"
+      image: "nodeasoftware/nodea:3.2.3"
       restart: "always"
       networks: 
         nodea_network_1: 
