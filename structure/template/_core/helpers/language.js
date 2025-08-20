@@ -1,90 +1,87 @@
-const languages = [];
+const { supportedLangs, overloadKey } = require('@config/languages');
 
-function deepFindObject(obj, key) {
-	if(typeof obj === 'undefined') {
-		return undefined;
-	}
-	const parts = key.split(".");
-	if (parts.length == 1){
-		return obj[parts[0]];
-	}
-	return deepFindObject(obj[parts[0]], parts.slice(1).join("."));
-}
+const languages = {};
+const overloads = {};
 
-function fetchText(key, params, lang) {
-	if (!key)
-		return "";
-	let keys;
-	try {
-		keys = key.split('.');
-	} catch (e) {
-		return key;
-	}
+function loadAllLanguages() {
+	const overload_trad = overloadKey ? overloadKey + "/" : "";
 
-	if (typeof languages[lang] === 'undefined') {
+	for (const lang of supportedLangs) {
 		try {
-			delete require.cache[require.resolve('@app/locales/' + lang)];
-			languages[lang] = require('@app/locales/' + lang); // eslint-disable-line
-		} catch (e) {
-			console.log(e);
-			return key;
+			languages[lang] = require('@app/locales/' + lang);
+		} catch {
+			languages[lang] = {};
+		}
+
+		if (overload_trad) {
+			try {
+				overloads[lang] = require('@app/locales/' + overload_trad + lang);
+			} catch {
+				overloads[lang] = {};
+			}
+		} else {
+			overloads[lang] = {};
 		}
 	}
-
-	// eslint-disable-next-line global-require
-	const overloadDepth = require('@app/locales/overload/' + lang);
-
-	let depth = languages[lang];
-	for (let i = 0; i < keys.length; i++) {
-
-		depth = deepFindObject(overloadDepth, key) || depth[keys[i]];
-
-		if (typeof depth === 'undefined')
-			return key;
-	}
-
-	if(typeof depth !== 'string')
-		return key;
-
-	const nbParamsFound = (depth.match(/%s/g) || []).length;
-	if (nbParamsFound > 0 && nbParamsFound == params.length) {
-		for (let j = 0; j < nbParamsFound; j++) {
-			depth = depth.replace("%s", params[j]);
-		}
-	}
-
-	return depth;
 }
 
+function getValue(obj, path) {
+	return path.split('.').reduce((acc, part) => acc && acc[part], obj);
+}
+
+function formatMessage(template, params = []) {
+	let i = 0;
+	return template.replace(/%s/g, () => params[i++] ?? '');
+}
+
+function fetchText(key, params = [], lang) {
+	if (!key) return "";
+
+	const value = getValue(overloads[lang], key) || getValue(languages[lang], key);
+	if (typeof value !== 'string') return key;
+
+	return formatMessage(value, params);
+}
+
+const smallWords = [
+	"de", "du", "des", "le", "la", "les", "un", "une", "et",
+	"à", "au", "aux", "en", "dans", "par", "sur", "avec",
+	"mais", "ou", "ni", "car", "que"
+];
 function capitalizeFirstLetters(key, params, lang) {
 	const msg = fetchText(key, params, lang);
-	const words = msg.split(' ');
-	let res = '';
-	for (let i = 0; i < words.length; i++) {
-		const word = words[i];
-		const wordParts = word.split('\'');
-		if (wordParts.length > 1)
-		// d'information -> d'Information
-			res += wordParts[0] + '\'' + wordParts[1].charAt(0).toUpperCase() + word.slice(3);
-		else
-		// information -> Information
-			res += word.charAt(0).toUpperCase() + word.slice(1);
-		if (i < words.length)
-			res += ' ';
-	}
-	return res != '' ? res : key;
+
+	return msg
+		.split(" ")
+		.map((word, index) => {
+			if (!word) return word;
+
+			const lowerWord = word.toLowerCase();
+
+			// Si ce mot est dans les "petits mots" ET que ce n'est pas le premier mot
+			if (index > 0 && smallWords.includes(lowerWord.replace(/['’]/, ""))) {
+				return lowerWord; // reste en minuscule
+			}
+
+			// Gestion apostrophe (d'information -> D'Information)
+			if (word.includes("'") || word.includes("’")) {
+				const [before, after] = word.split(/['’]/, 2);
+				if (after && after.length > 0) {
+					return before + "'" + after.charAt(0).toUpperCase() + after.slice(1);
+				}
+			}
+
+			// Cas standard
+			return word.charAt(0).toUpperCase() + word.slice(1);
+		})
+		.join(" ");
 }
 
-module.exports = (lang) => {
-	return {
-		__: function (key, params) {
-			return fetchText(key, params, lang);
-		},
-		M_: function(key, params) {
-			return capitalizeFirstLetters(key, params, lang);
-		},
-		getLang: function(){
-			return lang;
-		}
-	}
-}
+// Charger toutes les langues immédiatement
+loadAllLanguages();
+
+module.exports = (lang) => {return {
+	__: (key, params) => fetchText(key, params, lang),
+	M_: (key, params) => capitalizeFirstLetters(key, params, lang),
+	getLang: () => lang
+}};
