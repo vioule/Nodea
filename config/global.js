@@ -34,7 +34,7 @@ const config = {
 }
 
 const env_config = config[env];
-env_config.version = "3.2.2";
+env_config.version = "3.2.3";
 
 // Handle typeof string if config is from PROCESS ENV
 env_config.demo_mode = typeof env_config.demo_mode === 'string' ? env_config.demo_mode === 'true' : env_config.demo_mode;

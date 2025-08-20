@@ -34,6 +34,8 @@ let NodeaTable = (function () {
 			// No selection if no text
 			if (column.element.text() === "") continue;
 
+			console.log(column);
+
 			(function (currentColumn) {
 				var element = currentColumn.element,
 					show;
@@ -196,7 +198,9 @@ let NodeaTable = (function () {
 					return value;
 				},
 				search: ({ column, title, savedFilter, searchTh, triggerSearch, additionalData }) => {
-					const element = $(`<input type="text" class="form-control input" value="${savedFilter}" placeholder="${title}" />`);
+					const element = $(
+						`<input aria-labelledby="label_${column.data}" type="text" class="form-control input" value="${savedFilter}" placeholder="${title}" />`
+					);
 					if (savedFilter && savedFilter != "") triggerSearch(savedFilter, "date", true);
 					let mask;
 					if (lang_user == "fr-FR")
@@ -224,7 +228,7 @@ let NodeaTable = (function () {
 						}
 						triggerSearch(searchValue, "date");
 					});
-					return element;
+					return element.prepend(`<label id="label_${column.data}"><span style="display: none;">${title}</span></label>`);
 				},
 			},
 			datetime: {
@@ -265,7 +269,9 @@ let NodeaTable = (function () {
 					return value;
 				},
 				search: ({ column, title, savedFilter, searchTh, triggerSearch, additionalData }) => {
-					const element = $(`<input type="text" class="form-control input" value="${savedFilter}" placeholder="${title}" />`);
+					const element = $(
+						`<input aria-labelledby="label_${column.data}" type="text" class="form-control input" value="${savedFilter}" placeholder="${title}" />`
+					);
 					if (savedFilter && savedFilter != "") triggerSearch(savedFilter, "time", true);
 					element.inputmask({
 						mask: "99:99",
@@ -276,7 +282,7 @@ let NodeaTable = (function () {
 						if (!element.inputmask("isComplete") && searchValue !== "") return;
 						triggerSearch(searchValue, "time");
 					});
-					return element;
+					return element.prepend(`<label id="label_${column.data}"><span style="display: none;">${title}</span></label>`);
 				},
 			},
 			boolean: {
@@ -332,13 +338,15 @@ let NodeaTable = (function () {
 					else if (typeof value === "number") value = value.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 ");
 					return '<span data-type="currency">' + value + "</span>";
 				},
-				search: ({ triggerSearch, title, savedFilter, ...rest }) => {
-					var element = $(`<input type="text" class="form-control input" value="${savedFilter}" placeholder="${title}" />`);
+				search: ({ column, triggerSearch, title, savedFilter, ...rest }) => {
+					var element = $(
+						`<input aria-labelledby="label_${column.data}" type="text" class="form-control input" value="${savedFilter}" placeholder="${title}" />`
+					);
 					element.keyup(function () {
 						var searchValue = element.val();
 						triggerSearch(searchValue, "currency");
 					});
-					return element;
+					return element.prepend(`<label id="label_${column.data}"><span style="display: none;">${title}</span></label>`);
 				},
 			},
 			email: {
@@ -355,16 +363,23 @@ let NodeaTable = (function () {
 			},
 			picture: {
 				render: ({ value, row, column, entity, additionalData }) => {
-					if (value != null && value.buffer != "")
+					if (value != null && value.buffer != "") {
+						let ext = "";
+						if (value.value && value.value.slice(-3).toUpperCase() == "SVG") {
+							ext = "svg+xml";
+						}
 						return (
 							'<img class="file" style="max-width: 50px;" data-entity="' +
 							entity +
 							'" data-value="' +
 							value.value +
-							'" src=data:image/;base64,' +
+							'" src=data:image/' +
+							ext +
+							";base64," +
 							value.buffer +
 							" />"
 						);
+					}
 					return "";
 				},
 				binding: (data) => {
@@ -382,7 +397,7 @@ let NodeaTable = (function () {
 							'" data-name="' +
 							column.data +
 							'"><i class="fa fa-download"></i>&nbsp;&nbsp;' +
-							STR_LANGUAGE.download_file +
+							value.split("/")[value.split("/").length - 1].substr(37) +
 							"</a>"
 						);
 					return "";
@@ -467,8 +482,9 @@ let NodeaTable = (function () {
 				render: ({ value, row, column, entity, additionalData }) => {
 					var aTag = `
 						<a class="btn-show ajax" href="/${entity.substring(2)}/show?id=${row.id}" style="float: left;text-align: center;">
-							<button class="btn btn-primary">
+							<button class="btn btn-primary" title="show">
 								<i class="fa fa-desktop fa-md"></i>
+								<span style="display: none;">Show</span>
 							</button>
 						</a>`;
 					return aTag;
@@ -481,8 +497,9 @@ let NodeaTable = (function () {
 				render: ({ value, row, column, entity, additionalData }) => {
 					var aTag = `
 					<a class="ajax" href="/${entity.substring(2)}/update_form?id=${row.id}" style="float: left;text-align: center;">
-						<button class="btn btn-warning">
+						<button class="btn btn-warning" title="edit">
 							<i class="fas fa-edit"></i>
+								<span style="display: none;">Edit</span>
 						</button>
 					</a>`;
 					return aTag;
@@ -496,8 +513,9 @@ let NodeaTable = (function () {
 					var form = `
 					<form class="ajax" action="/${entity.substring(2)}/delete" method="post" style="float: left;text-align: center;">
 						<input name="id" type="hidden" value="${row.id}" />
-						<button class="btn btn-danger btn-confirm">
+						<button class="btn btn-danger btn-confirm" title="delete">
 							<i class="fas fa-trash"></i>
+							<span style="display: none;">Delete</span>
 						</button>
 					</form>`;
 					return form;
@@ -518,18 +536,30 @@ let NodeaTable = (function () {
 			default: {
 				render: ({ value }) => value,
 				search: ({ column, title, savedFilter, searchTh, triggerSearch, additionalData }) => {
-					const element = $(`<input type="text" class="form-control input" value="${savedFilter}" placeholder="${title}" />`);
+					const element = $(
+						`<input aria-labelledby="label_${column.data}" type="text" class="form-control input" value="${savedFilter}" placeholder="${title}" />`
+					);
 					if (savedFilter && savedFilter != "") triggerSearch(savedFilter, undefined, true);
 					element.on("keyup", function () {
 						const searchValue = element.val();
 						triggerSearch(searchValue);
 					});
-					return element;
+					return element.prepend(`<label id="label_${column.data}"><span style="display: none;">${title}</span></label>`);
 				},
 				binding: ({ column, columnDef, entity, element, event, additionalData }) => {
 					try {
 						const td = $(element);
-						if (!additionalData.scrolling) td.parents("tr").find(".btn-show")[0].click();
+						if (!additionalData.scrolling) {
+							const btnShow = td.parents("tr").find(".btn-show")[0];
+							if (btnShow !== undefined) {
+								btnShow.click();
+							} else {
+								const select = td.parents("tr").find("input[type='checkbox']")[0];
+								if (select) {
+									select.click();
+								}
+							}
+						}
 					} catch (err) {
 						console.error("NodeaTable default binding failed - No `.btn-show` on row");
 					}
@@ -740,23 +770,20 @@ let NodeaTable = (function () {
 						else value = row[fieldPath];
 
 						// Related to many value
-						if (value && typeof value === 'object') {
-                            if(column.type != 'picture') {
-                                const usings = column.using.split(",");
-                                const manyValue = [];
-                                for (const currentValue of value) {
-                                    const usingArray = [];
-                                    for (const using of usings) {
-                                        usingArray.push(currentValue[using]);
-                                    }
-                                    manyValue.push(usingArray.join(' '));
-                                }
-                                value = manyValue.join(' - ');
-                            }
-                        }
-		            }
-	                if(columnDef.htmlencode === true && value && value != '' && isNaN(value))
-	                    value = HtmlEncode(value);
+						if (value && Array.isArray(value)) {
+							const usings = column.using?.split(",");
+							const manyValue = [];
+							for (const currentValue of value) {
+								const usingArray = [];
+								for (const using of usings) {
+									usingArray.push(currentValue[using]);
+								}
+								manyValue.push(usingArray.join(" "));
+							}
+							value = manyValue.join(" - ");
+						}
+					}
+					if (columnDef.htmlencode === true && value && value != "" && isNaN(value)) value = HtmlEncode(value);
 
 					return originalRender({ value, row, column, entity, additionalData });
 				};
