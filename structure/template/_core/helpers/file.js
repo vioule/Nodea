@@ -83,7 +83,7 @@ function writePicture(filePath, buffer, encoding = 'utf8') {
 	return new Promise(async (resolve, reject) => {
 		try {
 			const ext = path.extname(filePath).toLowerCase();
-			const supportedFormats = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
+			const supportedFormats = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg'];
 
 			if (!supportedFormats.includes(ext)) {
 				return reject(new Error(`Format non supporté: ${ext}`));
@@ -93,7 +93,7 @@ function writePicture(filePath, buffer, encoding = 'utf8') {
 			const promises = [];
 
 			// Resize principale (optionnel)
-			if (appConf.resizePicture && appConf.resizePicture.enabled) {
+			if (ext != '.svg' && appConf.resizePicture && appConf.resizePicture.enabled) {
 				const { width, height, quality } = appConf.resizePicture;
 
 				const resizedBuffer = await sharp(buffer)
@@ -109,15 +109,19 @@ function writePicture(filePath, buffer, encoding = 'utf8') {
 
 			// Thumbnail
 			const { width: tWidth, height: tHeight, quality: tQuality, folder } = appConf.thumbnail;
-
-			const thumbBuffer = await sharp(buffer)
-				.resize(tWidth, tHeight)
-				.toFormat(format, { quality: tQuality })
-				.toBuffer();
-
 			const thumbPath = path.join(folder, filePath);
-			promises.push(writeFileWithDirs(thumbPath, thumbBuffer, encoding));
 
+			if (ext != '.svg'){
+				const thumbBuffer = await sharp(buffer)
+					.resize(tWidth, tHeight)
+					.toFormat(format, { quality: tQuality })
+					.toBuffer();
+				promises.push(writeFileWithDirs(thumbPath, thumbBuffer, encoding));
+			} else {
+				// Thumbnail pour du SVG non utile donc écriture du même contenu
+				console.log("ecriture buffer");
+				promises.push(writeFileWithDirs(thumbPath, buffer, encoding));
+			}
 			await Promise.all(promises);
 			resolve();
 		} catch (err) {

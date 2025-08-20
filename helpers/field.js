@@ -408,7 +408,7 @@ module.exports = {
 					str += "	<input type='hidden' name='"+ field + "_modified' value='false' />\n";
 				} else if (file == 'show') {
 					str += "	<div class='input-group'>\n";
-					str += "		<a href='/app/download?entity=" + entity + "&field=" + value2 + "&id={id}'><img src=\"data:image/;base64,{" + value2 + ".buffer}\" class='img-fluid' data-type='picture' alt=\"" + value + "\" name=" + field + "  " + readOnly + " height='400' width='400' /></a>\n";
+					str += "		<a href='/app/download?entity=" + entity + "&field=" + value2 + "&id={id}'><img src=\"data:{" + value2 + ".mimetype};base64,{" + value2 + ".buffer}\" class='img-fluid' data-type='picture' alt=\"" + value + "\" name=" + field + "  " + readOnly + " height='400' width='400' /></a>\n";
 					str += "	</div>\n";
 				}
 				break;

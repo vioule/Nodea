@@ -9,6 +9,7 @@ const enums_radios = require('@core/utils/enum_radio');
 const globalConfig = require('@config/global');
 
 const models = require('@app/models');
+const pathLib = require('path');
 
 function addressHelper(){
 	if (!this.address_helper)
@@ -365,21 +366,45 @@ module.exports = {
 				promises.push((async (key) => {
 					const value = entity.dataValues[key];
 					const path = isThumbnail ? 'thumbnail/' + value : value;
+					const buffer = await file_helper.readBuffer(path);
 
-					if(value.slice(-4).toUpperCase() == '.SVG') {
-						const buffer = await file_helper.readBuffer(path);
-						entity.dataValues[key] = {
-							value: value,
-							svg: fs.readFileSync(globalConfig.localstorage + path, 'utf8'),
-							buffer: buffer
-						};
-					} else {
-						const buffer = await file_helper.readBuffer(path);
-						entity.dataValues[key] = {
-							value: value,
-							buffer: buffer
-						};
+					// Déterminer le mimetype en fonction de l’extension
+					const ext = pathLib.extname(value).toLowerCase();
+					let mimetype = "application/octet-stream";
+					switch (ext) {
+						case ".jpg":
+						case ".jpeg":
+							mimetype = "image/jpeg";
+							break;
+						case ".png":
+							mimetype = "image/png";
+							break;
+						case ".gif":
+							mimetype = "image/gif";
+							break;
+						case ".svg":
+							mimetype = "image/svg+xml";
+							break;
+						default:
+							mimetype = "image/";
+							break;
 					}
+
+					entity.dataValues[key] = {
+						value: value,
+						buffer: buffer,
+						mimetype: mimetype
+					}
+
+					// Cas particulier SVG → on garde aussi le contenu texte
+					if (ext === ".svg") {
+						const buffer_svg = fs.readFileSync(
+							globalConfig.localstorage + path,
+							"utf8"
+						);
+						entity.dataValues[key].svg = buffer_svg;
+					}
+
 				})(key));
 			}
 
