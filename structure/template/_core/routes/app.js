@@ -240,9 +240,9 @@ class CoreApp extends Route {
 			if (!access.entityAccess(data.req.session.passport.user.r_group, entity.substring(2)))
 				return data.res.error(_ => data.res.status(403).end());
 
-			// const row = await models[entity.capitalizeFirstLetter()].findOne({where: {id}});
 			const options = await models[entity.capitalizeFirstLetter()].getRelations();
 
+			// We assume that field could contain relations
 			const array_field = field.split('.');
 			const custom_include = [];
 
@@ -256,7 +256,7 @@ class CoreApp extends Route {
 					}
 				}
 			}
-
+			// Needs to get the entity with the relation containing the field of type "file"
 			const row = await models[entity.capitalizeFirstLetter()].findOne({where: {id}, include: custom_include, raw: true});
 
 			if (!row)

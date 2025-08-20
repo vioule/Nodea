@@ -29,6 +29,10 @@ const mailConf = {
 		from: 'Nodea App <no-reply@nodea-software.com>',
 		url : {
 			host: 'http://127.0.0.1:' + globalConf.port
+		},
+		subject:{
+			mail_reset: "NODEA - Réinitialisation de mot de passe",
+			mail_first: "NODEA - Inscription"
 		}
 	},
 	production: {
@@ -44,6 +48,10 @@ const mailConf = {
 		from: 'Nodea App <no-reply@nodea-software.com>',
 		url : {
 			host: 'http://127.0.0.1:' + globalConf.port
+		},
+		subject:{
+			mail_reset: "NODEA - Réinitialisation de mot de passe",
+			mail_first: "NODEA - Inscription"
 		}
 	},
 	studio: {
@@ -59,6 +67,10 @@ const mailConf = {
 		from: 'Nodea App <no-reply@nodea-software.com>',
 		url : {
 			host: 'http://127.0.0.1:' + globalConf.port
+		},
+		subject:{
+			mail_reset: "NODEA - Réinitialisation de mot de passe",
+			mail_first: "NODEA - Inscription"
 		}
 	},
 	cloud: {
@@ -74,6 +86,10 @@ const mailConf = {
 		from: 'Nodea App <no-reply@nodea-software.com>',
 		url : {
 			host: 'http://127.0.0.1:' + globalConf.port
+		},
+		subject:{
+			mail_reset: "NODEA - Réinitialisation de mot de passe",
+			mail_first: "NODEA - Inscription"
 		}
 	}
 }

@@ -215,12 +215,12 @@ class CoreLogin extends Route {
 				// Send email with generated token
 				await mailer.sendTemplate("mail_reset_password", {
 					data: {
-						href: mailer.config.host + "/reset_password/" + token,
+						href: mailer.config.url.host + "/reset_password/" + token,
 						user: user,
 					},
 					from: mailer.config.from,
 					to: req.body.email,
-					subject: "Ariane - Réinitialisation de votre mot de passe",
+					subject: mailer.config.subject.mail_reset
 				});
 			})()
 				.then((_) => {

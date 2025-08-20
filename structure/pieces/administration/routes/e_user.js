@@ -121,12 +121,12 @@ class E_user extends Entity {
 			try {
 				await mailer.sendTemplate('first_connection', {
 					data: {
-						first_connection_url: mailer.config.host + `/first_connection?login=${req.body.f_login}`,
+						first_connection_url: mailer.config.url.host + `/first_connection?login=${req.body.f_login}`,
 						user: req.body
 					},
 					from: mailer.config.from,
 					to: req.body.f_email,
-					subject: 'Inscription'
+					subject: mailer.config.subject.mail_first
 				});
 				res.success(_ => res.status(200).send(true));
 			} catch (err) {
@@ -182,7 +182,7 @@ class E_user extends Entity {
 								},
 								from: mailer.config.from,
 								to: req.body.f_email,
-								subject: 'Inscription'
+								subject: mailer.config.subject.mail_first
 							});
 						} catch(err) {
 							console.error(err);
