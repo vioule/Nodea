@@ -3,7 +3,7 @@
 		<label for="f_entity" class="required">
 			{#__ key="entity.e_inline_help.f_entity"/}
 		</label>
-		<select id="entitiesSelect" required name="f_entity" style="width: 100%;">
+		<select multiple="false" id="entitiesSelect" required name="f_entity" style="width: 100%;">
 			<option value="" default="">{#__ key="select.default" /}</option>
 			{#entities}
 				<option value="{entity}">{#__ key=tradKey /}</option>
@@ -17,7 +17,7 @@
 				<label for="{entity}" class="required">
 					{#__ key="entity.e_inline_help.f_field"/}
 				</label>
-				<select class="entitiesFields regular-select" name="f_field" disabled style="width: 100%;">
+				<select multiple="false" class="entitiesFields regular-select" name="f_field" disabled style="width: 100%;">
 					<option value="" default="">{#__ key="select.default" /}</option>
 					{#fields}
 						<option value="{entity}.{field}">{#__ key=tradKey /}</option>

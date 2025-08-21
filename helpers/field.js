@@ -321,7 +321,7 @@ module.exports = {
 					str += "		<!--{/eq}-->\n";
 					str += "	<!--{/enum_radio." + entity + "." + field + "}-->\n";
 				} else if (file != "create") {
-					str += "	<select class='form-control select' name='" + field + "' id='" + field + "' " + disabled + " style='width: 100%;'>\n";
+					str += "	<select multiple='false' class='form-control select' name='" + field + "' id='" + field + "' " + disabled + " style='width: 100%;'>\n";
 					str += "		<option value=''><!--{#__ key=\"select.default\" /}--></option>\n";
 					str += "		<!--{#enum_radio." + entity + "." + field + "}-->\n";
 					str += "			<!--{@eq key=" + value2 + " value=\"{.value}\" }-->\n";
@@ -332,7 +332,7 @@ module.exports = {
 					str += "		<!--{/enum_radio." + entity + "." + field + "}-->\n";
 					str += "	</select>\n";
 				} else if (value != "") {
-					str += "	<select class='form-control select' name='" + field + "' id='" + field + "' " + disabled + " style='width: 100%;'>\n";
+					str += "	<select multiple='false' class='form-control select' name='" + field + "' id='" + field + "' " + disabled + " style='width: 100%;'>\n";
 					str += "		<option value=''><!--{#__ key=\"select.default\" /}--></option>\n";
 					str += "		<!--{#enum_radio." + entity + "." + field + "}-->\n";
 					str += "			<!--{@eq key=\"" + value + "\" value=\"{.value}\" }-->\n";
@@ -343,7 +343,7 @@ module.exports = {
 					str += "		<!--{/enum_radio." + entity + "." + field + "}-->\n";
 					str += "	</select>\n";
 				} else {
-					str += "	<select class='form-control select' name='" + field + "' id='" + field + "' " + disabled + " style='width: 100%;'>\n";
+					str += "	<select multiple='false' class='form-control select' name='" + field + "' id='" + field + "' " + disabled + " style='width: 100%;'>\n";
 					str += "		<option value='' selected><!--{#__ key=\"select.default\" /}--></option>\n";
 					str += "		<!--{#enum_radio." + entity + "." + field + "}-->\n";
 					str += "			<option value=\"{.value}\"> {.translation} </option>\n";

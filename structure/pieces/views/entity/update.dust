@@ -52,7 +52,8 @@
 									{#__ key="entity.custom_entity.id_entity"/} {#__ key="entity.custom_entity.label_entity"/}
 								</label>
 								<input name="id" type="hidden" value="{custom_entity.id}">
-								<input name="id_display" type="text" placeholder="{custom_entity.id_entity}" value="{custom_entity.id}" disabled="" class="form-control input"/>
+								<label id="label_id_display" for="id_display"><span style="display: none;">{#__ key="entity.custom_entity.id_entity"/}</span></label>
+								<input aria-labelledby="label_id_display" name="id_display" type="text" placeholder="{custom_entity.id_entity}" value="{custom_entity.id}" disabled="" class="form-control input"/>
 							</div>
 							{#custom_entity}
 								{>"custom_entity/update_fields"/}

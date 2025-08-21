@@ -69,7 +69,7 @@
 					</div>
 					<div class="col-12">
 						Commit:<br>
-						<select class="select2" style='width:100%;' name="commit">
+						<select multiple="false" class="select2" style='width:100%;' name="commit">
 							{#projectCommits}
 								<option value='{id}'>{title}</option>
 							{/projectCommits}

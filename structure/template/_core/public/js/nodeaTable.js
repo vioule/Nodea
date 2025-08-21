@@ -292,7 +292,7 @@ let NodeaTable = (function () {
 						: '<i class="far fa-square fa-lg"><span style="visibility: hidden;">0</span></i>';
 				},
 				search: ({ column, title, savedFilter, searchTh, triggerSearch, additionalData }) => {
-					const element = $(`<select data-type='boolean' style='width: 100% !important;' class='form-control input'>
+					const element = $(`<select multiple="false" data-type='boolean' style='width: 100% !important;' class='form-control input'>
 					                    <option value='' selected>${STR_LANGUAGE.boolean_filter.all}</option>
 					                    <option value='null'>${STR_LANGUAGE.boolean_filter.null}</option>
 					                    <option value='checked'>${STR_LANGUAGE.boolean_filter.checked}</option>

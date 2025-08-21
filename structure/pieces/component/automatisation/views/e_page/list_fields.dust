@@ -38,13 +38,13 @@
                 {#__ key="entity.e_page.f_timeout"/}
             </th>
             {#actionAccess entity="page" action="read"}
-            <th data-type="show"></th>
+            <th data-type="show"><span style="display: none;">{#__ key="button.show"/}</span></th>
             {/actionAccess}
             {#actionAccess entity="page" action="update"}
-            <th data-type="update"></th>
+            <th data-type="update"><span style="display: none;">{#__ key="button.update"/}</span></th>
             {/actionAccess}
             {#actionAccess entity="page" action="delete"}
-            <th data-type="delete"></th>
+            <th data-type="delete"><span style="display: none;">{#__ key="button.delete"/}</span></th>
             {/actionAccess}
         </tr>
     </thead>
@@ -86,13 +86,13 @@
                 {#__ key="entity.e_page.f_timeout"/}
             </th>
             {#actionAccess entity="page" action="read"}
-            <th data-type="show"></th>
+            <th data-type="show"><span style="display: none;">{#__ key="button.show"/}</span></th>
             {/actionAccess}
             {#actionAccess entity="page" action="update"}
-            <th data-type="update"></th>
+            <th data-type="update"><span style="display: none;">{#__ key="button.update"/}</span></th>
             {/actionAccess}
             {#actionAccess entity="page" action="delete"}
-            <th data-type="delete"></th>
+            <th data-type="delete"><span style="display: none;">{#__ key="button.delete"/}</span></th>
             {/actionAccess}
         </tr>
     </thead>

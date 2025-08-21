@@ -13,7 +13,7 @@
                     <i data-field="f_format_pair" class="inline-help fa fa-info-circle" style="color: #1085EE;"></i>
                 {/inline_help}
             </label>
-            <select class="form-control" name="f_format_pair" width="100%" required>
+            <select multiple="false" class="form-control" name="f_format_pair" width="100%" required>
                 {#format_pairs}
                     <option value="{code}">{label}</option>
                 {/format_pairs}
@@ -37,7 +37,7 @@
     <div data-field="f_entity" class="col-12">
         <div class="form-group">
             <label for="f_entity" class="required"> {#__ key="entity.e_document_template.f_entity"/} </label>
-            <select data-url="/document_template/entity_list" name="f_entity" data-source="document_template" data-using="f_entity" style="width: 100%" class="form-control ajax" id="document_template_select_entity" required>
+            <select multiple="false" data-url="/document_template/entity_list" name="f_entity" data-source="document_template" data-using="f_entity" style="width: 100%" class="form-control ajax" id="document_template_select_entity" required>
             </select>
         </div>
     </div>

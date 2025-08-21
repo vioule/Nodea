@@ -18,7 +18,7 @@
 					&nbsp;<i data-field="f_type" class="inline-help fa fa-info-circle" style="color: #1085EE"></i>
 				{/inline_help}
 			</label>
-			<select class="form-control select media-field" required="" name="f_media_type" style="width: 100%;">
+			<select multiple="false" class="form-control select media-field" required="" name="f_media_type" style="width: 100%;">
 				<option value="" selected="">{#__ key="select.default" /}</option>
 				{#enum_radio.e_media.f_type}
 					<option value="{.value}"> {.translation} </option>
@@ -34,7 +34,7 @@
 					&nbsp;<i data-field="f_target_entity" class="inline-help fa fa-info-circle" style="color: #1085EE"></i>
 				{/inline_help}
 			</label>
-			<select class="form-control select media-field" required="" name="f_target_entity" style="width: 100%;">
+			<select multiple="false" class="form-control select media-field" required="" name="f_target_entity" style="width: 100%;">
 				<option value="" selected="">{#__ key="select.default" /}</option>
 				{#target_entities}
 					<option value="{codename}">{trad}</option>
