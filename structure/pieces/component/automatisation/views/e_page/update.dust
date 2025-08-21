@@ -56,7 +56,8 @@
 									{#__ key="entity.e_page.id_entity"/} {#__ key="entity.e_page.label_entity"/}
 								</label>
 								<input name="id" type="hidden" value="{e_page.id}">
-								<input name="id_display" type="text" placeholder="{e_page.id_entity}" value="{e_page.id}" disabled="" class="form-control input"/>
+								<label id="label_id_display" for="id_display"><span style="display: none;">{#__ key="entity.e_page.id_entity"/}</span></label>
+								<input aria-labelledby="label_id_display" name="id_display" type="text" placeholder="{e_page.id_entity}" value="{e_page.id}" disabled="" class="form-control input"/>
 							</div>
 							{#e_page}
 								{>"e_page/update_fields"/}

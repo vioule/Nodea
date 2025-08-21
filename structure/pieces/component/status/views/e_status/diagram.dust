@@ -118,7 +118,7 @@
 									<label for="f_entity" class="required">
 										{#__ key="component.status.select_status" /}
 									</label>
-									<select name="entityStatus" required class="form-control" style="width:100%;">
+									<select multiple="false" name="entityStatus" required class="form-control" style="width:100%;">
 										<option value="" selected>{#__ key="select.default" /}</option>
 										{#statuses}
 											{#statuses parentEntity=entity parentTrad=entityTrad}

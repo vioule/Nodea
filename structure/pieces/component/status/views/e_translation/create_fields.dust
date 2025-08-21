@@ -7,7 +7,7 @@
 					&nbsp;<i data-field="f_language" class="inline-help fa fa-info-circle" style="color: #1085EE"></i>
 				{/inline_help}
 			</label>
-			<select name="f_language" class="form-control">
+			<select multiple="false" name="f_language" class="form-control">
 				<option default>{#__ key="select.default" /}</option>
 				{#languages}
 					<option value="{.}">{.}</option>

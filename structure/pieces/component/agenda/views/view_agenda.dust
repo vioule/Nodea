@@ -56,7 +56,7 @@
 						</div>
 					</div>
 					<div class="card-body">
-						<select style="width: 100%;" class="form-control selectCategoryColor" id="selectCategorySide">
+						<select multiple="false" style="width: 100%;" class="form-control selectCategoryColor" id="selectCategorySide">
 							<option data-backgroundcolor="#CCCCCC" value="">{#__ key="global_component.agenda.no_category"/}</option>
 							{#categories}
 								<option data-backgroundcolor="{f_color}" value="{id}">{f_label}</option>
@@ -119,7 +119,7 @@
 				<div class="modal-body">
 					<input type="hidden" id="modalCreateStartDate" >
 					<input type="hidden" id="modalCreateUser" >
-					<select style="width: 100%;" class="form-control selectCategoryColor" id="modalCreateCategory">
+					<select multiple="false" style="width: 100%;" class="form-control selectCategoryColor" id="modalCreateCategory">
 						<option data-backgroundcolor="#CCCCCC" value="">{#__ key="global_component.agenda.no_category"/}</option>
 						{#categories}
 							<option data-backgroundcolor="{f_color}" value="{id}">{f_label}</option>
@@ -174,7 +174,7 @@
 				</div>
 				<div class="modal-body">
 					<input type="hidden" id="modalUpdateID" />
-					<select style="width: 100%;" class="form-control selectCategoryColor" id="modalUpdateCategory">
+					<select multiple="false" style="width: 100%;" class="form-control selectCategoryColor" id="modalUpdateCategory">
 						<option data-backgroundcolor="#CCCCCC" value="">{#__ key="global_component.agenda.no_category"/}</option>
 						{#categories}
 							<option data-backgroundcolor="{f_color}" value="{id}">{f_label}</option>

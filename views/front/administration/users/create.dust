@@ -72,7 +72,7 @@
 												<label for="role" class="required">
 													{#__ key="users.role" /}
 												</label>
-												<select name="role" class="form-control select" required>
+												<select multiple="false" name="role" class="form-control select" required>
 													<option value="">{#__ key="action.choose" /}</option>
 													{#roles}
 														<option value="{id}">{name}</option>

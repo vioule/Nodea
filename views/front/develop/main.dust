@@ -53,7 +53,7 @@
 								</h3>
 								<ul class="nav nav-pills ml-auto p-3 powertip" powertip-content='{#__ key="powertip.develop.2" /}' powertip-order='2'>
 									<span style="margin-top: 7px;"><b>Application:</b>&nbsp;&nbsp;</span>
-									<select id="develop_current_app" class="select2" style='width:200px;'>
+									<select id="develop_current_app" class="select2" multiple="false" style='width:200px;'>
 										<option value="" selected></option>
 										{#allApps}
 											{@eq key=currentApp value=name}

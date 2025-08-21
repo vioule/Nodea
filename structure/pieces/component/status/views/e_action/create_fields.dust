@@ -7,7 +7,7 @@
 				<i data-entity="e_truc" data-field="r_media" class="inline-help fa fa-info-circle" style="color: #1085EE"></i>
 				{/inline_help}
 			</label>
-			<select class="ajax form-control" required="" data-statustarget="{status_target}" name="r_media" data-source="media" data-using="f_name,f_type" style="width: 100%;"></select>
+			<select multiple="false" class="ajax form-control" required="" data-statustarget="{status_target}" name="r_media" data-source="media" data-using="f_name,f_type" style="width: 100%;"></select>
 		</div>
 	</div>
 	<div data-field="f_order" class="col-12">
@@ -29,7 +29,7 @@
 					&nbsp;<i data-field="f_execution" class="inline-help fa fa-info-circle" style="color: #1085EE"></i>
 				{/inline_help}
 			</label>
-			<select class="form-control select" name="f_execution">
+			<select multiple="false" class="form-control select" name="f_execution">
 				<option value="">{#__ key="select.default" /}</option>
 				{#enum_radio.e_action.f_execution}
 					{@eq key="Immediate" value="{.value}" }

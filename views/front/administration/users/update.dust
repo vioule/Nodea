@@ -78,7 +78,7 @@
 														<label for="role">
 															{#__ key="users.role" /}
 														</label>
-														<select name="role" class="form-control select">
+														<select multiple="false" name="role" class="form-control select">
 															{#roles}
 																{@eq key=Role.id value=id}
 																	<option value="{id}" selected>{name}</option>
