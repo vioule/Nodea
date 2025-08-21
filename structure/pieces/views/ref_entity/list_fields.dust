@@ -1,15 +1,15 @@
 <table id="table_custom_entity" data-entity="custom_entity" data-url="{tableUrl}" class="dataTable table table-bordered table-striped animated fadeIn" style="display: none;">
 	<thead class="main">
 		<tr class='fields'>
-			{#actionAccess entity="custom_url_entity" action="read"}
-				<th data-type="show"></th>
-			{/actionAccess}
-			{#actionAccess entity="custom_url_entity" action="update"}
-				<th data-type="update"></th>
-			{/actionAccess}
-			{#actionAccess entity="custom_url_entity" action="delete"}
-				<th data-type="delete"></th>
-			{/actionAccess}
+            {#actionAccess entity="custom_url_entity" action="read"}
+            <th data-type="show"><span style="display: none;">{#__ key="button.show"/}</span></th>
+            {/actionAccess}
+            {#actionAccess entity="custom_url_entity" action="update"}
+            <th data-type="update"><span style="display: none;">{#__ key="button.update"/}</span></th>
+            {/actionAccess}
+            {#actionAccess entity="custom_url_entity" action="delete"}
+            <th data-type="delete"><span style="display: none;">{#__ key="button.delete"/}</span></th>
+            {/actionAccess}
 			<th data-field="id" data-col="id">
 				{#__ key="entity.custom_entity.id_entity"/}&nbsp;{#__ key="entity.custom_entity.label_entity"/}
 			</th>
@@ -23,15 +23,15 @@
 	</thead>
 	<thead class='filters'>
 		<tr class='fields'>
-			{#actionAccess entity="custom_url_entity" action="read"}
-				<th data-type="show"></th>
-			{/actionAccess}
-			{#actionAccess entity="custom_url_entity" action="update"}
-				<th data-type="update"></th>
-			{/actionAccess}
-			{#actionAccess entity="custom_url_entity" action="delete"}
-				<th data-type="delete"></th>
-			{/actionAccess}
+            {#actionAccess entity="custom_url_entity" action="read"}
+            <th data-type="show"><span style="display: none;">{#__ key="button.show"/}</span></th>
+            {/actionAccess}
+            {#actionAccess entity="custom_url_entity" action="update"}
+            <th data-type="update"><span style="display: none;">{#__ key="button.update"/}</span></th>
+            {/actionAccess}
+            {#actionAccess entity="custom_url_entity" action="delete"}
+            <th data-type="delete"><span style="display: none;">{#__ key="button.delete"/}</span></th>
+            {/actionAccess}
 			<th data-field="id" data-col="id">
 				{#__ key="entity.custom_entity.id_entity"/}&nbsp;{#__ key="entity.custom_entity.label_entity"/}
 			</th>

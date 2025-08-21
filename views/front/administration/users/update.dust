@@ -61,8 +61,8 @@
 												</div>
 												<div data-field="id" class="col-12">
 													<div class="form-group">
-														<label for="id">ID</label>
-														<input type="text" name="id" value="{id}" class="form-control" readonly="">
+														<label id="label_id" for="id">ID</label>
+														<input aria-labelledby="label_id" type="text" name="id" value="{id}" class="form-control" readonly="">
 													</div>
 												</div>
 												<div data-field="login" class="col-xs-12 col-sm-6">
@@ -78,7 +78,7 @@
 														<label for="role">
 															{#__ key="users.role" /}
 														</label>
-														<select multiple="false" name="role" class="form-control select">
+														<select name="role" class="form-control select">
 															{#roles}
 																{@eq key=Role.id value=id}
 																	<option value="{id}" selected>{name}</option>

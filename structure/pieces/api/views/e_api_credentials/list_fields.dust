@@ -8,15 +8,15 @@
 			<th data-field="f_client_name" data-col="f_client_name" data-type="string">
 				{#__ key="entity.e_api_credentials.f_client_name"/}
 			</th>
-			{#actionAccess entity="api_credentials" action="read"}
-			<th data-type="show"></th>
-			{/actionAccess}
-			{#actionAccess entity="api_credentials" action="update"}
-			<th data-type="update"></th>
-			{/actionAccess}
-			{#actionAccess entity="api_credentials" action="delete"}
-			<th data-type="delete"></th>
-			{/actionAccess}
+            {#actionAccess entity="api_credentials" action="read"}
+            <th data-type="show"><span style="display: none;">{#__ key="button.show"/}</span></th>
+            {/actionAccess}
+            {#actionAccess entity="api_credentials" action="update"}
+            <th data-type="update"><span style="display: none;">{#__ key="button.update"/}</span></th>
+            {/actionAccess}
+            {#actionAccess entity="api_credentials" action="delete"}
+            <th data-type="delete"><span style="display: none;">{#__ key="button.delete"/}</span></th>
+            {/actionAccess}
 		</tr>
 	</thead>
 	<thead class="filters">
@@ -28,15 +28,15 @@
 			<th data-field="f_client_name" data-col="f_client_name" data-type="string">
 				{#__ key="entity.e_api_credentials.f_client_name"/}
 			</th>
-			{#actionAccess entity="api_credentials" action="read"}
-			<th data-type="show"></th>
-			{/actionAccess}
-			{#actionAccess entity="api_credentials" action="update"}
-			<th data-type="update"></th>
-			{/actionAccess}
-			{#actionAccess entity="api_credentials" action="delete"}
-			<th data-type="delete"></th>
-			{/actionAccess}
+            {#actionAccess entity="api_credentials" action="read"}
+            <th data-type="show"><span style="display: none;">{#__ key="button.show"/}</span></th>
+            {/actionAccess}
+            {#actionAccess entity="api_credentials" action="update"}
+            <th data-type="update"><span style="display: none;">{#__ key="button.update"/}</span></th>
+            {/actionAccess}
+            {#actionAccess entity="api_credentials" action="delete"}
+            <th data-type="delete"><span style="display: none;">{#__ key="button.delete"/}</span></th>
+            {/actionAccess}
 		</tr>
 	</thead>
 	<tbody>

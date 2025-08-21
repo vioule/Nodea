@@ -299,7 +299,7 @@ exports.setupEntity = async (data) => {
 			// Create new html for standard entity
 			li += `
 				<!--{#entityAccess entity="${entity_url}"}-->
-					<li class="nav-item" data-menu="${entity_url}">
+					<li class="nav-item" role="menuitem" data-menu="${entity_url}">
 		                <a href="#" class="nav-link">
 		                    <i class="nav-icon fas fa-folder"></i>
 		                    <p>

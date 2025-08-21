@@ -112,7 +112,7 @@
 								<div class="box-body">
 									{#__ key="global_component.document_template.help.displayEntityVariables" /}
 									<a>
-										<select multiple="false" name="f_entity" class="form-control select" id="f_entity" style="min-width: 300px;">
+										<select name="f_entity" class="form-control select" id="f_entity" style="min-width: 300px;">
 											<option value="">{#__ key="select.default" /}</option>
 											{#entities}
 												{@eq key=id value=selectedEntity}

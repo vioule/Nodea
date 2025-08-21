@@ -51,7 +51,7 @@
 							{#__ key="entity.e_program.label_entity" /}
 						</h3>
 						<div class="card-tools">
-							<button type="button" class="btn btn-tool" data-card-widget="collapse">
+							<button type="button" class="btn btn-tool" data-card-widget="collapse" title="collapse">
 							<i class="fas fa-minus"></i>
 							</button>
 						</div>
@@ -59,9 +59,10 @@
 					<div class="card-body">
 						{#e_program}
 							<div class="form-group">
-								<label for="id">{#__ key="entity.e_program.id_entity"/} {#__ key="entity.e_program.label_entity"/}</label>
-								<input type="text" name="sourceId" value="{e_program.id}" disabled="" class="form-control"/>
-								<input type="text" name="sourceName" value="e_program" disabled="" class="form-control" style="display:none;" />
+								<label id="label_id" for="id">{#__ key="entity.e_program.id_entity"/} {#__ key="entity.e_program.label_entity"/}</label>
+								<input type="text" name="sourceId" aria-labelledBy="label_id" value="{e_program.id}" disabled="" class="form-control"/>
+								<label id="label_sourceName" for="sourceName"><span style="display:none;">sourceName</span></label>
+								<input type="text" name="sourceName" aria-labelledBy="label_sourceName" value="e_program" disabled="" class="form-control" style="display:none;" />
 							</div>
 							{>"e_program/show_fields"/}
 

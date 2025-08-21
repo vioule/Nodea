@@ -48,7 +48,7 @@
 							{#__ key="entity.e_traceability.label_entity"/}
 						</h3>
 						<div class="card-tools">
-							<button type="button" class="btn btn-tool" data-card-widget="collapse">
+							<button type="button" class="btn btn-tool" data-card-widget="collapse" title="collapse">
 							<i class="fas fa-minus"></i>
 							</button>
 						</div>
@@ -66,7 +66,7 @@
 									<i data-entity="e_traceability" data-field="f_entity" class="inline-help fa fa-info-circle" style="color: #1085EE"></i>
 									{/inline_help}
 								</label>
-								<select multiple="false" class="ajax form-control" name="f_entity" id="entity-select-tracking" data-source="traceability" data-using="f_entity" style="width: 100%"></select>
+								<select class="ajax form-control" name="f_entity" id="entity-select-tracking" data-source="traceability" data-using="f_entity" style="width: 100%"></select>
 							</div>
 						</div>
 						<br>

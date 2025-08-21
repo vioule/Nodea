@@ -93,7 +93,7 @@
                             <i data-field="f_startwith_method" class="inline-help fa fa-info-circle" style="color: #1085EE;"></i>
                             {/inline_help}
                         </label>
-                        <select multiple="false" class="form-control select" name="f_startwith_method" width="100%">
+                        <select class="form-control select" name="f_startwith_method" width="100%">
                             <option value="" selected="">
                                 {#__ key="select.default" /}
                             </option>
@@ -141,7 +141,7 @@
                             <i data-field="f_endwith_method" class="inline-help fa fa-info-circle" style="color: #1085EE;"></i>
                             {/inline_help}
                         </label>
-                        <select multiple="false" class="form-control select" name="f_endwith_method" width="100%">
+                        <select class="form-control select" name="f_endwith_method" width="100%">
                             <option value="" selected="">
                                 {#__ key="select.default" /}
                             </option>
@@ -203,7 +203,7 @@
                 <i data-field="f_type" class="inline-help fa fa-info-circle" style="color: #1085EE;"></i>
                 {/inline_help}
             </label>
-            <select multiple="false" class="form-control select" name="f_type" style="width: 100%;">
+            <select class="form-control select" name="f_type" style="width: 100%;">
                 <option value="">
                     {#__ key="select.default" /}
                 </option>

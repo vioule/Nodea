@@ -1,15 +1,15 @@
 <table id="table_e_status" data-url="{tableUrl}" class="dataTable table table-bordered table-striped">
 	<thead class="main">
 		<tr class="fields">
-			{#actionAccess entity="user" action="read"}
-			<th data-type="show"></th>
-			{/actionAccess}
-			{#actionAccess entity="user" action="update"}
-			<th data-type="update"></th>
-			{/actionAccess}
-			{#actionAccess entity="user" action="delete"}
-			<th data-type="delete"></th>
-			{/actionAccess}
+            {#actionAccess entity="user" action="read"}
+            <th data-type="show"><span style="display: none;">{#__ key="button.show"/}</span></th>
+            {/actionAccess}
+            {#actionAccess entity="user" action="update"}
+            <th data-type="update"><span style="display: none;">{#__ key="button.update"/}</span></th>
+            {/actionAccess}
+            {#actionAccess entity="user" action="delete"}
+            <th data-type="delete"><span style="display: none;">{#__ key="button.delete"/}</span></th>
+            {/actionAccess}
 			<th data-field="id" data-col="id">
 				{#__ key="entity.e_status.id_entity"/}&nbsp;
 				{#__ key="entity.e_status.label_entity"/}
@@ -45,15 +45,15 @@
 	</thead>
 	<thead class="filters">
 		<tr class="fields">
-			{#actionAccess entity="user" action="read"}
-			<th data-type="show"></th>
-			{/actionAccess}
-			{#actionAccess entity="user" action="update"}
-			<th data-type="update"></th>
-			{/actionAccess}
-			{#actionAccess entity="user" action="delete"}
-			<th data-type="delete"></th>
-			{/actionAccess}
+            {#actionAccess entity="user" action="read"}
+            <th data-type="show"><span style="display: none;">{#__ key="button.show"/}</span></th>
+            {/actionAccess}
+            {#actionAccess entity="user" action="update"}
+            <th data-type="update"><span style="display: none;">{#__ key="button.update"/}</span></th>
+            {/actionAccess}
+            {#actionAccess entity="user" action="delete"}
+            <th data-type="delete"><span style="display: none;">{#__ key="button.delete"/}</span></th>
+            {/actionAccess}
 			<th data-field="id" data-col="id">
 				{#__ key="entity.e_status.id_entity"/}&nbsp;
 				{#__ key="entity.e_status.label_entity"/}

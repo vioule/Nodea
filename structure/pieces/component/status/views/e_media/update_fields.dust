@@ -38,7 +38,7 @@
 					&nbsp;<i data-field="f_target_entity" class="inline-help fa fa-info-circle" style="color: #1085EE"></i>
 				{/inline_help}
 			</label>
-			<select multiple="false" class="form-control select media-field" required="" name="f_target_entity" style="width: 100%;">
+			<select class="form-control select media-field" required="" name="f_target_entity" style="width: 100%;">
 				<option value="-1">{#__ key="select.default" /}</option>
 				{#target_entities}
 					{@eq key=f_target_entity value="{codename}"}

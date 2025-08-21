@@ -1,6 +1,6 @@
 <div data-field='address_search_input' class='col-12 div_address_search_input'>
 	<div class='form-group'>
-		<label for="f_label">
+		<label id="label_address_search_input" for="f_label">
 			<i class="fa fa-map-marked-alt">&nbsp;</i>{#__ key="entity.E_ENTITY.label_entity"/}&nbsp;
 			<i data-content='global_component.address.inline_help' class="inline-help fa fa-info-circle"></i>
 		</label>
@@ -10,7 +10,7 @@
 					<i class='fa fa-map-marker-alt' aria-hidden='true'></i>
 				</span>
 			</div>
-			<input class='input form-control address_search_input' id='address_search_input' placeholder='__key=global_component.address.search' type='text'>
+			<input class='input form-control address_search_input' id='address_search_input' placeholder='__key=global_component.address.search' aria-labelledby="label_address_search_input" type='text'>
 		</div>
 	</div>
 	<hr>

@@ -31,7 +31,7 @@
 				{/inline_help}
 			</label>
 			<br>
-			<select multiple="false" class="form-control select" name="f_task_type" style="width: 100%;">
+			<select class="form-control select" name="f_task_type" style="width: 100%;">
 				<option value="">
 					{#__ key="select.default" /}
 				</option>
@@ -65,7 +65,7 @@
                 <i data-field="r_process" class="inline-help fa fa-info-circle" style="color: #1085EE"></i>
                 {/inline_help}
             </label>
-            <select multiple="false" class="ajax form-control" name="r_process" data-source="process" data-using="f_name" width="100%">
+            <select class="ajax form-control" name="r_process" data-source="process" data-using="f_name" width="100%">
                 {#r_process}
                 <option value="{id}" selected="">{f_name}</option>
                 {/r_process}

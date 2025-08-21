@@ -41,17 +41,17 @@
 								{#__ key="entity.custom_entity.label_entity"/}
 							</h3>
 							<div class="card-tools">
-								<button type="button" class="btn btn-tool" data-card-widget="collapse">
+								<button type="button" class="btn btn-tool" data-card-widget="collapse" title="collapse">
 								<i class="fas fa-minus"></i>
 								</button>
 							</div>
 						</div>
 						<div class="card-body">
 							<div class="form-group">
-								<label for="id">
+								<label id="label_id" for="id">
 									{#__ key="entity.custom_entity.id_entity"/} {#__ key="entity.custom_entity.label_entity"/}
 								</label>
-								<input name="id" type="hidden" value="{custom_entity.id}">
+								<input aria-labelledby="label_id" name="id" type="hidden" value="{custom_entity.id}">
 								<label id="label_id_display" for="id_display"><span style="display: none;">{#__ key="entity.custom_entity.id_entity"/}</span></label>
 								<input aria-labelledby="label_id_display" name="id_display" type="text" placeholder="{custom_entity.id_entity}" value="{custom_entity.id}" disabled="" class="form-control input"/>
 							</div>

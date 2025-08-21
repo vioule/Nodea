@@ -32,7 +32,7 @@
 				<div class="modal-body">
 					<div name="with_select_reason">
 						<label id="label_r_reason" for="r_reason"><p>{#__ key="entity.e_status.modal_with_select_reason" /} <span style="color: red;">*</span></p></label>
-						<select multiple="false" class="ajax form-control" name="r_reason" data-statusid="" data-source="reason" data-using="f_name" style="width: 100%;" aria-labelledby="label_r_reason"></select>
+						<select class="ajax form-control" name="r_reason" data-statusid="" data-source="reason" data-using="f_name" style="width: 100%;" aria-labelledby="label_r_reason"></select>
 					</div>
 					<div name="with_freecomment">
 						<label id="label_comment" for="comment"><p>{#__ key="entity.e_status.modal_with_select_freecomment" /}</p></label>

@@ -10,7 +10,7 @@ var insertionHandler = {
                 success: function(entityTree) {
                     /* Create select and options */
                     var fieldSelect = '\
-                        <select multiple="false" class="fieldInsertion form-control" name="insertionSelect" data-type="field" data-for="'+$(label).attr('for')+'">\
+                        <select class="fieldInsertion form-control" name="insertionSelect" data-type="field" data-for="'+$(label).attr('for')+'">\
                             <option value="-1">' + CHOOSE_FIELD + '</option>';
                     for (var i = 0; i < entityTree.length; i++)
                         fieldSelect += '<option value="' + entityTree[i].codename + '">' + entityTree[i].traduction + '</option>';
@@ -28,7 +28,7 @@ var insertionHandler = {
     },
     group: {
         displaySelector: function(label) {
-            var groupSelect = '<select multiple="false" class="ajax form-control" data-type="group" name="insertionSelect" data-source="group" data-for="'+$(label).attr('for')+'" data-using="f_label"></select>';
+            var groupSelect = '<select class="ajax form-control" data-type="group" name="insertionSelect" data-source="group" data-for="'+$(label).attr('for')+'" data-using="f_label"></select>';
             $(label).next('.input-group').append(groupSelect).css('width', '80%');
             NodeaForms.elements.ajax_select.initializer($(label).next('.input-group').find('select'), CHOOSE_GROUP);
         },
@@ -38,7 +38,7 @@ var insertionHandler = {
     },
     user: {
         displaySelector: function(label) {
-            var userSelect = '<select multiple="false" class="ajax form-control" data-type="user" name="insertionSelect" data-source="user" data-for="'+$(label).attr('for')+'" data-using="f_login,f_email"></select>';
+            var userSelect = '<select class="ajax form-control" data-type="user" name="insertionSelect" data-source="user" data-for="'+$(label).attr('for')+'" data-using="f_login,f_email"></select>';
             $(label).next('.input-group').append(userSelect).css('width', '80%');
             NodeaForms.elements.ajax_select.initializer($(label).next('.input-group').find('select'), CHOOSE_USER);
         },
@@ -58,7 +58,7 @@ var insertionHandler = {
                 success: function(userTree) {
                     /* Create select and options */
                     var fieldSelect = '\
-                        <select multiple="false" class="emailFieldInsertion form-control" name="insertionSelect" data-type="user_target" data-for="'+$(label).attr('for')+'">\
+                        <select class="emailFieldInsertion form-control" name="insertionSelect" data-type="user_target" data-for="'+$(label).attr('for')+'">\
                             <option value="-1">' + CHOOSE_USER_TARGET + '</option>';
                     for (var i = 0; i < userTree.length; i++)
                         fieldSelect += '<option value="' + userTree[i].field + '">' + userTree[i].traduction + '</option>';
@@ -88,7 +88,7 @@ var insertionHandler = {
                 success: function(phoneTree) {
                     /* Create select and options */
                     var fieldSelect = '\
-                        <select multiple="false" class="phoneFieldInsertion" name="insertionSelect" data-type="phone_field" data-for="'+$(label).attr('for')+'">\
+                        <select class="phoneFieldInsertion" name="insertionSelect" data-type="phone_field" data-for="'+$(label).attr('for')+'">\
                             <option value="-1">' + CHOOSE_PHONE_FIELD + '</option>';
                     for (var i = 0; i < phoneTree.length; i++)
                         if (phoneTree[i].isPhone)
@@ -116,7 +116,7 @@ var insertionHandler = {
                 success: function(entityTree) {
                     /* Create select and options */
                     var fieldSelect = '\
-                        <select multiple="false" class="emailFieldInsertion" name="insertionSelect" data-type="email_field" data-for="'+$(label).attr('for')+'">\
+                        <select class="emailFieldInsertion" name="insertionSelect" data-type="email_field" data-for="'+$(label).attr('for')+'">\
                             <option value="-1">' + CHOOSE_MAIL_FIELD + '</option>';
                     for (var i = 0; i < entityTree.length; i++)
                         if (entityTree[i].isEmail)
@@ -144,7 +144,7 @@ var insertionHandler = {
                 success: function(entityTree) {
                     /* Create select and options */
                     var fieldSelect = '\
-                        <select multiple="false" class="fileFieldInsertion" name="insertionSelect" data-type="file_field" data-for="'+$(label).attr('for')+'">\
+                        <select class="fileFieldInsertion" name="insertionSelect" data-type="file_field" data-for="'+$(label).attr('for')+'">\
                             <option value="-1">' + CHOOSE_FILE_FIELD + '</option>';
                     for (var i = 0; i < entityTree.length; i++)
                         if (entityTree[i].isFile)

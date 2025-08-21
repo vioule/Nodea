@@ -1,5 +1,5 @@
 <form class="ajax" action="/status/set_children" method="post">
-    <select multiple="false" name="next_status" class="regular-select" multiple="">
+    <select name="next_status" class="regular-select" multiple="">
         {#e_status.dataValues.all_children}
         {?dataValues.selected}
         <option value="{id}" selected="">

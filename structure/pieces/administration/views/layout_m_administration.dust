@@ -6,7 +6,7 @@
 
 {<modules}
 	<label for="module-select">{#__ key="module.module"/}</label>
-	<select multiple="false" id="module-select" class="form-control" onchange="navigate()" style="width: 100%;" tabindex="0">
+	<select id="module-select" class="form-control" onchange="navigate()" style="width: 100%;" tabindex="0">
 		{#moduleAccess module="home"}
 		<option data-module="m_home" value="/module/home">
 			{#__ key="module.m_home" /}
@@ -22,7 +22,7 @@
 
 {<sidebar}
     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-        <li class="nav-item">
+        <li class="nav-item" role="menuitem">
             <a href="/module/administration" class="nav-link">
                 <i class="nav-icon fas fa-tachometer-alt"></i>
                 <p>
@@ -30,7 +30,7 @@
                 </p>
             </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" role="menuitem">
             <a href="#" class="nav-link">
                 <i class="nav-icon fas fa-users"></i>
                 <p>
@@ -123,7 +123,7 @@
             </ul>
         </li>
         {#entityAccess entity="access_settings"}
-            <li class="nav-item">
+            <li class="nav-item" role="menuitem">
                 <a href="#" class="nav-link">
                     <i class="nav-icon fas fa-user-shield"></i>
                     <p>
@@ -152,7 +152,7 @@
             </li>
         {/entityAccess}
 
-        <li class="nav-item">
+        <li class="nav-item" role="menuitem">
             <a href="#" class="nav-link">
                 <i class="nav-icon fa fa-random"></i>
                 <p>
@@ -228,7 +228,7 @@
                 {/entityAccess}
             </ul>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" role="menuitem">
             <a href="#" class="nav-link">
                 <i class="fa fa-tasks nav-icon"></i>
                 <p>
@@ -355,7 +355,7 @@
                 {/entityAccess}
             </ul>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" role="menuitem">
             <a href="#" class="nav-link">
                 <i class="fa fa-book nav-icon"></i>
                 <p>
@@ -405,7 +405,7 @@
                 {/entityAccess}
             </ul>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" role="menuitem">
             <a href="#" class="nav-link">
                 <i class="fa fa-link nav-icon"></i>
                 <p>
@@ -460,7 +460,7 @@
             </ul>
         </li>
         {#entityAccess entity="import_export"}
-            <li class="nav-item">
+            <li class="nav-item" role="menuitem">
                 <a href="#" class="nav-link">
                     <i class="fa fa-arrows-alt-v nav-icon"></i>
                     <p>
@@ -492,7 +492,7 @@
                 </ul>
             </li>
         {/entityAccess}
-        <li class="nav-item">
+        <li class="nav-item" role="menuitem">
             <a href="#" class="nav-link">
                 <i class="fa fa-cogs nav-icon"></i>
                 <p>
@@ -570,7 +570,7 @@
             </ul>
         </li>
 		{#entityAccess entity="traceability"}
-            <li class='nav-item' data-menu="traceability">
+            <li class='nav-item' data-menu="traceability" role="menuitem">
                 {#actionAccess entity="traceability" action="read"}
                     <a href='/traceability/list' class="nav-link">
                         <i class="nav-icon fas fa-clipboard"></i>

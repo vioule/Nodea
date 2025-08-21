@@ -547,7 +547,7 @@ exports.setupRelatedToField = async (data) => {
 					<i data-entity="${source}" data-field="${alias}" class="inline-help fa fa-info-circle" style="color: #1085EE"></i>
 				<!--{/inline_help}-->
 			</label>
-			<select multiple="false" class="ajax form-control" name="${alias}" data-source="${urlTarget}" data-using="${usingList.join(',')}" style="width: 100%;"></select>
+			<select class="ajax form-control" name="${alias}" data-source="${urlTarget}" data-using="${usingList.join(',')}" style="width: 100%;"></select>
 		</div>
 	</div>`;
 
@@ -565,7 +565,7 @@ exports.setupRelatedToField = async (data) => {
 					<i data-entity="${source}" data-field="${alias}" class="inline-help fa fa-info-circle" style="color: #1085EE"></i>
 				<!--{/inline_help}-->
 			</label>
-			<select multiple="false" class="ajax form-control" name="${alias}" data-source="${urlTarget}" data-using="${usingList.join(',')}" style="width: 100%;">
+			<select class="ajax form-control" name="${alias}" data-source="${urlTarget}" data-using="${usingList.join(',')}" style="width: 100%;">
 				<!--{#${alias}}-->
 					<option value="{id}" selected>${usingOption.join(' - ')}</option>
 				<!--{/${alias}}-->

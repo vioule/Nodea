@@ -46,15 +46,15 @@
 								{#__ key="entity.CODE_NAME_EVENT_LOWER.label_entity"/}
 							</h3>
 							<div class="card-tools">
-								<button type="button" class="btn btn-tool" data-card-widget="collapse">
+								<button type="button" class="btn btn-tool" data-card-widget="collapse" title="collapse">
 								<i class="fas fa-minus"></i>
 								</button>
 							</div>
 						</div>
 						<div class="card-body">
 							<div class="form-group">
-								<label for="id">{#__ key="entity.CODE_NAME_EVENT_LOWER.id_entity"/} {#__ key="entity.CODE_NAME_EVENT_LOWER.label_entity"/}</label>
-								<input name="id" type="hidden" placeholder="{CODE_NAME_EVENT_LOWER.id_entity}" value="{CODE_NAME_EVENT_LOWER.id}" class="form-control input"/>
+								<label id="label_id" for="id">{#__ key="entity.CODE_NAME_EVENT_LOWER.id_entity"/} {#__ key="entity.CODE_NAME_EVENT_LOWER.label_entity"/}</label>
+								<input aria-labelledby="label_id" name="id" type="hidden" placeholder="{CODE_NAME_EVENT_LOWER.id_entity}" value="{CODE_NAME_EVENT_LOWER.id}" class="form-control input"/>
 								<label id="label_id_display" for="id_display"><span style="display: none;">{#__ key="entity.CODE_NAME_EVENT_LOWER.id_entity"/}</span></label>
 								<input aria-labelledby="label_id_display" name="id_display" type="text" placeholder="{CODE_NAME_EVENT_LOWER.id_entity}" value="{CODE_NAME_EVENT_LOWER.id}" disabled="" class="form-control input"/>
 							</div>
