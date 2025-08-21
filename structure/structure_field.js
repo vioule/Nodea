@@ -621,7 +621,7 @@ exports.setupRelatedToField = async (data) => {
 			<th data-field="${alias}" data-col="${alias}.${usingField[i].value}" data-type="${usingField[i].type}">
 				<!--{#__ key="entity.${source}.${alias}"/}-->&nbsp;-&nbsp;<!--{#__ key="entity.${target}.${targetField}"/}-->
 			</th>`;
-	
+
 			fieldHelper.updateListFile(fileBase, "list_fields", newHead); // eslint-disable-line
 		}
 	}

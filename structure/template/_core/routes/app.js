@@ -300,7 +300,7 @@ class CoreApp extends Route {
 
 			if (!row)
 				return data.res.error(_ => data.res.status(404).end());
-			
+
 			const path = file_helper.fullPath(row[field]);
 			const filename = file_helper.originalFilename(row[field]);
 			data.res.success(_ => data.res.download(path, filename, function (err) {

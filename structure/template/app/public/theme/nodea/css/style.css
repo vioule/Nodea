@@ -15,6 +15,7 @@
   --theme-black: #3c3c3c;
   --theme-grey: #929292;
   --theme-color-secondary: #ffd588;
+}
 
 .badge-version {
   background-color: var(--theme-color-secondary);
