@@ -970,6 +970,9 @@ let NodeaForms = (_ => {
 						// Handle Modal status comment or reason select
 						const statusCommentModal = $("#statusComment");
 
+						const reasonDiv = statusCommentModal.find('[name="with_select_reason"]');
+  						const reasonSelect = reasonDiv.find('select');
+
 						// mise à jour de l'id statut pour filtrage des motifs
 						// Split the string by '/'
 						const parts = url.split('/');
@@ -983,8 +986,10 @@ let NodeaForms = (_ => {
 						}
 
 						if (element.data('reason') != true){
-							// il faut cacher le selecteur de motif
-							$('div[name="with_select_reason"]').hide();
+							// on cache le selecteur de motif et on le rend non obligatoire
+							reasonDiv.hide();
+    						reasonSelect.prop('disabled', true);
+    						reasonSelect.prop('required', false);
 						}
 						
 						const statusCommentSubmit = function(event) {
