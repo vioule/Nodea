@@ -190,7 +190,11 @@ label.required:after {
 }
 
 .badge-version {
-	color: #000;
+  background-color: var(--theme-color-secondary);
+  color: var(--theme-black) !important;
+  font-weight: bold;
+  font-size: 90% !important;
+  margin-right: 15px;
 }
 
 .form-title {

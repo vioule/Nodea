@@ -14,6 +14,14 @@
   --theme-white: #f9fafc;
   --theme-black: #3c3c3c;
   --theme-grey: #929292;
+  --theme-color-secondary: #ffd588;
+
+.badge-version {
+  background-color: var(--theme-color-secondary);
+  color: var(--theme-black) !important;
+  font-weight: bold;
+  font-size: 90% !important;
+  margin-right: 15px;
 }
 
 /* Login page background */
