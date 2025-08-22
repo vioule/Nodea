@@ -72,62 +72,55 @@ function write(filePath, buffer, encoding = 'utf8') {
 
 // Fonction qui sert pour la fonction writePicture
 async function writeFileWithDirs(filePath, buffer, encoding) {
-	let securedPath, folderPath;
-	securedPath = securePath(globalConf.localstorage, filePath);
-	folderPath = path.parse(securedPath).dir;
+	const securedPath = securePath(globalConf.localstorage, filePath);
+	const folderPath = path.parse(securedPath).dir;
 	await fs.ensureDir(folderPath);
 	return fs.writeFile(securedPath, buffer, encoding === 'utf8' ? undefined : encoding);
 }
 
-function writePicture(filePath, buffer, encoding = 'utf8') {
-	return new Promise(async (resolve, reject) => {
-		try {
-			const ext = path.extname(filePath).toLowerCase();
-			const supportedFormats = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg'];
+// Fonction permettant de retailler l'image et de calculer une vignette le cas échéant
+async function writePicture(filePath, buffer, encoding = 'utf8') {
+	const ext = path.extname(filePath).toLowerCase();
+	const supportedFormats = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg'];
 
-			if (!supportedFormats.includes(ext)) {
-				return reject(new Error(`Format non supporté: ${ext}`));
-			}
+	if (!supportedFormats.includes(ext)) {
+		throw new Error(`Format non supporté: ${ext}`);
+	}
 
-			const format = ext.slice(1); // exemple: '.jpg' → 'jpg'
-			const promises = [];
+	const format = ext.slice(1); // exemple: '.jpg' → 'jpg'
+	const promises = [];
 
-			// Resize principale (optionnel)
-			if (ext != '.svg' && appConf.resizePicture && appConf.resizePicture.enabled) {
-				const { width, height, quality } = appConf.resizePicture;
+	// Resize principale (optionnel)
+	if (ext !== '.svg' && appConf.resizePicture?.enabled) {
+		const { width, height, quality } = appConf.resizePicture;
 
-				const resizedBuffer = await sharp(buffer)
-					.resize(width, height)
-					.toFormat(format, { quality })
-					.toBuffer();
+		const resizedBuffer = await sharp(buffer)
+			.resize(width, height)
+			.toFormat(format, { quality })
+			.toBuffer();
 
-				promises.push(writeFileWithDirs(filePath, resizedBuffer, encoding));
-			} else {
-				// Écrit le buffer original sans resize
-				promises.push(writeFileWithDirs(filePath, buffer, encoding));
-			}
+		promises.push(writeFileWithDirs(filePath, resizedBuffer, encoding));
+	} else {
+		// Écrit le buffer original sans resize
+		promises.push(writeFileWithDirs(filePath, buffer, encoding));
+	}
 
-			// Thumbnail
-			const { width: tWidth, height: tHeight, quality: tQuality, folder } = appConf.thumbnail;
-			const thumbPath = path.join(folder, filePath);
+	// Thumbnail
+	const { width: tWidth, height: tHeight, quality: tQuality, folder } = appConf.thumbnail;
+	const thumbPath = path.join(folder, filePath);
 
-			if (ext != '.svg'){
-				const thumbBuffer = await sharp(buffer)
-					.resize(tWidth, tHeight)
-					.toFormat(format, { quality: tQuality })
-					.toBuffer();
-				promises.push(writeFileWithDirs(thumbPath, thumbBuffer, encoding));
-			} else {
-				// Thumbnail pour du SVG non utile donc écriture du même contenu
-				console.log("ecriture buffer");
-				promises.push(writeFileWithDirs(thumbPath, buffer, encoding));
-			}
-			await Promise.all(promises);
-			resolve();
-		} catch (err) {
-			reject(err);
-		}
-	});
+	if (ext !== '.svg') {
+		const thumbBuffer = await sharp(buffer)
+			.resize(tWidth, tHeight)
+			.toFormat(format, { quality: tQuality })
+			.toBuffer();
+		promises.push(writeFileWithDirs(thumbPath, thumbBuffer, encoding));
+	} else {
+		// Thumbnail pour du SVG non utile donc écriture du même contenu
+		promises.push(writeFileWithDirs(thumbPath, buffer, encoding));
+	}
+
+	await Promise.all(promises);
 }
 
 function read(filePath, options = {}) {
