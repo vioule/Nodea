@@ -826,7 +826,7 @@ exports.newAddress = (data) => {
 	<div class="col-12 address_component" data-as="${data.options.as}">
 		<div class="row">
 			<div class="col-xs-12 col-sm-6">
-				<label for="f_label">
+				<label for="f_address_component_label">
 					<i class="fa fa-map-marked-alt">&nbsp;</i>
 					{#__ key="entity.${data.options.value}.label_entity"/}&nbsp;
 				</label>
