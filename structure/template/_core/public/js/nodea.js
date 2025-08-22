@@ -296,7 +296,8 @@ var Nodea = (enables = {}) => {
                 } else {
                     // If precise URL not found, then open only the concerned menu if found
                     var splitURL = window.location.pathname.split('/');
-                    if($(this).attr('href').includes('/' + splitURL[2] + '/') && $(this).find('.right.fa-angle-right').length == 0)
+                    // if($(this).attr('href').includes('/' + splitURL[2] + '/') && $(this).find('.right.fa-angle-right').length == 0)
+		    if($(this).attr('href').includes('/' + splitURL[splitURL.length -1] + '/') && $(this).find('.right.fa-angle-right').length == 0)
                         $(this).css("color", "#00466f").parents('li').addClass("menu-open");
                 }
             });
