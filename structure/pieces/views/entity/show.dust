@@ -101,10 +101,9 @@
 							<br>
 
 							<div class="form-group">
-								<label id="label_id" for="id">{#__ key="entity.custom_entity.id_entity"/} {#__ key="entity.custom_entity.label_entity"/}</label>
-								<input aria-labelledby="label_id" type="text" name="sourceId" aria-labelledBy="label_id" value="{custom_entity.id}" disabled="" class="form-control"/>
-								<label id="label_sourceName" for="sourceName"><span style="display:none;">sourceName</span></label>
-								<input type="text" name="sourceName" aria-labelledBy="label_sourceName" value="custom_entity" disabled="" class="form-control" style="display:none;" />
+								<label for="sourceId">{#__ key="entity.custom_entity.id_entity"/} {#__ key="entity.custom_entity.label_entity"/}</label>
+								<input type="text"  id="sourceId" name="sourceId" value="{custom_entity.id}" disabled="" class="form-control"/>
+								<input type="text" name="sourceName" aria-label="label_sourceName" value="custom_entity" disabled="" class="form-control" style="display:none;" />
 							</div>
 							{>"custom_entity/show_fields"/}
 

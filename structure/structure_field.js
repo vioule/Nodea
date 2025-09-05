@@ -547,7 +547,7 @@ exports.setupRelatedToField = async (data) => {
 					<i data-entity="${source}" data-field="${alias}" class="inline-help fa fa-info-circle" style="color: #1085EE"></i>
 				<!--{/inline_help}-->
 			</label>
-			<select class="ajax form-control" name="${alias}" data-source="${urlTarget}" data-using="${usingList.join(',')}" style="width: 100%;"></select>
+			<select class="ajax form-control" name="${alias}" aria-labelledBy='${alias}' data-source="${urlTarget}" data-using="${usingList.join(',')}" style="width: 100%;"></select>
 		</div>
 	</div>`;
 
@@ -565,7 +565,7 @@ exports.setupRelatedToField = async (data) => {
 					<i data-entity="${source}" data-field="${alias}" class="inline-help fa fa-info-circle" style="color: #1085EE"></i>
 				<!--{/inline_help}-->
 			</label>
-			<select class="ajax form-control" name="${alias}" data-source="${urlTarget}" data-using="${usingList.join(',')}" style="width: 100%;">
+			<select class="ajax form-control" aria-labelledBy='${alias}' name="${alias}" data-source="${urlTarget}" data-using="${usingList.join(',')}" style="width: 100%;">
 				<!--{#${alias}}-->
 					<option value="{id}" selected>${usingOption.join(' - ')}</option>
 				<!--{/${alias}}-->
@@ -595,7 +595,7 @@ exports.setupRelatedToField = async (data) => {
 					<i data-entity="${source}" data-field="${alias}" class="inline-help fa fa-info-circle" style="color: #1085EE"></i>
 				<!--{/inline_help}-->
 			</label>
-			<input class='form-control input' name='${alias}' value='${value}' placeholder=__key=entity.${source}.${alias} type='text' readOnly />
+			<input class='form-control input' name='${alias}' aria-labelledBy='${alias}' value='${value}' placeholder=__key=entity.${source}.${alias} type='text' readOnly />
 		</div>
 	</div>`;
 
@@ -682,7 +682,7 @@ exports.setupRelatedToMultipleField = async (data) => {
 				<!--{#${alias}_all}-->
 					<wrap>
 						<label class="no-weight">
-							<input type="checkbox" value="{id}" class="no-formatage" name="${alias}">&nbsp;&nbsp;${usingOption.join(' - ')}
+							<input type="checkbox" value="{id}" class="no-formatage" aria-labelledBy='${alias}' name="${alias}">&nbsp;&nbsp;${usingOption.join(' - ')}
 						</label><br>
 					</wrap>
 				<!--{/${alias}_all}-->
@@ -690,7 +690,7 @@ exports.setupRelatedToMultipleField = async (data) => {
 		`);
 	else
 		createField = wrapField(`
-			<select multiple="multiple" class="ajax form-control" name="${alias}" data-source="${urlTarget}" data-using="${usingList.join(',')}" style="width: 100%;">
+			<select multiple="multiple" class="ajax form-control" name="${alias}" aria-labelledBy='${alias}' data-source="${urlTarget}" data-using="${usingList.join(',')}" style="width: 100%;">
 			</select>
 		`);
 	fieldHelper.updateFile(fileBase, 'create_fields', createField);
@@ -711,7 +711,7 @@ exports.setupRelatedToMultipleField = async (data) => {
 		`);
 	else
 		updateField = wrapField(`
-			<select multiple="" class="ajax form-control" name="${alias}" data-source="${urlTarget}" data-using="${usingList.join(',')}" style="width: 100%;">
+			<select multiple="" class="ajax form-control" name="${alias}" aria-labelledBy='${alias}' data-source="${urlTarget}" data-using="${usingList.join(',')}" style="width: 100%;">
 				<option value="">{#__ key="select.default" /}</option>
 				<!--{#${alias}}-->
 					<option value="{id}" selected>${usingOption.join(' - ')}</option>
@@ -727,16 +727,16 @@ exports.setupRelatedToMultipleField = async (data) => {
 			<div class="relatedtomany-checkbox">
 				<!--{#${alias}_all}-->
 					<!--{@existInContextById ofContext=${alias} key=id}-->
-						<wrap><input type="checkbox" disabled="" checked="" name="${alias}">&nbsp;&nbsp;${usingOption.join(' - ')}<br></wrap>
+						<wrap><input type="checkbox" disabled="" checked="" aria-labelledBy='${alias}' name="${alias}">&nbsp;&nbsp;${usingOption.join(' - ')}<br></wrap>
 					<!--{:else}-->
-						<wrap><input type="checkbox" disabled="" name="${alias}">&nbsp;&nbsp;${usingOption.join(' - ')}<br></wrap>
+						<wrap><input type="checkbox" disabled="" aria-labelledBy='${alias}' name="${alias}">&nbsp;&nbsp;${usingOption.join(' - ')}<br></wrap>
 					<!--{/existInContextById}-->
 				<!--{/${alias}_all}-->
 			</div>
 		`);
 	else
 		showField = wrapField(`
-			<select multiple disabled readonly class="form-control" name="${alias}" data-source="${urlTarget}" data-using="${usingList.join(',')}" style="width: 100%;">
+			<select multiple disabled readonly class="form-control" name="${alias}" aria-labelledBy='${alias}' data-source="${urlTarget}" data-using="${usingList.join(',')}" style="width: 100%;">
 				<!--{#${alias}}-->
 					<option value="${usingOption.join(' - ')}" selected>${usingOption.join(' - ')}</option>
 				<!--{/${alias}}-->

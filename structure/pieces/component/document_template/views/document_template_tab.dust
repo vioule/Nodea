@@ -1,4 +1,4 @@
-<div class="tab-pane fade show" id="r_document_template" role="tabpanel" aria-labelledby="r_document_template-tab">
+<div class="tab-pane fade show" id="r_document_template" role="tabpanel" aria-label="r_document_template-tab">
 	<form action="/document_template/generate" method="POST">
 		<input type="hidden" value="ENTITY" name="entity">
 		<input type="hidden" value="{ENTITY.id}" name="id_entity">

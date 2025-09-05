@@ -58,9 +58,9 @@
                         {#e_user}
                             <div class="form-group">
                                 <label id="label_id" for="id">{#__ key="entity.e_user.id_entity"/} {#__ key="entity.e_user.label_entity"/}</label>
-                                <input type="text" name="sourceId" aria-labelledBy="label_id" value="{e_user.id}" disabled="" class="form-control"/>
+                                <input type="text" name="sourceId" aria-labelledby="label_id" value="{e_user.id}" disabled="" class="form-control"/>
                                 <label id="label_sourceName" for="sourceName"><span style="display:none;">sourceName</span></label>
-								<input type="text" name="sourceName" aria-labelledBy="label_sourceName" value="e_user" disabled="" class="form-control" style="display:none;" />
+								<input type="text" name="sourceName" aria-labelledby="label_sourceName" value="e_user" disabled="" class="form-control" style="display:none;" />
                             </div>
                             {>"e_user/show_fields"/}
 

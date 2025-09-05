@@ -28,7 +28,7 @@ async function addTab(data, file, newLi, newTabContent, target, tabRelation) {
 				</ul>\n\
 			<!--{/hideTab}-->\n\
 			<div class="tab-content" style="min-height:275px;">\n\
-				<div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">\n\
+				<div class="tab-pane fade show active" id="home" role="tabpanel" aria-label="home-tab">\n\
 				</div>\n\
 			</div>\n\
 		</div>\n';
@@ -505,7 +505,7 @@ exports.setupHasManyTab = async (data) => {
 		</li>';
 
 	// Create new tab content
-	const newTab = '  <div id="' + alias + '" class="ajax-tab tab-pane fade show" role="tabpanel" aria-labelledby="' + alias + '-tab" data-tabType="hasMany" data-asso-alias="' + alias + '" data-asso-foreignkey="' + foreignKey + '" data-asso-flag="{id}" data-asso-source="' + source + '" data-asso-url="' + urlSource + '"><div class="ajax-content sub-tab-table"></div></div>';
+	const newTab = '  <div id="' + alias + '" class="ajax-tab tab-pane fade show" role="tabpanel" aria-label="' + alias + '-tab" data-tabType="hasMany" data-asso-alias="' + alias + '" data-asso-foreignkey="' + foreignKey + '" data-asso-flag="{id}" data-asso-source="' + source + '" data-asso-url="' + urlSource + '"><div class="ajax-content sub-tab-table"></div></div>';
 
 	return await addTab(data, file, newLi, newTab, target, 'has_many');
 };
@@ -543,7 +543,7 @@ exports.setupHasManyPresetTab = async (data) => {
 		</a>\n\
 	</li>';
 
-	const newTabContent = '<div id="' + alias + '" class="ajax-tab tab-pane fade show" role="tabpanel" aria-labelledby="' + alias + '-tab" data-tabType="hasManyPreset" data-asso-alias="' + alias + '" data-asso-foreignkey="' + foreignKey + '" data-asso-flag="{id}" data-asso-source="' + source + '" data-asso-url="' + urlSource + '"><div class="ajax-content sub-tab-table"></div></div>';
+	const newTabContent = '<div id="' + alias + '" class="ajax-tab tab-pane fade show" role="tabpanel" aria-label="' + alias + '-tab" data-tabType="hasManyPreset" data-asso-alias="' + alias + '" data-asso-foreignkey="' + foreignKey + '" data-asso-flag="{id}" data-asso-source="' + source + '" data-asso-url="' + urlSource + '"><div class="ajax-content sub-tab-table"></div></div>';
 
 	await addTab(data, file, newLi, newTabContent, data.options.target, 'has_many_preset');
 	return true;
@@ -595,7 +595,7 @@ exports.setupHasOneTab = async (data) => {
 	</li>';
 
 	// Create new tab content
-	const newTab = '<div id="' + alias + '" class="ajax-tab tab-pane fade show" data-tabType="hasOne" role="tabpanel" aria-labelledby="' + alias + '-tab" data-asso-alias="' + alias + '" data-asso-foreignkey="' + foreignKey + '" data-asso-flag="{id}" data-asso-source="' + source + '" data-asso-url="' + urlSource + '"><div class="ajax-content"></div></div>';
+	const newTab = '<div id="' + alias + '" class="ajax-tab tab-pane fade show" data-tabType="hasOne" role="tabpanel" aria-label="' + alias + '-tab" data-asso-alias="' + alias + '" data-asso-foreignkey="' + foreignKey + '" data-asso-flag="{id}" data-asso-source="' + source + '" data-asso-url="' + urlSource + '"><div class="ajax-content"></div></div>';
 
 	return await addTab(data, file, newLi, newTab, target, 'has_one');
 };

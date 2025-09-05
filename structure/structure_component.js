@@ -26,7 +26,7 @@ async function addTab(entity, file, newLi, newTabContent) {
 				</ul>\n\
 			<!--{/hideTab}-->\n\
 			<div class="tab-content" style="min-height:275px;">\n\
-				<div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">\n\
+				<div class="tab-pane fade show active" id="home" role="tabpanel" aria-label="home-tab">\n\
 				</div>\n\
 			</div>\n\
 		</div>\n';
@@ -1004,7 +1004,7 @@ exports.showTracking = async (data) => {
 
 	const trackingListPath = `${global.__piecesPath}/component/tracking/views/list_fields.dust`;
 	let newTabContent = fs.readFileSync(trackingListPath, 'utf8');
-	newTabContent = '<div class="tab-pane fade show" id="r_traceability" role="tabpanel" aria-labelledby="r_traceability-tab">' + newTabContent + '</div>';
+	newTabContent = '<div class="tab-pane fade show" id="r_traceability" role="tabpanel" aria-label="r_traceability-tab">' + newTabContent + '</div>';
 	await addTab(entityName, fileSource, newLi, newTabContent);
 	// Change table URL in tab of source entity
 	const $list = domHelper.read(fileSource);
