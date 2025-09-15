@@ -16,7 +16,7 @@ global.app_queue = [];
 let SessionStore, pg;
 // MySql
 if(dbConfig.dialect == "mysql" || dbConfig.dialect == "mariadb")
-	SessionStore = require('express-mysql-session'); // eslint-disable-line
+	SessionStore = require('express-mysql-session')(session); // eslint-disable-line
 // Postgres
 if(dbConfig.dialect == "postgres"){
 	pg = require('pg'); // eslint-disable-line

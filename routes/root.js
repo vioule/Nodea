@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const request = require('request');
 
 const middlewares = require('../helpers/middlewares');
 
@@ -15,22 +14,23 @@ router.get('/waiting', function(req, res) {
 	});
 });
 
-router.post('/waiting', function(req, res) {
-	request.get({
-		url: req.body.redirect,
-		strictSSL: false,
-		rejectUnauthorized: false
-	}, (error, response) => {
-		if(error)
-			console.log(error)
+router.post('/waiting', async function (req, res) {
+	try {
+		const response = await fetch(req.body.redirect, {
+			method: 'GET',
+			// Pour désactiver la vérification SSL (⚠️ à éviter en prod)
+			agent: new (require('https').Agent)({ rejectUnauthorized: false })
+		});
 
-		// Stack is not ready
-		if (error || response && response.statusCode !== 200 && response.statusCode !== 302)
-			return res.sendStatus(503).end();
+		if (response.status !== 200 && response.status !== 302) {
+			return res.sendStatus(503);
+		}
 
-		// Stack ready, container ready, lets go
 		return res.sendStatus(200);
-	});
+	} catch (error) {
+		console.error(error);
+		return res.sendStatus(503);
+	}
 });
 
 router.get('/error/:code', function(req, res) {
