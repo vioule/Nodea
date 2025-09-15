@@ -692,6 +692,7 @@ exports.setFieldKnownAttribute = async (data) => {
 		data.sqlDataTypeLength = sqlDataTypeLength;
 		data.dialect = sequelize.options.dialect;
 
+		console.log("required ATTR");
 		await structure_field.setRequiredAttribute(data);
 
 		return {

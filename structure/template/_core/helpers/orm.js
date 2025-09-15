@@ -181,6 +181,7 @@ module.exports.customAfterSync = async () => {
 			}
 		}
 
+	console.log("tosync");
 	fs.writeFileSync(__appPath + '/models/toSyncProd.json', JSON.stringify(toSyncProdObject, null, '\t'));
 	fs.writeFileSync(__appPath + '/models/toSync.json', '{}', 'utf8');
 };

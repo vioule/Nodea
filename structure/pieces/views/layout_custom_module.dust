@@ -5,7 +5,7 @@
 {/custom_css}
 
 {<modules}
-	<select id='module-select' class='form-control' onchange='navigate()' style="width: 100%;" tabindex="0"></select>
+	<select id='module-select' aria-label='module-select' class='form-control' onchange='navigate()' style="width: 100%;" tabindex="0"></select>
 {/modules}
 
 {<sidebar}

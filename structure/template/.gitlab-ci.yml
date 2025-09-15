@@ -1,5 +1,5 @@
 default:
-  image: node:fermium
+  image: nodeasoftware/application:3.2.2
   services:
     - mysql
 
@@ -29,7 +29,7 @@ node_modules:
       - node_modules/
 
 eslint:
-  image: node:fermium
+  image: nodeasoftware/application:3.2.2
   stage: test
   script:
     - npm run lint
@@ -37,7 +37,7 @@ eslint:
     - node_modules
 
 jest:
-  image: node:fermium
+  image: nodeasoftware/application:3.2.2
   stage: test
   script:
     - npm run test

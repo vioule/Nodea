@@ -402,6 +402,7 @@ exports.setRequiredAttribute = async (data) => {
 			attributesObj[data.options.value].defaultValue = defaultValue;
 
 			if (data.sqlDataType && (data.dialect == "mysql" || data.dialect == "mariadb")) {
+
 				// Update all NULL value before set not null
 				toSync.queries.push("UPDATE `" + tableName + "` SET `" + data.options.value + "`='" + defaultValue + "' WHERE `" + data.options.value + "` IS NULL;");
 				toSync.queries.push("ALTER TABLE `" + tableName + "` CHANGE `" + data.options.value + "` `" + data.options.value + "` " + data.sqlDataType + length + " NOT NULL");
@@ -413,6 +414,7 @@ exports.setRequiredAttribute = async (data) => {
 				if(defaultValue)
 					toSync.queries.push('ALTER TABLE "' + tableName + '" ALTER COLUMN "' + data.options.value + '" SET DEFAULT ' + defaultValue + ';');
 			}
+
 		} else {
 			// Set optional
 			attributesObj[data.options.value].allowNull = true;
@@ -429,6 +431,7 @@ exports.setRequiredAttribute = async (data) => {
 				toSync.queries.push('ALTER TABLE "' + tableName + '" ALTER COLUMN "' + data.options.value + '" DROP NOT NULL');
 			}
 		}
+console.log(toSync);
 		fs.writeFileSync(jsonPath, JSON.stringify(toSync, null, '\t'));
 		fs.writeFileSync(pathToAttributesJson, JSON.stringify(attributesObj, null, '\t'));
 	} else {
@@ -547,7 +550,7 @@ exports.setupRelatedToField = async (data) => {
 					<i data-entity="${source}" data-field="${alias}" class="inline-help fa fa-info-circle" style="color: #1085EE"></i>
 				<!--{/inline_help}-->
 			</label>
-			<select class="ajax form-control" name="${alias}" aria-labelledBy='${alias}' data-source="${urlTarget}" data-using="${usingList.join(',')}" style="width: 100%;"></select>
+			<select class="ajax form-control" name="${alias}" id='${alias}' data-source="${urlTarget}" data-using="${usingList.join(',')}" style="width: 100%;"></select>
 		</div>
 	</div>`;
 
@@ -565,7 +568,7 @@ exports.setupRelatedToField = async (data) => {
 					<i data-entity="${source}" data-field="${alias}" class="inline-help fa fa-info-circle" style="color: #1085EE"></i>
 				<!--{/inline_help}-->
 			</label>
-			<select class="ajax form-control" aria-labelledBy='${alias}' name="${alias}" data-source="${urlTarget}" data-using="${usingList.join(',')}" style="width: 100%;">
+			<select class="ajax form-control" id='${alias}' name="${alias}" data-source="${urlTarget}" data-using="${usingList.join(',')}" style="width: 100%;">
 				<!--{#${alias}}-->
 					<option value="{id}" selected>${usingOption.join(' - ')}</option>
 				<!--{/${alias}}-->
@@ -595,7 +598,7 @@ exports.setupRelatedToField = async (data) => {
 					<i data-entity="${source}" data-field="${alias}" class="inline-help fa fa-info-circle" style="color: #1085EE"></i>
 				<!--{/inline_help}-->
 			</label>
-			<input class='form-control input' name='${alias}' aria-labelledBy='${alias}' value='${value}' placeholder=__key=entity.${source}.${alias} type='text' readOnly />
+			<input class='form-control input' name='${alias}' id='${alias}' value='${value}' placeholder=__key=entity.${source}.${alias} type='text' readOnly />
 		</div>
 	</div>`;
 
@@ -682,7 +685,7 @@ exports.setupRelatedToMultipleField = async (data) => {
 				<!--{#${alias}_all}-->
 					<wrap>
 						<label class="no-weight">
-							<input type="checkbox" value="{id}" class="no-formatage" aria-labelledBy='${alias}' name="${alias}">&nbsp;&nbsp;${usingOption.join(' - ')}
+							<input type="checkbox" value="{id}" class="no-formatage" id="${alias}" name="${alias}">&nbsp;&nbsp;${usingOption.join(' - ')}
 						</label><br>
 					</wrap>
 				<!--{/${alias}_all}-->
@@ -690,7 +693,7 @@ exports.setupRelatedToMultipleField = async (data) => {
 		`);
 	else
 		createField = wrapField(`
-			<select multiple="multiple" class="ajax form-control" name="${alias}" aria-labelledBy='${alias}' data-source="${urlTarget}" data-using="${usingList.join(',')}" style="width: 100%;">
+			<select multiple="multiple" class="ajax form-control" name="${alias}" id="${alias}" data-source="${urlTarget}" data-using="${usingList.join(',')}" style="width: 100%;">
 			</select>
 		`);
 	fieldHelper.updateFile(fileBase, 'create_fields', createField);
@@ -702,16 +705,16 @@ exports.setupRelatedToMultipleField = async (data) => {
 			<div class="relatedtomany-checkbox">
 				<!--{#${alias}_all}-->
 					<!--{@existInContextById ofContext=${alias} key=id}-->
-						<wrap><input type="checkbox" checked value="{id}" class="no-formatage" name="${alias}">&nbsp;&nbsp;${usingOption.join(' - ')}<br></wrap>
+						<wrap><input type="checkbox" checked value="{id}" class="no-formatage"  id="${alias}" name="${alias}">&nbsp;&nbsp;${usingOption.join(' - ')}<br></wrap>
 					<!--{:else}-->
-						<wrap><input type="checkbox" value="{id}" class="no-formatage" name="${alias}">&nbsp;&nbsp;${usingOption.join(' - ')}<br></wrap>
+						<wrap><input type="checkbox" value="{id}" class="no-formatage"  id="${alias}" name="${alias}">&nbsp;&nbsp;${usingOption.join(' - ')}<br></wrap>
 					<!--{/existInContextById}-->
 				<!--{/${alias}_all}-->
 			</div>
 		`);
 	else
 		updateField = wrapField(`
-			<select multiple="" class="ajax form-control" name="${alias}" aria-labelledBy='${alias}' data-source="${urlTarget}" data-using="${usingList.join(',')}" style="width: 100%;">
+			<select multiple="" class="ajax form-control" name="${alias}"  id="${alias}" data-source="${urlTarget}" data-using="${usingList.join(',')}" style="width: 100%;">
 				<option value="">{#__ key="select.default" /}</option>
 				<!--{#${alias}}-->
 					<option value="{id}" selected>${usingOption.join(' - ')}</option>
@@ -727,16 +730,16 @@ exports.setupRelatedToMultipleField = async (data) => {
 			<div class="relatedtomany-checkbox">
 				<!--{#${alias}_all}-->
 					<!--{@existInContextById ofContext=${alias} key=id}-->
-						<wrap><input type="checkbox" disabled="" checked="" aria-labelledBy='${alias}' name="${alias}">&nbsp;&nbsp;${usingOption.join(' - ')}<br></wrap>
+						<wrap><input type="checkbox" disabled="" checked=""  id="${alias}" name="${alias}">&nbsp;&nbsp;${usingOption.join(' - ')}<br></wrap>
 					<!--{:else}-->
-						<wrap><input type="checkbox" disabled="" aria-labelledBy='${alias}' name="${alias}">&nbsp;&nbsp;${usingOption.join(' - ')}<br></wrap>
+						<wrap><input type="checkbox" disabled=""  id="${alias}" name="${alias}">&nbsp;&nbsp;${usingOption.join(' - ')}<br></wrap>
 					<!--{/existInContextById}-->
 				<!--{/${alias}_all}-->
 			</div>
 		`);
 	else
 		showField = wrapField(`
-			<select multiple disabled readonly class="form-control" name="${alias}" aria-labelledBy='${alias}' data-source="${urlTarget}" data-using="${usingList.join(',')}" style="width: 100%;">
+			<select multiple disabled readonly class="form-control" name="${alias}" id="${alias}" data-source="${urlTarget}" data-using="${usingList.join(',')}" style="width: 100%;">
 				<!--{#${alias}}-->
 					<option value="${usingOption.join(' - ')}" selected>${usingOption.join(' - ')}</option>
 				<!--{/${alias}}-->
