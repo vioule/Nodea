@@ -2,6 +2,9 @@
 	"name": "nodea",
 	"version": "3.2.3",
 	"description": "Nodea generator",
+	"engines": {
+		"node": ">=22"
+	},
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/nodea-software/nodea"
