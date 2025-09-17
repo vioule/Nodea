@@ -2,7 +2,7 @@ const dayjs = require('dayjs');
 const fs = require('fs-extra');
 const dust = require('dustjs-linkedin');
 const puppeteer = require('puppeteer');
-const JSZip = require('jszip');
+const PizZip = require('pizzip');
 const decompress = require('decompress');
 const Docxtemplater = require('docxtemplater');
 const expressionParser = require('docxtemplater/expressions.js');
@@ -86,25 +86,23 @@ async function docxDataParser({filePath}){
 	return extractFieldsWithContext(fileStr);
 }
 
-async function docxToDocx({templateData, filePath}){
-	const content = fs.readFileSync(filePath);
-	const zip = new JSZip(content);
-	const doc = new Docxtemplater();
+async function docxToDocx({ templateData, filePath }) {
+	const content = fs.readFileSync(filePath, 'binary'); // Important : 'binary' pour PizZip
+	const zip = new PizZip(content);
 	const templateOptions = {
+		parser: expressionParser,
 		nullGetter: function (part, scope) {
-			if (!part || !part.value)
-				return "";
+			if (!part || !part.value) return "";
 			const parts = part.value.split('.');
-			if (parts.length)
-				return getValue(parts, templateData, scope);
+			if (parts.length) return getValue(parts, templateData, scope);
 			return "";
-		},
-		parser: expressionParser
+		}
 	};
-	doc.setOptions(templateOptions);
-	doc.loadZip(zip);
-	doc.setData(templateData);
-	doc.render();
+
+	// Initialiser Docxtemplater
+	const doc = new Docxtemplater(zip, templateOptions);
+	await doc.renderAsync(templateData);
+
 	const buffer = doc.getZip().generate({
 		type: 'nodebuffer',
 		compression: "DEFLATE"
@@ -150,7 +148,15 @@ async function dustToPdf({templateData, filePath, req}){
 	const page = await browser.newPage();
 	await page.setContent(html);
 	// https://pptr.dev/api/puppeteer.pdfoptions
-	let format = 'A4', landscape = false, displayHeaderFooter = true, margin = ['50px', '50px', '20px', '20px'], headerTemplate = '', footerTemplate = '', width = null, height = null;
+	let format = 'A4';
+	let landscape = false;
+	let displayHeaderFooter = true;
+	let margin = ['50px', '50px', '20px', '20px'];
+	let headerTemplate = '';
+	let footerTemplate = '';
+	let width = null;
+	let height = null;
+
 	try {
 		format = await page.$eval("pdfconf", el => el.getAttribute("data-format"));
 		if(format.includes(',')){
