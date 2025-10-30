@@ -17,6 +17,8 @@ RUN apt-get update && \
         libatk-bridge2.0-0 \
         libgtk-3-0 \
         libgbm-dev && \
+        git \
+        openssh-client \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
