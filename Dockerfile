@@ -16,9 +16,9 @@ RUN apt-get update && \
         libasound2 \
         libatk-bridge2.0-0 \
         libgtk-3-0 \
-        libgbm-dev && \
+        libgbm-dev \
         git \
-        openssh-client \
+        openssh-client && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
