@@ -108,6 +108,7 @@ module.exports = {
 		// Workspace path
 		const workspacePath = __dirname + '/../workspace/' + appName;
 
+		console.log("GIT => doGit- before initRepoGitProcess");
 		initRepoGitProcess(repoInfo, data, workspacePath);
 
 		// Check if .git is already initialize in the workspace directory
