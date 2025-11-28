@@ -150,10 +150,9 @@ class E_media_mail extends CoreModel {
 			} else {
 				while ((matches = regex.exec(self[property])) != null)
 					newString = newString.replace(matches[0], diveData(dataInstance, matches[1].split("."), 0));
-				self[property] = newString || "";
 			}
 
-			return self[property];
+			return newString;
 		}
 
 		// Replace {group|id} and {user|id} placeholders before inserting variables
