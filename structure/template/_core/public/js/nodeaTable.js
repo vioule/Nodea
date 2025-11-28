@@ -751,7 +751,11 @@ let NodeaTable = (function () {
 				if (typeof $(this).data("orderable") !== "undefined") columnDef.orderable = $(this).data("orderable");
 
 				// Needed to be done after destructuring in order to have columnDef.search key in columnDef obj
-				columnDef.searchable = !!columnDef.search;
+				if (typeof $(this).data("orderable") !== "undefined") {
+					columnDef.searchable = $(this).data("searchable");
+				} else {
+					columnDef.searchable = !!columnDef.search;
+				}
 
 				// COLUMN RENDER
 				const originalRender = columnDef.render;
