@@ -12,7 +12,7 @@ const excludeUIEditor = ['e_role', 'e_group', 'e_api_credentials', 'e_translatio
 const global_conf = require('../config/global.js');
 const studio_manager = require('../services/studio_manager');
 const process_manager = require('../services/process_manager.js');
-const {process_server_per_app} = process_manager;
+const { process_server_per_app } = process_manager;
 const fs = require('fs-extra');
 
 exports.initPreviewData = (appName, data) => {
@@ -23,41 +23,30 @@ exports.initPreviewData = (appName, data) => {
 	data.workspaceFolder = helpers.sortEditorFolder(folder);
 
 	const application = metadata.getApplication(appName);
-	const {modules} = application;
+	const { modules } = application;
 
 	// UI designer entity list
 	data.entities = [];
 	for (let i = 0; i < modules.length; i++)
 		for (let j = 0; j < modules[i].entities.length; j++)
-			if(!excludeUIEditor.includes(modules[i].entities[j].name) && !modules[i].entities[j].name.includes('_history_'))
+			if (!excludeUIEditor.includes(modules[i].entities[j].name) && !modules[i].entities[j].name.includes('_history_'))
 				data.entities.push(modules[i].entities[j]);
 
-	function sortEntities(entities, idx) {
-		if (entities.length == 0 || !entities[idx+1])
-			return entities;
-		if (entities[idx].name > entities[idx+1].name) {
-			const swap = entities[idx];
-			entities[idx] = entities[idx+1];
-			entities[idx+1] = swap;
-			return sortEntities(entities, idx == 0 ? 0 : idx-1);
-		}
-		return sortEntities(entities, idx+1);
-	}
-	data.entities = sortEntities(data.entities, 0);
+	data.entities = data.entities.sort((a, b) => a.name.localeCompare(b.name))
 	return data;
 }
 
 exports.setChat = (req, app_name, user_id, user, content, params, isError) => {
 	// Init if necessary
-	if(!req.session.nodea_chats)
+	if (!req.session.nodea_chats)
 		req.session.nodea_chats = {};
-	if(!req.session.nodea_chats[app_name])
+	if (!req.session.nodea_chats[app_name])
 		req.session.nodea_chats[app_name] = {};
-	if(!req.session.nodea_chats[app_name][user_id])
-		req.session.nodea_chats[app_name][user_id] = {items: []};
+	if (!req.session.nodea_chats[app_name][user_id])
+		req.session.nodea_chats[app_name][user_id] = { items: [] };
 
 	// Add chat
-	if(content != "chat.welcome" || req.session.nodea_chats[app_name][user_id].items.length < 1)
+	if (content != "chat.welcome" || req.session.nodea_chats[app_name][user_id].items.length < 1)
 		req.session.nodea_chats[app_name][user_id].items.push({
 			user: user,
 			dateEmission: moment().tz('Europe/Paris').format("DD MMM HH:mm"),
@@ -87,7 +76,7 @@ exports.launchApplication = async (app_name, db_app, sessionID, timeout) => {
 		const timeout_server = timeout ?? 30000;
 		await process_manager.checkServer(iframe_url + "/app/status", initial_timestamp, timeout_server);
 		return iframe_url;
-	} catch(err) {
+	} catch (err) {
 		console.error(err);
 		return false;
 	}
@@ -105,7 +94,7 @@ exports.checkJSDOC = (app_name) => {
 		result.jsdoc_app = fs.existsSync(app_path + '/docs_app');
 		result.jsdoc_core = fs.existsSync(app_path + '/docs_core');
 		return result;
-	} catch(err) {
+	} catch (err) {
 		console.error(err);
 		return result;
 	}
