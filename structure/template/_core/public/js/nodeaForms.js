@@ -1,6 +1,7 @@
 let ctpQrCode = 0;
 let jQueryUILoad = false;
 let openLayerLoad = false;
+let gpLoad = false;
 const loadedScript = [];
 let NodeaSizeFileLimit = 10000000; // Default size => 10Mb
 
@@ -204,18 +205,38 @@ function initAddressSearchInput(input) {
 					q: input.val()
 				},
 				dataType: 'json',
-				success: data => res(data.features.map(x => {
-					x.properties.coordinates = x.geometry.coordinates;
-					return {
-						label: x.properties.label,
-						value: x.properties
+				success: (data) => {
+					data = data.features.map((x) => {
+						x.properties.coordinates = x.geometry.coordinates;
+						return {
+							label: x.properties.label,
+							value: x.properties,
+						};
+					});
+					const parent = input.parents(".address_component");
+					$("#warningPostcode").remove();
+					if ($(parent).data("filter-postcode") && validPostcodes.length) {
+						postcodes = validPostcodes.map((x) => x.postcode);
+						data = data.filter((x) => validPostcodes.map((x) => x.postcode).includes(x.value.postcode));
+
+						if (!data.length) {
+							$(parent).find(".div_address_search_input").after(`
+								<div id="warningPostcode" class="text-warning col-12">
+									<p>Aucune adresse valide trouvée, codes postaux acceptés :</p>
+									<ul>
+										${validPostcodes.map((el) => `<li class="font-weight-bold">${el.label} - ${el.postcode}</li>`).join("")}
+									<ul>
+								</div>`);
+						}
 					}
-				}))
+
+					res(data);
+				}
 			});
 		},
 		select: function (e, ui) {
 			const address = ui.item.value;
-			input.val('');
+			input.val("").trigger('cleared');
 			const parent = input.parents('.address_component');
 			const as = parent.data('as');
 			$(parent).find(`input[name="${as}.f_label"]`).val(address.label);
