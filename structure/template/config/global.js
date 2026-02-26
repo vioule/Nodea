@@ -94,4 +94,9 @@ const currentConfig = config[env];
 for (const appConf in applicationConf)
 	currentConfig[appConf] = applicationConf[appConf];
 
+// Add of variable env for API secret keys
+currentConfig["CRYPTO_KEY"] = process.env.API_CRYPTO_KEY;
+currentConfig["CRYPTO_IV"] = process.env.API_CRYPTO_IV;
+currentConfig["KEY_TK"] = process.env.API_KEY_TK;
+
 module.exports = currentConfig;
