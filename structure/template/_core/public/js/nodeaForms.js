@@ -888,6 +888,8 @@ let NodeaForms = (_ => {
 					});
 					// Check file validity, display added file
 					input.change(function() {
+						const noneFileIcon = `<i class="fas fa-download"></i>&nbsp;&nbsp;Glisser un fichier ici ou cliquer`;
+
 						const modifiedCheck = form.find(`input[name=${input.attr('name')}_modified]`);
 						if (modifiedCheck)
 							modifiedCheck.val('true');
@@ -895,7 +897,7 @@ let NodeaForms = (_ => {
 						// File removed
 						const files = input[0].files;
 						if (files.length == 0) {
-							dropzone.html('');
+							dropzone.html(noneFileIcon);
 							return;
 						}
 						// Number of files
