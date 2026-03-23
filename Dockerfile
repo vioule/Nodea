@@ -1,5 +1,6 @@
 # Utilise l'image de base node:jod
-FROM node:22-slim
+# FROM node:22-slim
+FROM node:22-trixie-slim
 
 # Métadonnées de l'image
 LABEL maintainer.name="Studio Nodea Software" \
