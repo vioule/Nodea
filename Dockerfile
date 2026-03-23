@@ -1,11 +1,30 @@
-FROM node:fermium-bullseye-slim
-LABEL maintainer.name="Nodea" maintainer.email="contact@nodea-software.com"
+# Utilise l'image de base node:jod
+# FROM node:22-slim
+FROM node:22-trixie-slim
+
+# Métadonnées de l'image
+LABEL maintainer.name="Studio Nodea Software" \
+      maintainer.email="contact@nodea-software.com"
+
+# Mise à jour des dépôts et installation des dépendances système
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        nano \
+        mariadb-client \
+        python3 \
+        libnss3 \
+        libxss1 \
+        libasound2 \
+        libatk-bridge2.0-0 \
+        libgtk-3-0 \
+        libgbm-dev \
+        git \
+        openssh-client && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # Clean node_modules && workspace for image creation
 RUN rm -rf node_modules/ && rm -rf workspace/
-
-# Update package and install needed module
-RUN apt-get update && apt-get -qq -y install pdftk && apt-get -y install nano && apt-get -y install git && apt-get -y install mariadb-client-10.5 && apt-get -y install python3 && apt-get -y install libnss3 libxss1 libasound2 libatk-bridge2.0-0 libgtk-3-0 libgbm-dev
 
 # Main folder
 RUN mkdir /nodea

@@ -45,7 +45,12 @@ module.exports = (_ => {
 					return reject(err);
 
 				// Possibility to add {host} in media
-				options.data.url = mailConfig.url;
+				const RESERVED_KEYS = ['transport', 'from'];
+				for (const [key, value] of Object.entries(mailConfig)) {
+					if (!RESERVED_KEYS.includes(key)) {
+						options.data[key] = value;
+					}
+				}
 
 				// Generate mail model, then render mail to html
 				dust.renderSource(template, options.data, (err, rendered) => {
@@ -69,7 +74,12 @@ module.exports = (_ => {
 		sendHtml: (html, options, attachments) => new Promise((resolve, reject) => {
 
 			// Possibility to add {host} in media
-			options.data.url = mailConfig.url;
+			const RESERVED_KEYS = ['transport', 'from'];
+			for (const [key, value] of Object.entries(mailConfig)) {
+				if (!RESERVED_KEYS.includes(key)) {
+					options.data[key] = value;
+				}
+			}
 
 			// Generate mail model, then render mail to html
 			dust.renderSource(html, options.data, (err, rendered) => {

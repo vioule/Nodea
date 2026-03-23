@@ -12,7 +12,7 @@ Official documentation: https://docs.nodea-software.com
 
 ### Prerequisites
 
-Node.js LTS / Fermium (v14 or later)<br>
+Node.js LTS / Jod (v22 or later)<br>
 Default: MariaDB (v10.3 or higher)
 Optional: MySQL (8 or higher) / PostgreSQL
 

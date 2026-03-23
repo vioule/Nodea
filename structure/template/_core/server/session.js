@@ -7,7 +7,7 @@ const dbConf = require('@config/database');
 let SessionStore, pg;
 // MySql
 if(dbConf.dialect == "mysql" || dbConf.dialect == "mariadb")
-	SessionStore = require('express-mysql-session'); // eslint-disable-line
+	SessionStore = require('express-mysql-session')(session); // eslint-disable-line
 // Postgres
 if(dbConf.dialect == "postgres"){
 	pg = require('pg'); // eslint-disable-line

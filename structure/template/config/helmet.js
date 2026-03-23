@@ -9,7 +9,7 @@ module.exports = {
 				"'unsafe-inline'",
 				'data:',
 				'blob:',
-				'https://api-adresse.data.gouv.fr/search/',
+				'https://data.geopf.fr',
 				'https://*.openstreetmap.org'
 			]
 		}

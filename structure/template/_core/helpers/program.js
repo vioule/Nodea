@@ -1,6 +1,6 @@
 const fs = require('fs-extra');
 const models = require('@app/models');
-const zipper = require('zip-local');
+const AdmZip = require("adm-zip");
 
 function rmdirRecursive(path) {
 	if (fs.existsSync(path)) {
@@ -23,7 +23,9 @@ async function generatePages(idProgram, zipPath, user = false) {
 	const transaction = await models.sequelize.transaction();
 	try {
 		fs.mkdirsSync(tmpProgFolder);
-		zipper.sync.unzip(zipPath).save(tmpProgFolder);
+
+		const zip = new AdmZip(zipPath);
+		zip.extractAllTo(tmpProgFolder, true);
 
 		let config;
 		try {
@@ -169,7 +171,9 @@ async function generateZip(idProgram) {
 		for (const file of filesToCreate)
 			fs.writeFileSync(`${tmpProgFolder}/${file.filename}`, file.content, 'utf8');
 
-		zipper.sync.zip(tmpProgFolder).compress().save(tmpZip);
+		const zip = new AdmZip();
+		zip.addLocalFolder(tmpProgFolder);
+		zip.writeZip(tmpZip);
 	} catch(err) {
 		console.error(err);
 		rmdirRecursive(tmpProgFolder);
