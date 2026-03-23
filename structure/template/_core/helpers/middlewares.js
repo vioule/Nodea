@@ -3,7 +3,7 @@ const access = require('@core/helpers/access');
 const { writeConnectionLog } = require('@core/helpers/connection_log');
 
 const crypto = require('@app/utils/crypto.js');
-const { KEY_TK } = require('@config/key_env.json');
+const { KEY_TK } = require('@config/global.js');
 const jwt = require('jsonwebtoken');
 
 const xss = require('xss');
@@ -11,12 +11,12 @@ const upload = require('multer');
 const multer = upload();
 
 // route middleware to make sure user is logged in
-exports.isLoggedIn = function(req, res, next) {
+exports.isLoggedIn = function (req, res, next) {
 	// Autologin for Nodea's "iframe" live preview context
 	if (global.auto_login == true) { // eslint-disable-line
 		global.auto_login = false; // eslint-disable-line
 		models.E_user.findOne({
-			where: {id: 1},
+			where: { id: 1 },
 			include: [{
 				model: models.E_group,
 				as: 'r_group'
@@ -33,22 +33,22 @@ exports.isLoggedIn = function(req, res, next) {
 };
 
 // If the user is already identified, he can't access the login page
-exports.loginAccess = function(req, res, next) {
+exports.loginAccess = function (req, res, next) {
 	if (!req.isAuthenticated())
 		return next();
 
 	res.redirect('/module/home');
 };
 
-exports.moduleAccess = function(moduleName) {
-	return function(req, res, next) {
+exports.moduleAccess = function (moduleName) {
+	return function (req, res, next) {
 		if (!req.isAuthenticated())
 			return res.redirect('/login');
 		const userGroups = req.session.passport.user.r_group;
 		if (userGroups.length > 0 && access.moduleAccess(userGroups, moduleName))
 			return next();
 
-		if(userGroups.length == 0){
+		if (userGroups.length == 0) {
 			req.session.toastr = [{
 				level: 'error',
 				message: "administration.access_settings.no_group"
@@ -106,18 +106,18 @@ function actionAccess(entityName, action) {
 exports.actionAccess = actionAccess;
 
 // API Access
-exports.apiAuthentication = async(req, res, next) => {
+exports.apiAuthentication = async (req, res, next) => {
 	try {
 		const { authorization } = req.headers;
-		if(!authorization) {
+		if (!authorization) {
 			throw new Error('MISSING AUTHORIZATION HEADERS');
 		}
 
 		const parts = authorization.split(' ');
-		if(parts.length != 2) {
+		if (parts.length != 2) {
 			throw new Error('INVALID AUTHORIZATION FORMAT');
 		}
-		if(parts[0] != 'Bearer') {
+		if (parts[0] != 'Bearer') {
 			throw new Error('AUTHORIZATION MUST BE "Bearer"');
 		}
 
@@ -125,7 +125,7 @@ exports.apiAuthentication = async(req, res, next) => {
 
 		const { clientId, secretId } = crypto.decryptObject(verifiedToken.data);
 
-		if(!clientId || !secretId) {
+		if (!clientId || !secretId) {
 			throw new Error('WRONG TOKEN USED');
 		}
 
@@ -143,7 +143,7 @@ exports.apiAuthentication = async(req, res, next) => {
 			}]
 		});
 
-		if(!credentialsObj) {
+		if (!credentialsObj) {
 			throw new Error('CREDENTIALS NOT FOUND');
 		}
 
@@ -155,7 +155,7 @@ exports.apiAuthentication = async(req, res, next) => {
 		next();
 	} catch (err) {
 		console.error(err);
-		res.status(401).json({msg: 'Unauthorized'});
+		res.status(401).json({ msg: 'Unauthorized' });
 	}
 }
 
@@ -187,7 +187,7 @@ exports.apiActionAccess = function (entityName, action) {
 	}
 }
 
-exports.statusGroupAccess = function(req, res, next) {
+exports.statusGroupAccess = function (req, res, next) {
 	const idNewStatus = parseInt(req.params.id_new_status);
 	const userGroups = req.session.passport.user.r_group;
 
@@ -198,18 +198,18 @@ exports.statusGroupAccess = function(req, res, next) {
 			as: "r_accepted_group"
 		}]
 	}).then(newStatus => {
-		if(!newStatus)
+		if (!newStatus)
 			return next();
 		// No groups defined, open for all
-		if(!newStatus.r_accepted_group || newStatus.r_accepted_group.length == 0)
+		if (!newStatus.r_accepted_group || newStatus.r_accepted_group.length == 0)
 			return next();
 		for (let i = 0; i < userGroups.length; i++)
 			for (let j = 0; j < newStatus.r_accepted_group.length; j++)
 				// You are in accepted groups, let's continue
-				if(userGroups[i].id == newStatus.r_accepted_group[j].id)
+				if (userGroups[i].id == newStatus.r_accepted_group[j].id)
 					return next();
 
-		console.warn("USER "+req.session.passport.user.f_login+" TRYING TO SET STATUS "+idNewStatus+ " BUT IS NOT AUTHORIZED.");
+		console.warn("USER " + req.session.passport.user.f_login + " TRYING TO SET STATUS " + idNewStatus + " BUT IS NOT AUTHORIZED.");
 		req.session.toastr = [{
 			message: "administration.access_settings.no_access_change_status",
 			level: "error"
@@ -237,7 +237,7 @@ function sanitizeBody(body) {
 }
 
 // Utiliser pour endpoint d'API, si réception de fichiers avec un multer custom
-exports.sanatizeApi = function(req, res, next) {
+exports.sanatizeApi = function (req, res, next) {
 	if (req.body) {
 		req.body = sanitizeBody(req.body);
 	}
@@ -263,7 +263,7 @@ exports.fileInfo = (fileFields) => (req, res, next) => {
 	});
 }
 
-exports.disableRoute = ({res}) => {
+exports.disableRoute = ({ res }) => {
 	res.render('common/error', {
 		error: 404
 	})

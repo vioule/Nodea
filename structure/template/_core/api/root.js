@@ -2,8 +2,7 @@ const ApiRoute = require('@core/abstract_routes/api_route');
 
 const apiRootValidators = require('@core/validators/apiRootValidators.js');
 const crypto = require('@core/utils/crypto.js');
-const { KEY_TK } = require('@config/key_env.json');
-const { jwt_options } = require('@config/global.js');
+const { jwt_options, KEY_TK } = require('@config/global.js');
 const jwt = require('jsonwebtoken');
 
 
