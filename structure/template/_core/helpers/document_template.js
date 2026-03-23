@@ -16,7 +16,7 @@ function extractFieldsWithContext(string) {
 		let [fullMatch, fieldPath, openingChar] = [...matches]; // eslint-disable-line
 		// New context, add to currentPath
 		if (openingChar == '#')
-			currentPath = currentPath == '' ? fieldPath.substr(1) : currentPath+'.'+fieldPath.substr(1);
+			currentPath = currentPath == '' ? fieldPath.substr(1) : currentPath + '.' + fieldPath.substr(1);
 		// Closing context, remove from currentPath if exist
 		else if (openingChar == '/') {
 			if (currentPath.includes('.'))
@@ -28,7 +28,7 @@ function extractFieldsWithContext(string) {
 		else {
 			// Clear dust formating option Ex: `{field|h}`
 			fieldPath = fieldPath.split('|')[0].trim();
-			fieldsArray.push(currentPath == '' ? fieldPath : currentPath+'.'+fieldPath)
+			fieldsArray.push(currentPath == '' ? fieldPath : currentPath + '.' + fieldPath)
 		}
 	}
 
@@ -71,13 +71,13 @@ function getValue(itemPath /*array*/, data, scope /*where value is expected*/) {
 	}
 }
 
-function dustDataParser({filePath}){
+function dustDataParser({ filePath }) {
 	const fileStr = fs.readFileSync(filePath, 'utf8');
 
 	return extractFieldsWithContext(fileStr);
 }
 
-async function docxDataParser({filePath}){
+async function docxDataParser({ filePath }) {
 	await decompress(filePath, 'tmp')
 	const data = fs.readFileSync(`tmp/word/document.xml`, 'utf8');
 	const fileStr = data.replace(/(<w:p )[\s\S]*?>/g, "\n<w:p").replace(/(<([^>]+)>)/ig, "");
@@ -116,11 +116,11 @@ async function docxToDocx({ templateData, filePath }) {
 }
 
 /* eslint-disable */
-function docxToPdf({templateData, filePath, req}){}
-function dustToDocx({templateData, filePath, req}){}
+function docxToPdf({ templateData, filePath, req }) { }
+function dustToDocx({ templateData, filePath, req }) { }
 /* eslint-enable */
 
-async function dustToPdf({templateData, filePath, req}){
+async function dustToPdf({ templateData, filePath, req }) {
 	templateData.staticImagePath = __appPath + '/public/img';
 
 	let dustSrc = fs.readFileSync(filePath, 'utf8');
@@ -133,7 +133,7 @@ async function dustToPdf({templateData, filePath, req}){
 	const tmpFileName = __dirname + '/../' + new Date().getTime() + '' + Math.floor(Math.random() * Math.floor(100)) + '.pdf';
 
 	const html = await new Promise((resolve, reject) => {
-		dust.renderSource(dustSrc, templateData, function(err, html) {
+		dust.renderSource(dustSrc, templateData, function (err, html) {
 			if (err)
 				return reject(err);
 			resolve(html);
@@ -159,7 +159,7 @@ async function dustToPdf({templateData, filePath, req}){
 
 	try {
 		format = await page.$eval("pdfconf", el => el.getAttribute("data-format"));
-		if(format.includes(',')){
+		if (format.includes(',')) {
 			width = format.split(',')[0];
 			height = format.split(',')[1];
 			format = null;
@@ -167,18 +167,18 @@ async function dustToPdf({templateData, filePath, req}){
 		landscape = await page.$eval("pdfconf", el => el.getAttribute("data-landscape"));
 		landscape = landscape == '1';
 		margin = await page.$eval("pdfconf", el => el.getAttribute("data-pdf-margin"));
-		if(margin)
+		if (margin)
 			margin = margin.split(',');
 
 		headerTemplate = await page.$eval('#header', el => el.innerHTML);
 		footerTemplate = await page.$eval('#footer', el => el.innerHTML);
 		await page.$eval('#header', el => el.remove());
 		await page.$eval('#footer', el => el.remove());
-	} catch(err) {
+	} catch (err) {
 		console.error(err.message);
 	}
 
-	if(headerTemplate == '' && footerTemplate == '')
+	if (headerTemplate == '' && footerTemplate == '')
 		displayHeaderFooter = false;
 
 	await page.pdf({
@@ -195,7 +195,8 @@ async function dustToPdf({templateData, filePath, req}){
 			bottom: margin[1],
 			right: margin[2],
 			left: margin[3]
-		}
+		},
+		printBackground: true
 	});
 	await browser.close();
 
@@ -246,7 +247,7 @@ function getDataParser(templateExtention) {
 
 		// TODO: Default data finder with simple readfile
 		default:
-			return _ => {throw new Error("Unhandled source template file type '"+templateExtention+"'. Provide your own by setting `data.templateDataParser` through DocumentTemplate hooks")}
+			return _ => { throw new Error("Unhandled source template file type '" + templateExtention + "'. Provide your own by setting `data.templateDataParser` through DocumentTemplate hooks") }
 	}
 }
 
@@ -264,7 +265,7 @@ function getTemplateGenerator(inputType, outputType) {
 			return docxToPdf;
 	}
 
-	return _ => {throw new Error("Unhandled template output type '"+outputType+"' for input type '"+inputType+"', no template generator available. Provide your own by setting `data.templateGenerator` through DocumentTemplate hooks")}
+	return _ => { throw new Error("Unhandled template output type '" + outputType + "' for input type '" + inputType + "', no template generator available. Provide your own by setting `data.templateGenerator` through DocumentTemplate hooks") }
 }
 
 module.exports = {
