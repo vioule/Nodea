@@ -7,7 +7,7 @@ let NodeaSizeFileLimit = 10000000; // Default size => 10Mb
 
 function loadScript(scriptUrl) {
 	return new Promise((res, rej) => {
-		if(loadedScript.includes(scriptUrl)){
+		if (loadedScript.includes(scriptUrl)) {
 			console.warn('Script already loaded:', scriptUrl);
 			return;
 		}
@@ -21,89 +21,89 @@ function loadScript(scriptUrl) {
 }
 
 function firstElementFocus(tab, idx) {
-    if(!idx)
-        idx = 0;
-    var element = $(".form-group:eq("+idx+") label:eq(0)", tab).next().focus();
-    if ((element && (element.prop('disabled') == true || element.prop('readonly') == true))
-    && ($(".form-group", tab).length > 0 && idx <= $(".form-group", tab).length))
-        firstElementFocus(idx+1);
+	if (!idx)
+		idx = 0;
+	var element = $(".form-group:eq(" + idx + ") label:eq(0)", tab).next().focus();
+	if ((element && (element.prop('disabled') == true || element.prop('readonly') == true))
+		&& ($(".form-group", tab).length > 0 && idx <= $(".form-group", tab).length))
+		firstElementFocus(idx + 1);
 }
 
 function ajax_select(select, placeholder) {
-    if (!placeholder)
-        placeholder = SELECT_DEFAULT_TEXT;
+	if (!placeholder)
+		placeholder = SELECT_DEFAULT_TEXT;
 
-    var searchField = select.data('using') && select.data('using').split(',') || 'id';
-	if(Array.isArray(searchField))
+	var searchField = select.data('using') && select.data('using').split(',') || 'id';
+	if (Array.isArray(searchField))
 		searchField = searchField.map(x => x.trim());
 
-    // Use custom url on select or build default url
-    var url = select.data('href') ? select.data('href') : select.data('url') ? select.data('url') : '/' + select.data('source') + '/search';
-    select.select2({
-        placeholder: placeholder,
-        allowClear: true,
-        ajax: {
-            url: url,
-            dataType: 'json',
-            method: 'POST',
-            delay: 250,
-            contentType: "application/json",
-            data: function (params) {
+	// Use custom url on select or build default url
+	var url = select.data('href') ? select.data('href') : select.data('url') ? select.data('url') : '/' + select.data('source') + '/search';
+	select.select2({
+		placeholder: placeholder,
+		allowClear: true,
+		ajax: {
+			url: url,
+			dataType: 'json',
+			method: 'POST',
+			delay: 250,
+			contentType: "application/json",
+			data: function (params) {
 				let cleanData = $(this).data();
 				// Clean useless select2 instanciation key to prevent circular recursion of the object
 				// This data is not needed for server side anyway
 				delete cleanData.select2;
-                return JSON.stringify({
-                    search: params.term,
-                    page: params.page || 1,
-                    searchField: searchField,
+				return JSON.stringify({
+					search: params.term,
+					page: params.page || 1,
+					searchField: searchField,
 					attrData: cleanData
-                });
-            },
-            processResults: function (answer, params) {
-                var dataResults = answer.rows;
-                if (!dataResults)
-                    return {results: []};
-                var results = [];
-                if (select.attr("multiple") != "multiple" && !params.page)
-                    results.push({id: "nps_clear_select", text: placeholder});
-                for (var i = 0; i < dataResults.length; i++) {
-                    var text = [];
-                    for (var field in dataResults[i]) {
-                        if (searchField.indexOf(field) != -1) {
-                            if (dataResults[i][field] != null)
-                                text.push(dataResults[i][field]);
-                        }
-                    }
-                    text = text.join(' - ');
-                    if (text == "" || text == null)
-                        text = dataResults[i].id;
+				});
+			},
+			processResults: function (answer, params) {
+				var dataResults = answer.rows;
+				if (!dataResults)
+					return { results: [] };
+				var results = [];
+				if (select.attr("multiple") != "multiple" && !params.page)
+					results.push({ id: "nps_clear_select", text: placeholder });
+				for (var i = 0; i < dataResults.length; i++) {
+					var text = [];
+					for (var field in dataResults[i]) {
+						if (searchField.indexOf(field) != -1) {
+							if (dataResults[i][field] != null)
+								text.push(dataResults[i][field]);
+						}
+					}
+					text = text.join(' - ');
+					if (text == "" || text == null)
+						text = dataResults[i].id;
 
-                    results.push({id: dataResults[i].id, text: text});
-                }
+					results.push({ id: dataResults[i].id, text: text });
+				}
 
-                return {
-                    results: results,
-                    pagination: {more: answer.more}
-                };
-            },
-            cache: true
-        },
-        minimumInputLength: 0,
-        escapeMarkup: function (markup) {
-            return markup;
-        },
-        templateResult: function (data) {
-            return data.text;
-        }
-    });
+				return {
+					results: results,
+					pagination: { more: answer.more }
+				};
+			},
+			cache: true
+		},
+		minimumInputLength: 0,
+		escapeMarkup: function (markup) {
+			return markup;
+		},
+		templateResult: function (data) {
+			return data.text;
+		}
+	});
 
-    // Clear select if default option is chosen, do not work natively with select2
-    if (select.attr("multiple") != "multiple")
-        select.on('change', function () {
-            if ($(this).val() == 'nps_clear_select')
-                $(this).val(null).trigger('change');
-        });
+	// Clear select if default option is chosen, do not work natively with select2
+	if (select.attr("multiple") != "multiple")
+		select.on('change', function () {
+			if ($(this).val() == 'nps_clear_select')
+				$(this).val(null).trigger('change');
+		});
 }
 
 const addressMapsInstance = [];
@@ -128,7 +128,7 @@ function initMap(mapElement, options) {
 	const markerSource = new ol.source.Vector();
 
 	const markerStyle = new ol.style.Style({
-		image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
+		image: new ol.style.Icon(/** @type {olx.style.IconOptions} */({
 			anchor: [0.5, 46],
 			anchorXUnits: 'fraction',
 			anchorYUnits: 'pixels',
@@ -138,10 +138,10 @@ function initMap(mapElement, options) {
 	});
 
 	const iconFeature = new ol.Feature({
-	    geometry: new ol.geom.Point(ol.proj.transform([lon, lat], 'EPSG:4326', 'EPSG:3857')),
-	    name: '',
-	    population: 4000,
-	    rainfall: 500
+		geometry: new ol.geom.Point(ol.proj.transform([lon, lat], 'EPSG:4326', 'EPSG:3857')),
+		name: '',
+		population: 4000,
+		rainfall: 500
 	});
 
 	markerSource.addFeature(iconFeature);
@@ -198,7 +198,7 @@ function initAddressSearchInput(input) {
 		minLength: 3,
 		source: function (req, res) {
 			$.ajax({
-				url: 'https://api-adresse.data.gouv.fr/search/',
+				url: 'https://data.geopf.fr/geocodage/search/',
 				type: 'GET',
 				data: {
 					limit: 10,
@@ -267,16 +267,16 @@ function rebuildAddressLabel(element) {
 
 function humanReadableFileSize(size) {
 	const baseSize = 1000 // Or 1024
-    let i = Math.floor( Math.log(size) / Math.log(baseSize) );
-    return (size / Math.pow(baseSize, i)).toFixed(2) * 1 + ['o', 'Ko', 'Mo', 'Go', 'To'][i];
+	let i = Math.floor(Math.log(size) / Math.log(baseSize));
+	return (size / Math.pow(baseSize, i)).toFixed(2) * 1 + ['o', 'Ko', 'Mo', 'Go', 'To'][i];
 };
 
 let NodeaForms = (_ => {
 	const defaults = {
 		handleSubmit,
 		handleSuccess,
-        handleError,
-        validate,
+		handleError,
+		validate,
 		// Each element is represented by an object of {selector, initializer, validator}
 		elements: {
 			ajax_select: {
@@ -289,11 +289,11 @@ let NodeaForms = (_ => {
 					const val = element.val();
 					if (val !== null && val.length)
 						return;
-						return [_ => {
-							// Necessary to push empty value in update, without it set the value to null in update is impossible
-							const input = $(`<input type="hidden" name="${element.attr('name')}" value="">`);
-							form.append(input);
-						}];
+					return [_ => {
+						// Necessary to push empty value in update, without it set the value to null in update is impossible
+						const input = $(`<input type="hidden" name="${element.attr('name')}" value="">`);
+						form.append(input);
+					}];
 				}
 			},
 			select: {
@@ -345,14 +345,14 @@ let NodeaForms = (_ => {
 			radio: {
 				selector: "span.radio-group[data-radio]",
 				initializer: (element) => {
-					element.find('input[type="radio"]').each(function() {
+					element.find('input[type="radio"]').each(function () {
 						$(this).icheck({
 							radioClass: 'iradio_flat-blue',
 							disabledClass: ''
 						});
 					});
 					// If no radio checked, checked the first one
-					if(element.find(`input[type='radio']:checked`).length == 0)
+					if (element.find(`input[type='radio']:checked`).length == 0)
 						element.find('input[type="radio"]').first().icheck('checked');
 				}
 			},
@@ -369,7 +369,7 @@ let NodeaForms = (_ => {
 					if (element.attr('required') != 'required')
 						return;
 					let checkedFound = false;
-					element.find('input[type="checkbox"]').each(function() {
+					element.find('input[type="checkbox"]').each(function () {
 						if ($(this).icheck('update')[0].checked)
 							checkedFound = true;
 					});
@@ -399,12 +399,12 @@ let NodeaForms = (_ => {
 						height: 200,
 						toolbar: toolbar,
 						callbacks: {
-							onPaste: function(e) {
+							onPaste: function (e) {
 								// Avoid paste code from ms word or libreoffice that would break some ihm feature
 								// Only copy / paste plain text
 								var bufferText = ((e.originalEvent || e).clipboardData || window.clipboardData).getData('Text');
 								e.preventDefault();
-								setTimeout(function() {
+								setTimeout(function () {
 									document.execCommand('insertText', false, bufferText);
 								}, 10);
 							}
@@ -415,7 +415,7 @@ let NodeaForms = (_ => {
 			number: {
 				selector: "input[type='number']",
 				initializer: (element) => {
-					element.on('keyup', function() {
+					element.on('keyup', function () {
 						if (typeof element.data("custom-type") === "undefined" && element.val().length > 10) {
 							element.val(element.val().slice(0, 10));
 						} else if (element.data("custom-type") == "bigint" && element.val().length > 19) {
@@ -428,16 +428,16 @@ let NodeaForms = (_ => {
 				selector: "input[data-custom-type='decimal']",
 				initializer: (element) => {
 					let decimalRegx = new RegExp("^-?[0-9]+([\.\,][0-9]*)?$");
-					if(element.data('precision')) {
+					if (element.data('precision')) {
 						let precision = element.data('precision').split(',')[0];
 						const round = element.data('precision').split(',')[1] ? element.data('precision').split(',')[1] : 0;
 						precision = parseInt(precision) - parseInt(round);
 						// Precision is total number of digit (including after comma)
 						// Round is number of digit after the comma
 						// So the precision before the comma is precision - round
-						decimalRegx = new RegExp("^-?[0-9]{1,"+precision+"}([\.\,][0-9]{0,"+round+"})?$");
+						decimalRegx = new RegExp("^-?[0-9]{1," + precision + "}([\.\,][0-9]{0," + round + "})?$");
 					}
-					element.on('keyup', function() {
+					element.on('keyup', function () {
 						while ($(this).val() != "" && $(this).val() != "-" && !decimalRegx.test($(this).val()))
 							$(this).val($(this).val().substring(0, $(this).val().length - 1));
 						$(this).val($(this).val().replace(',', '.'));
@@ -448,16 +448,16 @@ let NodeaForms = (_ => {
 				selector: "input[data-type='currency']",
 				initializer: (element) => {
 					let decimalRegx = new RegExp("^-?[0-9]+([\.\,][0-9]*)?$");
-					if(element.data('precision')) {
+					if (element.data('precision')) {
 						let precision = element.data('precision').split(',')[0];
 						const round = element.data('precision').split(',')[1] ? element.data('precision').split(',')[1] : 0;
 						precision = parseInt(precision) - parseInt(round);
 						// Precision is total number of digit (including after comma)
 						// Round is number of digit after the comma
 						// So the precision before the comma is precision - round
-						decimalRegx = new RegExp("^-?[0-9]{1,"+precision+"}([\.\,][0-9]{0,"+round+"})?$");
+						decimalRegx = new RegExp("^-?[0-9]{1," + precision + "}([\.\,][0-9]{0," + round + "})?$");
 					}
-					element.on('keyup', function() {
+					element.on('keyup', function () {
 						while ($(this).val() != "" && $(this).val() != "-" && !decimalRegx.test($(this).val()))
 							$(this).val($(this).val().substring(0, $(this).val().length - 1));
 					});
@@ -472,7 +472,7 @@ let NodeaForms = (_ => {
 				},
 				validator: (element, form) => {
 					if (element.val().length > 0 && !element.inputmask("isComplete")) {
-						if(!element.parent().parent().find('.field-mail-error').length){
+						if (!element.parent().parent().find('.field-mail-error').length) {
 							element.css("border", "1px solid red").parent().after("<span class='field-mail-error' style='color: red;'>Le champ est incomplet.</span>");
 						}
 						return false;
@@ -575,26 +575,26 @@ let NodeaForms = (_ => {
 				selector: '.preview_file',
 				initializer: (element) => {
 					element.click(_ => {
-				        const downloadParams = `entity=${element.data('entity')}&field=${element.data('field')}&id=${element.data('id')}`;
-				        $.ajax({
-				            url: '/app/get_file?'+downloadParams,
-				            type: 'GET',
-				            success: function (result) {
-				                let fileDisplay;
-				                if(result.file.substring(result.file.length, result.file.length - 4).toLowerCase() == '.pdf') {
-				                    var binaryPDF = generateFileViewer(result.data);
-				                    fileDisplay = '<iframe src=/js/plugins/pdf/web/viewer.html?file=' + encodeURIComponent(binaryPDF) + ' style="width:100%;min-height:500px !important;" allowfullscreen webkitallowfullscreen ></iframe>';
-				                }
-				                else
-				                	fileDisplay = '<p><img class="img-fluid" src=data:image/;base64,' + result.data + ' alt=' + result.file + '/></p>';
-				                doModal(
-				                	result.file,
-				                	`${fileDisplay}<a href="/app/download?${downloadParams}" class="btn btn-primary"><i class="fa fa-download"></i>&nbsp;&nbsp;${lang_user == 'fr-FR' ? 'Télécharger le fichier' : "Download file"}</a>
+						const downloadParams = `entity=${element.data('entity')}&field=${element.data('field')}&id=${element.data('id')}`;
+						$.ajax({
+							url: '/app/get_file?' + downloadParams,
+							type: 'GET',
+							success: function (result) {
+								let fileDisplay;
+								if (result.file.substring(result.file.length, result.file.length - 4).toLowerCase() == '.pdf') {
+									var binaryPDF = generateFileViewer(result.data);
+									fileDisplay = '<iframe src=/js/plugins/pdf/web/viewer.html?file=' + encodeURIComponent(binaryPDF) + ' style="width:100%;min-height:500px !important;" allowfullscreen webkitallowfullscreen ></iframe>';
+								}
+								else
+									fileDisplay = '<p><img class="img-fluid" src=data:image/;base64,' + result.data + ' alt=' + result.file + '/></p>';
+								doModal(
+									result.file,
+									`${fileDisplay}<a href="/app/download?${downloadParams}" class="btn btn-primary"><i class="fa fa-download"></i>&nbsp;&nbsp;${lang_user == 'fr-FR' ? 'Télécharger le fichier' : "Download file"}</a>
 				                `);
-				            },
-				            error: console.error
-				        });
-			        });
+							},
+							error: console.error
+						});
+					});
 				}
 			},
 			timepicker: {
@@ -706,7 +706,7 @@ let NodeaForms = (_ => {
 					if (element.val().length === 0)
 						return;
 					const modifications = []
-						// Sécurité
+					// Sécurité
 					modifications.push(_ => element.prop("readOnly", true))
 
 					var date = element.val().split("/");
@@ -766,7 +766,7 @@ let NodeaForms = (_ => {
 							}
 						}
 					} else if (element.attr('data-custom-type') === 'code39') {
-						element.on('keyup', function() {
+						element.on('keyup', function () {
 							element.val(element.val().toUpperCase());
 						});
 					}
@@ -808,13 +808,13 @@ let NodeaForms = (_ => {
 						case 'code39':
 							var reg = new RegExp('\\[A-Z0-9-. $\/+]\\*', 'g');
 							if (!(/^[A-Z0-9-. $\/+]*$/).test(val)) {
-								message += " Le champ " + element.attr("placeholder") + " doit respècter la norme code39.";
+								message += " Le champ " + element.attr("placeholder") + " doit respecter la norme code39.";
 								error = true;
 							}
 							break;
 						case 'code128':
 							if (!(/^[\x00-\x7F]*$/).test(val)) {
-								message += " Le champ " + element.attr("placeholder") + " doit respècter la norme code128.";
+								message += " Le champ " + element.attr("placeholder") + " doit respecter la norme code128.";
 								error = true;
 							}
 							break;
@@ -829,7 +829,7 @@ let NodeaForms = (_ => {
 			url: {
 				selector: "input[type='url']",
 				initializer: (element) => {
-					element.blur(function() {
+					element.blur(function () {
 						var currentUrl = element.val();
 						if (currentUrl != "" && currentUrl.indexOf("http://") == -1 && currentUrl.indexOf("https://") == -1) {
 							if (currentUrl.indexOf("://") != -1) {
@@ -855,40 +855,42 @@ let NodeaForms = (_ => {
 					const input = element.parents('.form-group').find('input[type=file]');
 					const form = input.parents('form');
 					const isImage = dropzone.hasClass('image');
-					const acceptedFormats = isImage ? ['image/gif','image/png','image/jpeg', 'image/webp', 'image/svg+xml'] : null; // null is all
+					const acceptedFormats = isImage ? ['image/gif', 'image/png', 'image/jpeg', 'image/webp', 'image/svg+xml'] : null; // null is all
 
 					// Ensure form enctype accepts files
 					if (form.attr('enctype') !== 'multipart/form-data')
 						form.attr('enctype', 'multipart/form-data');
 
 					// Redirect click to file input
-					dropzone.click(function(e) {
+					dropzone.click(function (e) {
 						if (!$(e.target).is(".remove-file"))
 							input.click();
 					});
 					// Handle drag and drop
-					dropzone.on('dragover', function(e) {
+					dropzone.on('dragover', function (e) {
 						e.preventDefault();
 						$(this).addClass('dragover');
 					});
-					dropzone.on('dragleave', function(e) {
+					dropzone.on('dragleave', function (e) {
 						e.preventDefault();
 						$(this).removeClass('dragover');
 					});
-					dropzone.on('drop', function(e) {
+					dropzone.on('drop', function (e) {
 						e.preventDefault();
 						input[0].files = e.originalEvent.dataTransfer.files;
 						$(this).removeClass('dragover');
 						input.change();
 					});
 					// Remove file
-					dropzone.on('click', '.remove-file', function() {
+					dropzone.on('click', '.remove-file', function () {
 						input[0].value = null;
 						input.change();
 					});
 					// Check file validity, display added file
-					input.change(function() {
-						const noneFileIcon = `<i class="fas fa-download"></i>&nbsp;&nbsp;Glisser un fichier ici ou cliquer`;
+					input.change(function () {
+
+						const msg = lang_user == 'fr-FR' ? 'Glisser un fichier ou cliquer pour déposer' : 'Drag a file or click to drop';
+						const noneFileIcon = `<i class="fas fa-download"></i>&nbsp;&nbsp;` + msg;
 
 						const modifiedCheck = form.find(`input[name=${input.attr('name')}_modified]`);
 						if (modifiedCheck)
@@ -916,7 +918,7 @@ let NodeaForms = (_ => {
 						// Type of image files
 						if (isImage === true && acceptedFormats !== null)
 							if (!acceptedFormats.includes(file.type)) {
-								toastr.error("File format is not accepted. Expecting "+acceptedFormats.join(', '));
+								toastr.error("File format is not accepted. Expecting " + acceptedFormats.join(', '));
 								input[0].value = null;
 								return;
 							}
@@ -928,11 +930,11 @@ let NodeaForms = (_ => {
 				},
 				validator: (element, form) => {
 					const input = element.parent().find("input[type=file]");
-					const label = element.parent().find("label[for='"+input.attr('name')+"']");
+					const label = element.parent().find("label[for='" + input.attr('name') + "']");
 					const hasDropzoneFile = element.find('.dropzonefile').length == 1;
 					// For update form we cannot set required the type file input (cannot prefilled input file for security reasons)
 					// So we check only the required class on label instead
-					if ((input.prop('required') === true || label.hasClass('required')) && !input.val() && !hasDropzoneFile){
+					if ((input.prop('required') === true || label.hasClass('required')) && !input.val() && !hasDropzoneFile) {
 						toastr.error(locales.global_component.local_file_storage.required_file);
 						return false;
 					}
@@ -943,23 +945,23 @@ let NodeaForms = (_ => {
 				initializer: (element) => {
 
 					// Init search input autocompletion
-					if(!jQueryUILoad) {
-						$('head').append($('<link rel="stylesheet" type="text/css" />').attr('href', '/AdminLTE/plugins/jquery-ui/jquery-ui.min.css') );
+					if (!jQueryUILoad) {
+						$('head').append($('<link rel="stylesheet" type="text/css" />').attr('href', '/AdminLTE/plugins/jquery-ui/jquery-ui.min.css'));
 						jQueryUILoad = loadScript('/AdminLTE/plugins/jquery-ui/jquery-ui.min.js').catch(err => {
 							console.error(err);
 						})
 					}
 					jQueryUILoad.then(_ => initAddressSearchInput(element.find('.address_search_input')));
 
-					element.find('input').each(function() {
-						$(this).on('keyup', function() {
+					element.find('input').each(function () {
+						$(this).on('keyup', function () {
 							rebuildAddressLabel(element);
 						})
 					});
 
 					// Map initialization
-					if(element.find('.address_component_map').length != 0) {
-						if(!openLayerLoad) {
+					if (element.find('.address_component_map').length != 0) {
+						if (!openLayerLoad) {
 							openLayerLoad = loadScript('/js/plugins/ol/ol.js').catch(err => {
 								console.error(err);
 							})
@@ -977,15 +979,15 @@ let NodeaForms = (_ => {
 					const url = element.data('href');
 					const isInTab = element.parents('.ajax-content').length;
 
-					element.click(function() {
+					element.click(function () {
 						// No comment expected on status
-						if (element.data('comment') != true && element.data('reason') != true ) {
+						if (element.data('comment') != true && element.data('reason') != true) {
 							if (isInTab) {
 								// Tab status, reloadTab on success
 								return $.ajax({
 									url: url + '?ajax=true',
 									success: NodeaTabs.reloadTab
-			        			});
+								});
 							}
 							return location.href = url;
 						}
@@ -994,7 +996,7 @@ let NodeaForms = (_ => {
 						const statusCommentModal = $("#statusComment");
 
 						const reasonDiv = statusCommentModal.find('[name="with_select_reason"]');
-  						const reasonSelect = reasonDiv.find('select');
+						const reasonSelect = reasonDiv.find('select');
 
 						// mise à jour de l'id statut pour filtrage des motifs
 						// Split the string by '/'
@@ -1003,52 +1005,52 @@ let NodeaForms = (_ => {
 						const stat = parts[parts.length - 1];
 						$('select[name="r_reason"]').data('statusid', parseInt(stat));
 
-						if (element.data('comment') != true){
+						if (element.data('comment') != true) {
 							// il faut cacher la zone Commentaire libre
 							$('div[name="with_freecomment"]').hide();
 						}
 
-						if (element.data('reason') != true){
+						if (element.data('reason') != true) {
 							// on cache le selecteur de motif et on le rend non obligatoire
 							reasonDiv.hide();
-    						reasonSelect.prop('disabled', true);
-    						reasonSelect.prop('required', false);
+							reasonSelect.prop('disabled', true);
+							reasonSelect.prop('required', false);
 						}
-						
-						const statusCommentSubmit = function(event) {
-			        		event.preventDefault();
-			        		const comment = encodeURIComponent(statusCommentModal.find('textarea[name=comment]').summernote('code'));
+
+						const statusCommentSubmit = function (event) {
+							event.preventDefault();
+							const comment = encodeURIComponent(statusCommentModal.find('textarea[name=comment]').summernote('code'));
 							const reasonID = parseInt(statusCommentModal.find('select[name=r_reason]').val());
-							
+
 							var uri = "";
 							if (element.data('comment') == true)
-								uri += "&comment="+comment;
+								uri += "&comment=" + comment;
 							if (element.data('reason') == true)
-								uri += "&reasonID="+reasonID;
-			        		if (isInTab) {
-				        		$.ajax({
-				        			url: url + '?ajax=true'+uri,
-				        			success: _ => {
-				        				// Close tab
-				        				NodeaTabs.reloadTab();
-				        				// Hide modal
-				        				statusCommentModal.modal('hide');
-				        				// Delete modal clone
-				        				setTimeout(statusCommentModal.remove, 200);
-				        			}
-				        		});
-				        	}
-				        	else
-				        		location.href = url + '?' + uri;
+								uri += "&reasonID=" + reasonID;
+							if (isInTab) {
+								$.ajax({
+									url: url + '?ajax=true' + uri,
+									success: _ => {
+										// Close tab
+										NodeaTabs.reloadTab();
+										// Hide modal
+										statusCommentModal.modal('hide');
+										// Delete modal clone
+										setTimeout(statusCommentModal.remove, 200);
+									}
+								});
+							}
+							else
+								location.href = url + '?' + uri;
 
-				        	// Unbind submit handler to avoid multiple bind since modal is not removed from DOM
-				        	statusCommentModal.find('form').unbind('submit', statusCommentSubmit);
-					        return false;
-			        	}
-			        	statusCommentModal.find('form').submit(statusCommentSubmit);
+							// Unbind submit handler to avoid multiple bind since modal is not removed from DOM
+							statusCommentModal.find('form').unbind('submit', statusCommentSubmit);
+							return false;
+						}
+						statusCommentModal.find('form').submit(statusCommentSubmit);
 
 
-				        statusCommentModal.modal('show');
+						statusCommentModal.modal('show');
 					});
 				}
 			}
@@ -1056,11 +1058,11 @@ let NodeaForms = (_ => {
 	};
 
 	function mergeElements(overrideDefaults = {}) {
-		const elementsList = Object.entries({...defaults.elements, ...overrideDefaults.elements}).map(([key]) => key);
+		const elementsList = Object.entries({ ...defaults.elements, ...overrideDefaults.elements }).map(([key]) => key);
 		const mergedElements = {};
 		for (const element of elementsList) {
 			mergedElements[element] = {
-				selector: "", initializer: _ => {}, validator: _ => {},
+				selector: "", initializer: _ => { }, validator: _ => { },
 				...defaults.elements[element],
 				...overrideDefaults && overrideDefaults.elements && overrideDefaults.elements[element]
 			};
@@ -1070,73 +1072,73 @@ let NodeaForms = (_ => {
 
 	// Handle form submission
 	function handleSubmit(form, event, overrideDefaults = {}) {
-        // Prevent multiple submission (double click)
-        if (form.data('submitting') === true) {
-            event.preventDefault();event.stopPropagation();
-            return false;
-        }
-        form.data('submitting', true);
+		// Prevent multiple submission (double click)
+		if (form.data('submitting') === true) {
+			event.preventDefault(); event.stopPropagation();
+			return false;
+		}
+		form.data('submitting', true);
 
-        let enableTmsp;
-        function enableForm() {
-        	if (enableTmsp)
-        		clearTimeout(enableTmsp);
-            form.data('submitting', false);
-        }
-        // Re-enable form after some time in case something went wrong
-        enableTmsp = setTimeout(enableForm, 3000);
+		let enableTmsp;
+		function enableForm() {
+			if (enableTmsp)
+				clearTimeout(enableTmsp);
+			form.data('submitting', false);
+		}
+		// Re-enable form after some time in case something went wrong
+		enableTmsp = setTimeout(enableForm, 3000);
 
-        // Invalid form, block submission
-        if (!validate(form, overrideDefaults)) {
-            enableForm();
-            return false;
-        }
+		// Invalid form, block submission
+		if (!validate(form, overrideDefaults)) {
+			enableForm();
+			return false;
+		}
 
-        // Valid form, submit as ajax or return true
-        if (form.hasClass('ajax')) {
-        	const handleSuccess = overrideDefaults.handleSuccess || defaults.handleSuccess;
-        	const handleError = overrideDefaults.handleError || defaults.handleError;
-    		const originAction = form.attr('action');
-        	let action;
-        	try {
-        		const currentTab = NodeaTabs.current.tab;
-        		action = originAction.includes('?')
-        			? originAction + '&ajax=true&' + NodeaTabs.buildAssociationHref(currentTab)
-        			: originAction + '?ajax=true&' + NodeaTabs.buildAssociationHref(currentTab)
-        	} catch (err) {
-        		action = originAction.includes('?')
-        			? originAction + '&ajax=true'
-        			: originAction + '?ajax=true'
-        	}
-    		let ajaxOptions = {
-	            url: action,
-	            method: form.attr('method') || 'post',
-	            success: function (...args) {
-	            	enableForm();
-	            	handleSuccess(...args)
-	            },
-	            error: function(...args) {
-	                enableForm();
-	                handleError(...args);
-	            },
-	            timeout: 15000
-	        }
-	        // Form contains files, we can't just serialize
-	        if (form.attr('enctype') === 'multipart/form-data') {
-	        	ajaxOptions = {
-	        		...ajaxOptions,
-		            processData: false,
-		            contentType: false,
-		            enctype: form.attr('enctype'),
-		            data: new FormData(form[0])
-	        	}
-	        }
-	        else
-	        	ajaxOptions.data = form.serialize();
-	        $.ajax(ajaxOptions);
-	        return false;
-        }
-        return true;
+		// Valid form, submit as ajax or return true
+		if (form.hasClass('ajax')) {
+			const handleSuccess = overrideDefaults.handleSuccess || defaults.handleSuccess;
+			const handleError = overrideDefaults.handleError || defaults.handleError;
+			const originAction = form.attr('action');
+			let action;
+			try {
+				const currentTab = NodeaTabs.current.tab;
+				action = originAction.includes('?')
+					? originAction + '&ajax=true&' + NodeaTabs.buildAssociationHref(currentTab)
+					: originAction + '?ajax=true&' + NodeaTabs.buildAssociationHref(currentTab)
+			} catch (err) {
+				action = originAction.includes('?')
+					? originAction + '&ajax=true'
+					: originAction + '?ajax=true'
+			}
+			let ajaxOptions = {
+				url: action,
+				method: form.attr('method') || 'post',
+				success: function (...args) {
+					enableForm();
+					handleSuccess(...args)
+				},
+				error: function (...args) {
+					enableForm();
+					handleError(...args);
+				},
+				timeout: 15000
+			}
+			// Form contains files, we can't just serialize
+			if (form.attr('enctype') === 'multipart/form-data') {
+				ajaxOptions = {
+					...ajaxOptions,
+					processData: false,
+					contentType: false,
+					enctype: form.attr('enctype'),
+					data: new FormData(form[0])
+				}
+			}
+			else
+				ajaxOptions.data = form.serialize();
+			$.ajax(ajaxOptions);
+			return false;
+		}
+		return true;
 	}
 
 	// Ajax form default success callback
@@ -1152,10 +1154,10 @@ let NodeaForms = (_ => {
 		}
 	}
 
-    // Server side you can:
-    // Show an error message: return res.status(500).send("My Error Message");
-    // Show multiple message: return res.status(500).send([{message: "Message One",level: "warning"}, {message: "Message Two",level: "error"}, ...]);
-    // You can also force the page to refresh like this: return res.status(500).send({refresh: true});
+	// Server side you can:
+	// Show an error message: return res.status(500).send("My Error Message");
+	// Show multiple message: return res.status(500).send([{message: "Message One",level: "warning"}, {message: "Message Two",level: "error"}, ...]);
+	// You can also force the page to refresh like this: return res.status(500).send({refresh: true});
 	function handleError(error, par2, par3) {
 		try {
 			if (typeof error.responseText === "string")
@@ -1183,8 +1185,8 @@ let NodeaForms = (_ => {
 
 		// For each element, call validator
 		for (const element in mergedElements) {
-			const {selector, initializer, validator} = mergedElements[element];
-			form.find(selector).each(function() {
+			const { selector, initializer, validator } = mergedElements[element];
+			form.find(selector).each(function () {
 				const element = $(this);
 				const res = validator(element, form);
 				if (res === false)
@@ -1198,10 +1200,10 @@ let NodeaForms = (_ => {
 		if (!isValid)
 			return false;
 		// Valid form, apply modifications before submitting
-        for (const formModification of formModifications)
-            formModification();
-        return true;
-    }
+		for (const formModification of formModifications)
+			formModification();
+		return true;
+	}
 
 	function initialize(context = document, overrideDefaults = {}) {
 		// Get list of element merged from defaults and overrideDefaults
@@ -1209,9 +1211,9 @@ let NodeaForms = (_ => {
 		// For each element, call default or overridden selector/initializer
 		const formModifications = [], isValid = true;
 		for (const element in mergedElements) {
-			let {selector, initializer} = mergedElements[element];
+			let { selector, initializer } = mergedElements[element];
 			// Initialize form defaults
-			$(selector, context).each(function() {
+			$(selector, context).each(function () {
 				if ($(this).data('initialized') === true)
 					return;
 
@@ -1223,7 +1225,7 @@ let NodeaForms = (_ => {
 		// Validate form before submission
 		const forms = $(context).is("form") ? $(context) : $("form:not(.no-init)", context);
 		if (forms.length) {
-			forms.submit(function(event) {
+			forms.submit(function (event) {
 				const handleSubmit = overrideDefaults.handleSubmit || defaults.handleSubmit;
 				return handleSubmit($(this), event, overrideDefaults);
 			});
