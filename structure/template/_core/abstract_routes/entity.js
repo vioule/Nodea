@@ -47,6 +47,7 @@ class CoreEntity extends Route {
 	 */
 	constructor(e_entity, attributes, options, helpers, additionalRoutes = []) {
 		const registeredRoutes = [
+			...additionalRoutes,
 			"list",
 			"datalist",
 			"subdatalist",
@@ -61,7 +62,6 @@ class CoreEntity extends Route {
 			"fieldset_remove",
 			"fieldset_add",
 			"destroy",
-			...additionalRoutes,
 		];
 		super(registeredRoutes);
 

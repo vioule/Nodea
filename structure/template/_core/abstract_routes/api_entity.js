@@ -10,7 +10,7 @@ const ApiRoute = require("@core/abstract_routes/api_route");
 
 class ApiEntity extends ApiRoute {
 	constructor(e_entity, attributes, options, additionalRoutes) {
-		super(["find", "findOne", "findAssociation", "create", "update", "destroy", ...additionalRoutes]);
+		super([...additionalRoutes, "find", "findOne", "findAssociation", "create", "update", "destroy"]);
 		this.entity = e_entity.substring(2);
 		this.e_entity = e_entity;
 		this.E_entity = e_entity.capitalizeFirstLetter();
