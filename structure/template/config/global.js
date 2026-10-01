@@ -16,6 +16,10 @@ const config = {
 		jwt_options: {
 			nodea_temp: "1h",
 		},
+		token: {
+			first_connection_duration: 1440,
+			reset_password_duration: 60,
+		},
 	},
 	test: {
 		env: "test",
@@ -29,6 +33,10 @@ const config = {
 		jwt_options: {
 			nodea_temp: "1h",
 		},
+		token: {
+			first_connection_duration: 1440,
+			reset_password_duration: 60,
+		},
 	},
 	production: {
 		env: "production",
@@ -41,6 +49,10 @@ const config = {
 		logConnexionFolder: __dirname + "/../logs/",
 		jwt_options: {
 			nodea_temp: "1h",
+		},
+		token: {
+			first_connection_duration: 1440,
+			reset_password_duration: 60,
 		},
 		ssl: {
 			key: /*fs.readFileSync('./cacerts/private.key')*/ "fakeKey",
@@ -61,6 +73,10 @@ const config = {
 		jwt_options: {
 			nodea_temp: "1h",
 		},
+		token: {
+			first_connection_duration: 1440,
+			reset_password_duration: 60,
+		},
 		ssl: {
 			key: /*fs.readFileSync('./cacerts/private.key')*/ "fakeKey",
 			cert: /*fs.readFileSync('./cacerts/wildcard_newmips.crt')*/ "fakeCert",
@@ -79,6 +95,10 @@ const config = {
 		logConnexionFolder: __dirname + "/../logs/",
 		jwt_options: {
 			nodea_temp: "1h",
+		},
+		token: {
+			first_connection_duration: 1440,
+			reset_password_duration: 60,
 		},
 		ssl: {
 			key: /*fs.readFileSync('./cacerts/private.key')*/ "fakeKey",

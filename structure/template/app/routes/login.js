@@ -27,13 +27,17 @@ class Login extends CoreLogin {
 				// Trace first connection, remove this line if you disabled traceability
 				middlewares.connectionLogMiddleware,
 			],
-			reset_passwordGET: [middlewares.loginAccess],
-			reset_passwordPOST: [
+			forgot_passwordGET: [middlewares.loginAccess],
+			forgot_passwordPOST: [
 				middlewares.loginAccess,
+				// Trace first connection, remove this line if you disabled traceability
+				middlewares.connectionLogMiddleware,
+			],
+			reset_passwordGET: [],
+			reset_passwordPOST: [
 				// Trace reset password, remove this line if you disabled traceability
 				middlewares.connectionLogMiddleware,
 			],
-			reset_password_token: [middlewares.loginAccess],
 			logout: [
 				// Trace logout, remove this line if you disabled traceability
 				middlewares.connectionLogMiddleware,

@@ -15,6 +15,10 @@ const mailConf = {
 		url: {
 			host: "http://127.0.0.1:" + globalConf.port,
 		},
+		subject: {
+			mail_reset: "NODEA - Réinitialisation de mot de passe",
+			mail_first: "NODEA - Inscription",
+		},
 	},
 	test: {
 		transport: {

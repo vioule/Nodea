@@ -9,8 +9,7 @@ const mailer = require("@core/services/mailer");
 
 const globalConfig = require("@config/global");
 
-const bcrypt = require("bcrypt");
-const saltRounds = 10;
+const { generateToken, hashToken, setExpiresAt } = require("@core/utils/token");
 
 const USER_ID_ADMIN = 1;
 const STATUS_ID_ENABLED = 2;
@@ -19,7 +18,7 @@ const CONF_AUTH_MODE = globalConfig.authStrategy?.toLowerCase();
 
 class E_user extends Entity {
 	constructor() {
-		const additionalRoutes = ["settingsGET", "settingsPOST", "resendFirstConnectionEmail"];
+		const additionalRoutes = ["settingsGET", "settingsPOST", "resendFirstConnectionEmail", "sendResetPassword"];
 		super("e_user", attributes, options, helpers, additionalRoutes);
 	}
 
@@ -54,7 +53,7 @@ class E_user extends Entity {
 					e_user: e_user,
 					isLocal: false,
 				};
-				if (globalConfig.authStrategy && CONF_AUTH_MODE == "local") data.isLocal = true;
+				if (CONF_AUTH_MODE === "local") data.isLocal = true;
 
 				res.success((_) => res.render("e_user/settings", data));
 			})
@@ -65,53 +64,31 @@ class E_user extends Entity {
 		this.router.post(
 			"/settings",
 			this.middlewares.settingsPOST,
-			this.asyncRoute(async ({ req, res }) => {
-				const updateObject = {};
-
-				if (req.body.f_email && req.body.f_email != "") updateObject.f_email = req.body.f_email;
-
-				const user = await models.E_user.findByPk(req.session.passport.user.id);
-
+			this.asyncRoute(async (data) => {
+				data.transaction = await models.sequelize.transaction();
 				try {
-					if (req.body.old_password && req.body.old_password !== "") {
-						if (!user.f_password) updateObject.f_password = await bcrypt.hash(req.body.new_password_1, saltRounds);
-						else {
-							if (req.body.new_password_1 == "" && req.body.new_password_2 == "") throw new Error("settings.error1");
-
-							if (req.body.new_password_1 != req.body.new_password_2) throw new Error("settings.error2");
-
-							if (req.body.new_password_1.length < 4) throw new Error("settings.error3");
-
-							if (!(await bcrypt.compare(req.body.old_password, user.f_password))) throw new Error("settings.error4");
-
-							updateObject.f_password = await bcrypt.hash(req.body.new_password_1, saltRounds);
-						}
-					}
-				} catch (err) {
-					if (err.message.includes("settings.")) {
-						console.error(err.message);
-						req.session.toastr = [
+					const { f_email } = data.req.body;
+					const user = await models.E_user.findByPk(data.req.session.passport.user.id);
+					if (f_email && f_email !== user.f_email) {
+						await user.update({ f_email }, { transaction: data.transaction, user: data.req.user });
+						data.req.session.toastr = [
 							{
-								message: "login.update_fail",
-								level: "error",
+								message: "settings.success",
+								level: "success",
 							},
 						];
-						return res.success((_) => res.redirect("/user/settings"));
 					}
-					console.error(err);
-					throw err;
+					data.res.success((_) => data.res.redirect("/user/settings"));
+				} catch (err) {
+					console.log(err);
+					data.req.session.toastr = [
+						{
+							message: "settings.error",
+							level: "error",
+						},
+					];
+					data.res.error((_) => data.res.redirect("/user/settings"));
 				}
-
-				await user.update(updateObject, { user: req.user });
-
-				req.session.toastr = [
-					{
-						message: "settings.success",
-						level: "success",
-					},
-				];
-
-				res.success((_) => res.redirect("/user/settings"));
 			})
 		);
 	}
@@ -120,22 +97,109 @@ class E_user extends Entity {
 		this.router.post(
 			"/resend_first_connection",
 			this.middlewares.resendFirstConnectionEmail,
-			this.asyncRoute(async ({ req, res }) => {
+			this.asyncRoute(async (data) => {
+				const { f_login, f_email } = data.req.body;
+				data.transaction = await models.sequelize.transaction();
 				// Send first connection email to new user
+
 				try {
+					// Check if user with login + email exist in DB
+					const user = await models.E_user.findOne({
+						where: { f_login, f_email },
+					});
+					if (!user) throw new Error("login.reset_password.userNotExist");
+
+					const existingToken = await models.E_token.findOne({
+						where: { type: "FIRST_CONNECTION", fk_id_user: user.id },
+						attributes: ["id"],
+					});
+					if (existingToken) {
+						await existingToken.destroy({ transaction: data.transaction, user: data.req.user });
+					}
+					const activationToken = generateToken();
+					const hash = hashToken(activationToken);
+
+					await models.E_token.create(
+						{
+							hash,
+							type: "FIRST_CONNECTION",
+							expires_at: setExpiresAt("FIRST_CONNECTION"),
+							fk_id_user: user.id,
+						},
+						{ transaction: data.transaction, user: data.req.user }
+					);
+
 					await mailer.sendTemplate("first_connection", {
 						data: {
-							first_connection_url: mailer.config.url.host + `/first_connection?login=${req.body.f_login}`,
-							user: req.body,
+							first_connection_url: `${mailer.config.url.host}/first_connection?login=${f_login}&token=${activationToken}`,
+							host: mailer.config.url.host,
+							user,
 						},
 						from: mailer.config.from,
-						to: req.body.f_email,
+						to: f_email,
 						subject: mailer.config.subject.mail_first,
 					});
-					res.success((_) => res.status(200).send(true));
+					data.res.success((_) => data.res.status(200).send(true));
 				} catch (err) {
 					console.error(err);
-					res.success((_) => res.status(500).send(err));
+					data.res.success((_) => data.res.status(500).send(err));
+				}
+			})
+		);
+	}
+
+	sendResetPassword() {
+		this.router.post(
+			"/send_reset_password",
+			this.middlewares.sendResetPassword,
+			this.asyncRoute(async (data) => {
+				const { login, email } = data.req.body;
+				data.transaction = await models.sequelize.transaction();
+
+				try {
+					// Check if user with login + email exist in DB
+					const user = await models.E_user.findOne({
+						where: {
+							f_login: login,
+							f_email: email,
+						},
+					});
+					if (!user) throw new Error("login.reset_password.userNotExist");
+					if (!user.f_enabled) throw new Error("login.not_enabled");
+
+					const existingToken = await models.E_token.findOne({
+						where: { type: "RESET_PASSWORD", fk_id_user: user.id },
+						attributes: ["id"],
+					});
+					if (existingToken) {
+						await existingToken.destroy({ transaction: data.transaction, user: data.req.user });
+					}
+					const resetToken = generateToken();
+					const hash = hashToken(resetToken);
+
+					await models.E_token.create(
+						{
+							hash,
+							type: "RESET_PASSWORD",
+							expires_at: setExpiresAt("RESET_PASSWORD"),
+							fk_id_user: user.id,
+						},
+						{ transaction: data.transaction, user: data.req.user }
+					);
+
+					await mailer.sendTemplate("mail_reset_password", {
+						data: {
+							href: `${mailer.config.url.host}/reset_password?login=${login}&token=${resetToken}`,
+							user,
+						},
+						from: mailer.config.from,
+						to: data.req.body.email,
+						subject: mailer.config.subject.mail_reset,
+					});
+					data.res.success((_) => data.res.status(200).send(true));
+				} catch (err) {
+					console.error(err);
+					data.res.success((_) => data.res.status(500).send(err));
 				}
 			})
 		);
@@ -172,24 +236,45 @@ class E_user extends Entity {
 			},
 			create: {
 				start: (data) => {
-					if (CONF_AUTH_MODE != "local") data.req.body.f_enabled = true;
+					if (CONF_AUTH_MODE === "ldap") data.req.body.f_enabled = true;
 				},
-				beforeRedirect: ({ req }) => {
-					if (CONF_AUTH_MODE === "local" && req.body.send_first_connection_mail == "true" && req.body.f_email) {
+				beforeRedirect: async (data) => {
+					if (CONF_AUTH_MODE === "local" && data.req.body.send_first_connection_mail == "true" && data.req.body.f_email) {
+						const activationToken = generateToken();
+						const hash = hashToken(activationToken);
+
+						await models.E_token.create(
+							{
+								hash,
+								type: "FIRST_CONNECTION",
+								expires_at: setExpiresAt("FIRST_CONNECTION"),
+								fk_id_user: data.createdRow.id,
+							},
+							{ transaction: data.transaction, user: data.req.user }
+						);
+
 						// Send first connection email to new user
 						try {
 							mailer.sendTemplate("first_connection", {
 								data: {
-									first_connection_url: mailer.config.host + `/first_connection?login=${req.body.f_login}`,
-									user: req.body,
+									first_connection_url: `${mailer.config.url.host}/first_connection?login=${data.req.body.f_login}&token=${activationToken}`,
+									host: mailer.config.url.host,
+									user: data.req.body,
 								},
 								from: mailer.config.from,
-								to: req.body.f_email,
+								to: data.req.body.f_email,
 								subject: mailer.config.subject.mail_first,
 							});
 						} catch (err) {
 							console.error(err);
 						}
+					}
+					// activate status for ldap auth
+					if (CONF_AUTH_MODE === "ldap") {
+						await helpers.status.setStatus(this.e_entity, data.createdRow.id, "state", STATUS_ID_ENABLED, {
+							user: data.req.user,
+							transaction: data.transaction,
+						});
 					}
 				},
 			},
@@ -312,9 +397,10 @@ class E_user extends Entity {
 			fieldset_remove: [middlewares.actionAccess(this.entity, "delete")],
 			fieldset_add: [middlewares.actionAccess(this.entity, "create")],
 			destroy: [middlewares.actionAccess(this.entity, "delete")],
-			settingsGET: [middlewares.isLoggedIn],
-			settingsPOST: [middlewares.isLoggedIn],
+			settingsGET: [middlewares.actionAccess(this.entity, "read")],
+			settingsPOST: [middlewares.actionAccess(this.entity, "update")],
 			resendFirstConnectionEmail: [middlewares.actionAccess(this.entity, "read")],
+			sendResetPassword: [middlewares.actionAccess(this.entity, "read")],
 		};
 	}
 }

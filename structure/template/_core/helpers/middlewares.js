@@ -277,11 +277,14 @@ exports.connectionLogMiddleware = (req, res, next) => {
 		currentURL = currentURL.split("?")[0];
 	}
 
+	const login = req.body?.login ?? req.user?.f_login ?? "";
+
 	const msg = {
-		login: `LOGIN [ID: ${req.user ? req.user.id : ""}]`,
-		first_connection: `FIRST CONNECTION [LOGIN: ${req.body ? req.body.login : ""}]`,
-		reset_password: `RESET PASSWORD [ID: ${req.user ? req.user.id : ""}]`,
-		logout: `LOGOUT [ID: ${req.user ? req.user.id : ""}]`,
+		login: `LOGIN [login: ${login}]`,
+		first_connection: `FIRST CONNECTION [login: ${login}]`,
+		forgot_password: `FORGOT PASSWORD [login: ${login}]`,
+		reset_password: `RESET PASSWORD [login: ${login}]`,
+		logout: `LOGOUT [login: ${login}]`,
 	};
 
 	writeConnectionLog(msg[currentURL]);

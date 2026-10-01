@@ -3,10 +3,15 @@ const options = require("@app/models/options/e_user");
 const middlewares = require("@core/helpers/middlewares");
 const ApiEntity = require("@core/abstract_routes/api_entity");
 
-// Define private attributes that will not be accessed by API
+// Define public /private attributes to restrict accessed by API
+const publicAttributes = [];
 const privateAttributes = [];
 for (const attribute in attributes) {
-	if (attribute != "f_password" && attribute != "f_enabled" && attribute != "f_token_password_reset") privateAttributes.push(attribute);
+	if (["f_password", "f_enabled"].includes(attribute)) {
+		privateAttributes.push(attribute);
+	} else {
+		publicAttributes.push(attribute);
+	}
 }
 
 class ApiE_user extends ApiEntity {
@@ -19,13 +24,13 @@ class ApiE_user extends ApiEntity {
 		return {
 			find: {
 				beforeFind: (data) => {
-					data.query.attributes = privateAttributes;
+					data.query.attributes = publicAttributes;
 				},
 				// afterFind: async data => {},
 			},
 			findOne: {
 				beforeFind: (data) => {
-					data.query.attributes = privateAttributes;
+					data.query.attributes = publicAttributes;
 				},
 				// afterFind: async data => {},
 			},
@@ -35,14 +40,14 @@ class ApiE_user extends ApiEntity {
 			},
 			create: {
 				beforeCreate: (data) => {
-					for (const field in data.createObject || {}) if (!privateAttributes.includes(field)) delete data.createObject[field];
+					for (const field in data.createObject || {}) if (privateAttributes.includes(field)) delete data.createObject[field];
 				},
 				// beforeAssociations: async data => {},
 				// afterAssociations: async data => {},
 			},
 			update: {
 				beforeUpdate: (data) => {
-					for (const field in data.updateObject || {}) if (!privateAttributes.includes(field)) delete data.updateObject[field];
+					for (const field in data.updateObject || {}) if (privateAttributes.includes(field)) delete data.updateObject[field];
 				},
 				// beforeAssociations: async data => {},
 				// afterAssociations: async data => {},
