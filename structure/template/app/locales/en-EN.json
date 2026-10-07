@@ -221,6 +221,7 @@
 		"duplicate": "Duplicate"
 	},
 	"operation": {
+		"open": "Open",
 		"show": "Show",
 		"update": "Modify",
 		"create": "Create",
@@ -325,7 +326,23 @@
 			"inline_help": "To have a valid map, please use the field below to enter the address"
 		}
 	},
-	"component": {},
+	"component": {
+		"ldap": {
+			"configuration": "LDAP configuration",
+			"give_access_to_all_groups": "Allow all LDAP groups",
+			"update_user_ldap_group_on_login": "Always update user groups on login",
+			"ldap_group": "LDAP group",
+			"access_denied": "Access denied; please check your credentials.",
+			"authentication_failed": "Authentication error; please check your credentials.",
+			"invalid_credentials": "Invalid credentials; please check your credentials.",
+			"bad_request_messsage": "Invalid request; please check your credentials.",
+			"create_user_error": "Error creating user; please contact your administrator.",
+			"account_not_enabled": "Your account is not enabled; please contact your administrator.",
+			"not_enabled": "LDAP configuration is not enabled.",
+			"have_access": "Authorized",
+			"success_save": "The file has been successfully modified."
+		}
+	},
 	"defaults": {
 		"widgets": {
 			"lastrecords": {

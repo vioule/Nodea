@@ -3,7 +3,7 @@
 
 const passport = require("passport");
 const WindowsStrategy = require("passport-windowsauth");
-const ldapConfig = require("../config/ldap/ldap_config");
+const ldapConfig = require("../config/ldap");
 const models = require("/../../models/");
 const language = require("../../services/language");
 const ldapUtils = require("../../utils/ldap");
@@ -94,8 +94,7 @@ passport.use(
 						throw new Error("component.ldap.create_user_error");
 					}
 
-					if (!ldapUtils.haveAccess(ldapUser) && ldapGroupsSettings.give_access_to_all_groups !== "true")
-						throw new Error("component.ldap.access_denied");
+					if (!ldapUtils.haveAccess(ldapUser)) throw new Error("component.ldap.access_denied");
 
 					return user;
 				} else {
@@ -104,11 +103,10 @@ passport.use(
 					if (!ldapUser._groups.length) throw new Error("component.ldap.access_denied");
 
 					// Check if user have access
-					if (!ldapUtils.haveAccess(ldapUser) && ldapGroupsSettings.give_access_to_all_groups !== "true")
-						throw new Error("component.ldap.access_denied");
+					if (!ldapUtils.haveAccess(ldapUser)) throw new Error("component.ldap.access_denied");
 
 					// If update_user_group_on_login is enable, always get ldap user groups and update user groups and roles in app
-					if (ldapGroupsSettings.update_user_groups_on_login == "true") {
+					if (ldapGroupsSettings.update_user_groups_on_login) {
 						let result;
 						try {
 							result = await ldapUtils.getAppGroupsAndRoles(ldapUser);

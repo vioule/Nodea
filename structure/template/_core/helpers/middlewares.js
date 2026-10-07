@@ -1,6 +1,7 @@
 const models = require("@app/models");
 const access = require("@core/helpers/access");
 const { writeConnectionLog } = require("@core/helpers/connection_log");
+const globalConf = require("@config/global");
 
 const crypto = require("@app/utils/crypto.js");
 const { KEY_TK } = require("@config/global.js");
@@ -64,6 +65,17 @@ exports.moduleAccess = function (moduleName) {
 		];
 		return res.redirect("/");
 	};
+};
+
+exports.isLdap = function (req, res, next) {
+	if (globalConf.authStrategy.toLowerCase() === "ldap") return next();
+	req.session.toastr = [
+		{
+			level: "error",
+			message: "component.ldap.not_enabled",
+		},
+	];
+	return res.redirect("/");
 };
 
 function entityAccess(entityName) {

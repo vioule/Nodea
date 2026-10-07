@@ -221,6 +221,7 @@
 		"duplicate": "Dupliquer"
 	},
 	"operation": {
+		"open": "Ouvrir",
 		"show": "Afficher",
 		"update": "Modifier",
 		"create": "Créer",
@@ -325,7 +326,23 @@
 			"inline_help": "Pour avoir une carte valide, veuillez utiliser le champ ci-dessous pour saisir l'adresse"
 		}
 	},
-	"component": {},
+	"component": {
+		"ldap": {
+			"configuration": "Configuration LDAP",
+			"give_access_to_all_groups": "Autoriser tous les groupes LDAP",
+			"update_user_ldap_group_on_login": "Toujours mettre à jour les groupes utilisateurs à la connexion",
+			"ldap_group": "Groupe LDAP",
+			"access_denied": "Accès refusé, merci de vérifier vos identifiants.",
+			"authentication_failed": "Erreur d'authentification, merci de vérifier vos identifiants.",
+			"invalid_credentials": "Identifiants invalides, merci de vérifier vos identifiants.",
+			"bad_request_messsage": "Requête invalide, merci de vérifier vos identifiants.",
+			"create_user_error": "Erreur lors de la création de l'utilisateur, merci de contacter votre administrateur.",
+			"account_not_enabled": "Votre compte n'est pas activé, merci de contacter votre administrateur.",
+			"not_enabled": "La configuration LDAP n'est pas activée.",
+			"have_access": "Autorisé",
+			"success_save": "Le fichier a bien été modifié."
+		}
+	},
 	"defaults": {
 		"widgets": {
 			"lastrecords": {

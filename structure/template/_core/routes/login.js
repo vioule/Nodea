@@ -54,9 +54,8 @@ class CoreLogin extends Route {
 						level: "error",
 					});
 			}
-			const view = globalConf.authStrategy === "ldap" ? "login/login_ldap" : "login/login";
 
-			res.render(view, {
+			res.render("login/login", {
 				captcha: captcha,
 				redirect: req.query.r ? req.query.r : null,
 			});

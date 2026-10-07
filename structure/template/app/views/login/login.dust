@@ -71,7 +71,12 @@
 	<hr>
 
 	<p class="mb-1">
-		<a href="/forgot_password"><i class="fa fa-unlock">&nbsp;</i>{#__ key="login.reset_password.title"/}</a>
+		{@select key=config.authStrategy}
+		{@eq value="ldap"/}
+		{@none}
+			<a href="/forgot_password"><i class="fa fa-unlock">&nbsp;</i>{#__ key="login.reset_password.title"/}</a>
+		{/none}
+		{/select}
 	</p>
 {/content}
 

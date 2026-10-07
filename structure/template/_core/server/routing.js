@@ -26,6 +26,7 @@ module.exports = (dust, dustFn) => (req, res, next) => {
 	// eslint-disable-next-line global-require
 	res.locals.locales = require("@app/locales/" + req.session.lang_user);
 	res.locals.config = globalConf;
+	res.locals.config.authStrategy = globalConf.authStrategy.toLowerCase();
 	res.locals.corePath = __corePath;
 	res.locals.appPath = __appPath;
 	res.locals.sizeFileLimit = appConf.dropzoneInfo.sizeFileLimit;
