@@ -16,6 +16,16 @@ class Metadata {
 		return loadedApp;
 	}
 
+	reloadApplication(name) {
+		for (let i = 0; i < this._applications.length; i++) {
+			if (this._applications[i].name === name) {
+				this._applications[i] = Application.load(name);
+				return this._applications[i];
+			}
+		}
+		return null;
+	}
+
 	deleteApplication(name) {
 		for (let i = 0; i < this._applications.length; i++)
 			if (this._applications[i].name == name) {

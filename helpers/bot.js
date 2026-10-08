@@ -68,6 +68,14 @@ async function execute(req, instruction, data = {}, saveMetadata = true) {
 
 	const newData = session_manager.setSession(data.function, req, info, data);
 
+	// Reload metadata
+	if (data.application && info.reloadMetadata) {
+		const applicationReloaded = metadata.reloadApplication(data.app_name);
+		if (applicationReloaded) {
+			data.application = applicationReloaded;
+		}
+	}
+
 	// Save metadata
 	if (data.application && data.function != "deleteApplication" && saveMetadata) data.application.save();
 

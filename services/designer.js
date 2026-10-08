@@ -54,7 +54,7 @@ exports.recursiveInstructionExecute = async (recursiveData, instructions, idx) =
 	return await exportsContext.recursiveInstructionExecute(data, instructions, idx);
 };
 
-exports.help = async (_) => {
+exports.help = (_) => {
 	// eslint-disable-line
 	return {
 		message: "botresponse.help",
@@ -72,10 +72,11 @@ exports.deploy = async (data) => {
 	return await cloud_manager.deploy(data);
 };
 
-exports.restart = async (_) => {
+exports.restart = (_) => {
 	// eslint-disable-line
 	return {
 		message: "structure.global.restart.success",
+		reloadMetadata: true,
 	};
 };
 
@@ -111,6 +112,7 @@ exports.gitPull = async (data) => {
 	await gitHelper.gitPull(data);
 	return {
 		message: "structure.global.gitPull.success",
+		reloadMetadata: true,
 		restartServer: false,
 	};
 };
@@ -121,6 +123,7 @@ exports.gitCheckout = async (data) => {
 	return {
 		message: "structure.global.gitCheckout.success",
 		messageParams: [answer.message, answer.branch],
+		reloadMetadata: true,
 		restartServer: false,
 	};
 };
@@ -284,7 +287,7 @@ exports.deleteApplication = async (data) => {
 /* --------------------------------------------------------------- */
 /* ------------------------- Module ------------------------------ */
 /* --------------------------------------------------------------- */
-exports.selectModule = async (data) => {
+exports.selectModule = (data) => {
 	// eslint-disable-line
 	data.module = data.application.getModule(data.options.value, true, data.options.showValue);
 	return {
@@ -318,7 +321,7 @@ exports.createNewModule = async (data) => {
 	};
 };
 
-exports.listModule = async (data) => {
+exports.listModule = (data) => {
 	// eslint-disable-line
 	let listing = "<br><ul>";
 	for (let i = 0; i < data.application.modules.length; i++) {
@@ -403,7 +406,7 @@ exports.createNewEntity = async (data) => {
 	};
 };
 
-exports.listEntity = async (data) => {
+exports.listEntity = (data) => {
 	// eslint-disable-line
 	let listing = "<br><ul>";
 	for (let i = 0; i < data.application.modules.length; i++) {
@@ -616,7 +619,7 @@ async function deleteField(data) {
 }
 exports.deleteField = deleteField;
 
-exports.listField = async (data) => {
+exports.listField = (data) => {
 	// eslint-disable-line
 	let listing = "<br><ul>";
 	for (let i = 0; i < data.application.modules.length; i++) {
@@ -1854,7 +1857,7 @@ exports.deleteAgenda = async (data) => {
 	};
 };
 
-exports.createComponentChat = async (data) => {
+exports.createComponentChat = () => {
 	// eslint-disable-line
 
 	throw new Error("Instruction disabled. Will be added in future release");
@@ -2122,7 +2125,7 @@ exports.removeLogo = async (data) => {
 	};
 };
 
-exports.setLayout = async (data) => {
+exports.setLayout = () => {
 	// eslint-disable-line
 	throw new Error("Instruction disabled. Will be added in future release");
 	// data.np_module = data.application.getModule(data.module_name, true);
@@ -2142,7 +2145,7 @@ exports.setTheme = async (data) => {
 
 exports.listTheme = async (data) => structure_ui.listTheme(data); // eslint-disable-line
 
-exports.listIcon = async (_) => {
+exports.listIcon = (_) => {
 	// eslint-disable-line
 	return {
 		message: "structure.ui.icon.list",
