@@ -338,6 +338,10 @@ exports.initializeApplication = async (application) => {
 	const piecesPath = __dirname + "/pieces";
 	const workspacePath = __dirname + "/../workspace/" + application.name;
 
+	// ADD e_token in application to write metadata.json (prevent creating entity "token")
+	application.modules[1].addEntity("e_token", "token");
+	application.save();
+
 	//
 	// ACCESS AND SECURITY: USER / GROUP / ROLE
 	//
