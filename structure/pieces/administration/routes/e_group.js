@@ -6,6 +6,8 @@ const attributes = require("@app/models/attributes/e_group");
 const helpers = require("@core/helpers");
 const middlewares = helpers.middlewares;
 
+const { isAdminUser, getAccessibleGroupIds } = helpers.user;
+
 const fs = require("fs-extra");
 
 class E_group extends Entity {
@@ -46,7 +48,13 @@ class E_group extends Entity {
 			create: {
 				// start: async (data) => {},
 				// beforeCreateQuery: async(data) => {},
-				// beforeRedirect: async(data) => {}
+				beforeRedirect: async (data) => {
+					// Add the created group to its own accessible groups (self-reference)
+					await data.createdRow.addR_group_accessible(data.createdRow, {
+						transaction: data.transaction,
+						user: data.req.user,
+					});
+				},
 			},
 			update_form: {
 				start: (data) => {
@@ -122,10 +130,16 @@ class E_group extends Entity {
 			},
 			search: {
 				// start: async (data) => {},
-				// beforeAllowedCheck: async (data) => {},
-				// beforeActionsExecution: async (data) => {},
-				// beforeSetStatus: async (data) => {},
-				// beforeRedirect: async (data) => {}
+				beforeQuery: async (data) => {
+					const isAdmin = isAdminUser(data.req.user);
+					if (!isAdmin) {
+						const accessibleIds = await getAccessibleGroupIds(data.req.user.id);
+						if (accessibleIds.length > 0) {
+							data.query.where.id = accessibleIds;
+						}
+					}
+				},
+				// beforeResponse: async (data) => {}
 			},
 			fieldset_remove: {
 				// start: async (data) => {},

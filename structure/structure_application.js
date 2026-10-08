@@ -204,6 +204,22 @@ async function initializeWorkflow(application) {
 					otherKey: "fk_id_e_user",
 					structureType: "hasMany",
 				},
+				{
+					target: "e_role",
+					relation: "belongsToMany",
+					foreignKey: "fk_id_e_role",
+					as: "r_role_accessible",
+					showAs: "Rôle accessible",
+					through: "1_role_accessible",
+					otherKey: "fk_id_e_role_accessible",
+					structureType: "relatedToMultiple",
+					usingField: [
+						{
+							value: "f_label",
+							type: "string",
+						},
+					],
+				},
 			],
 			null,
 			"\t"
@@ -234,6 +250,22 @@ async function initializeWorkflow(application) {
 					through: "5_accepted_group",
 					otherKey: "fk_id_e_status",
 					structureType: "hasMany",
+				},
+				{
+					target: "e_group",
+					relation: "belongsToMany",
+					foreignKey: "fk_id_e_group",
+					as: "r_group_accessible",
+					showAs: "Group accessible",
+					through: "2_group_accessible",
+					otherKey: "fk_id_e_group_accessible",
+					structureType: "relatedToMultiple",
+					usingField: [
+						{
+							value: "f_label",
+							type: "string",
+						},
+					],
 				},
 			],
 			null,

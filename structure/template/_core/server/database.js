@@ -25,7 +25,9 @@ module.exports = (async () => {
 		}
 
 		const group = await models.E_group.create({ id: 1, f_label: "admin" }, { transaction, user: USERSYS });
+		await group.setR_group_accessible(group, { transaction, user: USERSYS });
 		const role = await models.E_role.create({ id: 1, f_label: "admin" }, { transaction, user: USERSYS });
+		await role.setR_role_accessible(role, { transaction, user: USERSYS });
 		const admin = await models.E_user.create(
 			{
 				f_login: "admin",
