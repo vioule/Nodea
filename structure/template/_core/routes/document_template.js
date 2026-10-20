@@ -3,6 +3,7 @@ const globalConf = require("@config/global");
 const appConf = require("@config/application");
 const fs = require("fs-extra");
 const path = require("path");
+const mime = require("mime-types");
 
 const CoreEntity = require("@core/abstract_routes/entity");
 const models = require("@app/models");
@@ -183,8 +184,9 @@ class CoreDocumentTemplate extends CoreEntity {
 					});
 					for (const img of images || []) {
 						try {
+							const filePath = globalConf.localstorage + img.f_image;
 							data.templateData[img.f_code] =
-								"data:image/*;base64, " + fs.readFileSync(globalConf.localstorage + img.f_image).toString("base64");
+								"data:" + mime.lookup(filePath) + ";base64, " + fs.readFileSync(filePath).toString("base64");
 						} catch (err) {
 							console.log("WARN: Couldn't load image ressource " + img.f_code);
 						}
